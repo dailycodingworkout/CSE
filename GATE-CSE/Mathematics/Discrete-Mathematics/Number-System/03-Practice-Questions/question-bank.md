@@ -818,4 +818,4 @@ d) 641
 
 ---
 
-**Next**: [Brain Maps](../04-Brain-Maps/) - Visual learning aids for quick retention!
+**Next**: [Visual Memory Techniques](../04-Visual-Memory-Techniques/) - Visual techniques and concept connections for better retention!

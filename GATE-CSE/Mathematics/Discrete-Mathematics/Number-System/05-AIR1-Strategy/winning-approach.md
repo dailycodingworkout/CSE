@@ -449,7 +449,7 @@ EMERGING AREAS:
 ```
 MORNING SESSION (45 minutes):
 06:00-06:15: Mental math warm-up (speed calculations)
-06:15-06:30: Formula review using brain maps
+06:15-06:30: Formula review using visual memory techniques
 06:30-06:45: Practice 10 high-priority questions
 
 AFTERNOON SESSION (30 minutes):
@@ -460,7 +460,7 @@ AFTERNOON SESSION (30 minutes):
 EVENING SESSION (60 minutes):
 20:00-20:20: Theory review (focus on weak areas)
 20:20-20:45: Solve 5 low-priority (challenging) questions
-20:45-21:00: Create/review brain maps for today's topics
+20:45-21:00: Practice/review visual memory techniques for today's topics
 
 WEEKLY SPECIAL SESSIONS:
 Sunday: Full-length mock test (number system section)
@@ -520,12 +520,12 @@ WEEK 2 (14 days before):
 
 WEEK 1 (7 days before):
 - Minimal study (avoid burnout)
-- Formula quick review using brain maps
+- Formula quick review using visual memory techniques
 - Relaxation and peak mental health
 
 DAY 0 (Exam day):
 - Quick warm-up with easy problems
-- Review brain maps for instant recall
+- Review visual memory techniques for instant recall
 - Execute your preparation with confidence
 ```
 
@@ -591,6 +591,6 @@ CHAMPIONSHIP MENTALITY:
 ---
 
 **Navigation:**
-- [← Back to Brain Maps](../04-Brain-Maps/)
+- [← Back to Visual Memory Techniques](../04-Visual-Memory-Techniques/)
 - [↑ Return to Number System Home](../)
 - [🏠 Main GATE-CSE Repository](../../../)

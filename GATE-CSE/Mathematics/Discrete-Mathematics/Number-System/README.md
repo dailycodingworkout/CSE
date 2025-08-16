@@ -56,19 +56,19 @@ This comprehensive Number System module is designed specifically for students ai
 - Base Systems (10 questions)
 - Advanced Applications (20 questions)
 
-### 🧠 [04-Brain-Maps](04-Brain-Maps/)
-**Visual learning aids for quick retention and recall**
-- [Visual Learning](04-Brain-Maps/visual-learning.md) - Comprehensive brain maps and memory techniques
+### 🧠 [04-Visual-Memory-Techniques](04-Visual-Memory-Techniques/)
+**Visual memory techniques for concept connections and retention**
+- [Visual Memory Methods](04-Visual-Memory-Techniques/visual-memory-methods.md) - Practical visual techniques and concept connections
 
-**Visual Tools:**
-- Master Number System Universe Map
-- Divisibility Rules Visualization
-- HCF & LCM Connection Web
-- Prime Detection System
-- Cyclicity Pattern Maps
-- Base Conversion Highway
-- Problem-Solving Decision Trees
-- Formula Memory Palace
+**Visual Learning Features:**
+- Association and visualization methods
+- Concept connection strategies
+- Memory palace techniques for formulas
+- Visual analogies for complex topics
+- Pattern recognition through imagery
+- Story-based memory techniques
+- Spatial memory applications
+- Areas of improvement analysis
 
 ### 🏆 [05-AIR1-Strategy](05-AIR1-Strategy/)
 **Advanced techniques and winning approaches for top rank**
@@ -105,7 +105,7 @@ This comprehensive Number System module is designed specifically for students ai
 4. Analyze mistakes and improve
 
 #### **Week 9-10: Visual Reinforcement**
-1. Study [Brain Maps](04-Brain-Maps/visual-learning.md) for memory
+1. Study [Visual Memory Techniques](04-Visual-Memory-Techniques/visual-memory-methods.md) for better retention
 2. Create your own visual connections
 3. Practice rapid recall using maps
 
@@ -118,7 +118,7 @@ This comprehensive Number System module is designed specifically for students ai
 ### 🎯 **Daily Practice Routine:**
 - **Morning (30 min)**: Theory review + Mental math practice
 - **Afternoon (30 min)**: Question solving with time limits
-- **Evening (20 min)**: Brain map review + Mistake analysis
+- **Evening (20 min)**: Visual memory review + Mistake analysis
 
 ### ⏱️ **Time Management:**
 - **Basic questions**: 1-2 minutes
@@ -158,7 +158,7 @@ This comprehensive Number System module is designed specifically for students ai
 - Exam strategy and time management
 
 ### 🧠 **Memory Enhancement**
-- Visual brain maps for concept retention
+- Visual memory techniques for concept retention
 - Memory mnemonics and techniques
 - Spaced repetition guidance
 
@@ -180,14 +180,14 @@ After completing this module systematically, you will:
 
 ## 🎖️ Success Stories
 
-*"This module transformed my Number System preparation. I went from struggling with basic concepts to solving advanced problems in under 2 minutes. The brain maps especially helped during exam pressure!"* - Future AIR 1 Student
+*"This module transformed my Number System preparation. I went from struggling with basic concepts to solving advanced problems in under 2 minutes. The visual memory techniques especially helped during exam pressure!"* - Future AIR 1 Student
 
 ## 🔗 Quick Links
 
 - **📖 [Start with Theory](01-Theory/complete-theory.md)**
 - **⚡ [Learn Shortcuts](02-Tips-and-Tricks/shortcuts-and-tricks.md)**  
 - **🏋️ [Practice Questions](03-Practice-Questions/question-bank.md)**
-- **🧠 [Visual Learning](04-Brain-Maps/visual-learning.md)**
+- **🧠 [Visual Memory](04-Visual-Memory-Techniques/visual-memory-methods.md)**
 - **🏆 [AIR 1 Strategy](05-AIR1-Strategy/winning-approach.md)**
 
 ## 💪 Ready to Begin?
