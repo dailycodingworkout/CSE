@@ -24,8 +24,9 @@ This repository contains comprehensive study materials and resources for competi
 | Examination | Syllabus | Exam Pattern | 
 |-------------|----------|-------------|
 | SSC CGL | [View](./SSC/SSC-CGL-Syllabus.md) | [View](./SSC/SSC-CGL-Pattern.md) |
-| SSC CHSL | [View](./SSC/SSC-CHSL-Syllabus.md) | Coming Soon |
-| SSC JE | [View](./SSC/SSC-JE-Syllabus.md) | Coming Soon |
+| SSC CHSL | [View](./SSC/SSC-CHSL-Syllabus.md) | [View](./SSC/SSC-CHSL-Pattern.md) |
+| SSC JE | [View](./SSC/SSC-JE-Syllabus.md) | [View](./SSC/SSC-JE-Pattern.md) |
+| SSC MTS | [View](./SSC/SSC-MTS-Syllabus.md) | [View](./SSC/SSC-MTS-Pattern.md) |
 
 ## Getting Started
 
