@@ -672,18 +672,27 @@ Ratio = (V₂ - Mean):(Mean - V₁)
    - 7:8 = x:100
    - x = 700/8 = 87.5 km/hr
 
-4. **Let vessel have 7x mixture. Draw off y and replace with water.**
-   - Milk left = 5x - 5y/7
-   - Water = 2x - 2y/7 + y = 2x + 5y/7
-   - Ratio: (5x - 5y/7):(2x + 5y/7) = 5:4
-   - Solve for y in terms of x
-   - y = 2x/7 of mixture to be replaced
+4. **Answer: 2/7 of the mixture must be drawn off and replaced**
+   - Let vessel have 7 litres total (5L milk + 2L water)
+   - Let y litres be drawn off and replaced with water
+   - Milk removed = y × (5/7) = 5y/7
+   - Water removed = y × (2/7) = 2y/7
+   - Milk remaining = 5 - 5y/7 = (35 - 5y)/7
+   - Water after replacement = 2 - 2y/7 + y = (14 - 2y + 7y)/7 = (14 + 5y)/7
+   - New ratio: (35 - 5y):(14 + 5y) = 5:4
+   - Cross multiply: 4(35 - 5y) = 5(14 + 5y)
+   - 140 - 20y = 70 + 25y
+   - 70 = 45y → y = 70/45 = 14/9
+   - Fraction replaced = y/7 = (14/9)/7 = 14/63 = **2/9 of the mixture**
 
 5. **A = 24 years, B = 28 years**
    - Let ages = 6x, 7x
-   - (6x+8):(7x+8) = 8:9
+   - After 8 years: (6x+8):(7x+8) = 8:9
+   - Cross multiply: 9(6x+8) = 8(7x+8)
    - 54x + 72 = 56x + 64
-   - 2x = 8, x = 4
+   - 72 - 64 = 56x - 54x → 8 = 2x → x = 4
+   - Present ages: A = 6×4 = 24 years, B = 7×4 = 28 years
+   - Verify: After 8 years → 32:36 = 8:9 ✓
 
 </details>
 
@@ -700,5 +709,5 @@ Ratio = (V₂ - Mean):(Mean - V₁)
 
 ---
 
-*Last Updated: December 2024*  
+*Last Updated: December 2025*  
 *For GATE CSE, ECE, ME & ESE Aspirants*
