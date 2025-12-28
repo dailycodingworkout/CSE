@@ -153,9 +153,10 @@ Position:    0  1  2  3   4   5   6    7    8    9    10
 - Largest n-digit: b^n - 1
 - Total n-digit numbers: b^n - b^(n-1) = b^(n-1) × (b-1)
 
-**Trick 3: Number of digits of N in base b**
+**Trick 3: Number of digits of N in base b (N > 0)**
 ```
 Digits = ⌊log_b(N)⌋ + 1
+Note: This formula is only valid for positive integers N.
 ```
 
 ### ⚠️ Edge Cases
@@ -272,7 +273,7 @@ For two numbers a, b:
 For three numbers a, b, c:
 • HCF(a,b,c) = HCF(HCF(a,b), c)
 • LCM(a,b,c) = LCM(LCM(a,b), c)
-• HCF × LCM ≠ a × b × c (This formula ONLY works for 2 numbers!)
+• Note: HCF(a,b,c) × LCM(a,b,c) ≠ a × b × c in general (Product formula ONLY works for 2 numbers!)
 ```
 
 ### Properties Table
@@ -390,7 +391,8 @@ Factor Tree:
 **If p is prime, then (p-1)! ≡ -1 (mod p)**
 
 ```
-Example: (4)! mod 5 = 24 mod 5 = 4 ≡ -1 (mod 5) ✓
+Example: (4)! mod 5 = 24 mod 5 = 4
+Since 4 = 5 - 1 = -1 (mod 5), we have 4 ≡ -1 (mod 5) ✓
 ```
 
 ### Fermat's Little Theorem
@@ -505,7 +507,8 @@ a = bq + r, where 0 ≤ r < b
 
 #### 2. Subtraction Property
 ```
-(a - b) mod n = [(a mod n) - (b mod n) + n] mod n
+(a - b) mod n = ((a mod n) - (b mod n) + n) mod n
+Note: Adding n ensures result is non-negative before final mod.
 ```
 
 #### 3. Multiplication Property
@@ -728,7 +731,7 @@ Answer: 0.101₂
 ### 🧠 Tricks
 
 **Trick 1: Quick Check**
-- (abc)_b in decimal = a×b² + b×b + c
+- (abc)_b in decimal = a×b² + b×b¹ + c×b⁰ = a×b² + b×b + c
 - Largest n-digit in base b = b^n - 1
 
 **Trick 2: Same Number Different Bases**
@@ -1017,7 +1020,8 @@ Three runners run around a circular track...
 **Type 3: Conceptual**
 ```
 If p is prime, what is (p-1)! mod p?
-→ Apply Wilson's theorem: Answer = p-1
+→ Apply Wilson's theorem: (p-1)! ≡ -1 (mod p) ≡ p-1 (mod p)
+Answer = p-1
 ```
 
 **Type 4: Code Tracing (for CS)**
