@@ -292,7 +292,11 @@ PV = A / (1 + R/100)ⁿ
 | 12% | 6 years |
 | 24% | 3 years |
 
-**Why 72?** It's an approximation of 100×ln(2) ≈ 69.3, rounded to 72 for easy division.
+**Why 72?** 
+- For money to double: (1 + R/100)ⁿ = 2, so n = ln(2)/ln(1+R/100)
+- For small R: ln(1+R/100) ≈ R/100
+- Therefore: n ≈ ln(2) × 100/R = 0.693 × 100/R = 69.3/R
+- We round 69.3 to **72** because 72 is divisible by 2, 3, 4, 6, 8, 9, 12 — making mental math easier!
 
 ### Trick 2: Tripling Time
 
@@ -455,9 +459,11 @@ R = 5%
 ```
 P × 6 × 3 / 100 = P[(1.06)² - 1]
 18P/100 = P × 0.1236
-18/100 = 0.1236
+0.18 ≠ 0.1236
 ```
-This gives contradiction → Such P doesn't exist (verify carefully in exam!)
+**Analysis**: 0.18 ≠ 0.1236 → This equation has NO solution for any positive P. 
+This is a **trap question** — always verify if the problem statement makes mathematical sense!
+Such questions test whether you blindly apply formulas or truly understand the concepts.
 
 ### Pattern 4: Population Growth
 
@@ -514,8 +520,9 @@ n = 3 years
 ```
 Let installment = I
 10000 = I/1.1 + I/1.21
-10000 = I(1.1 + 1)/1.21 = 2.1I/1.21
-I = 10000 × 1.21/2.1 = ₹5762 (approximately)
+10000 = I(1/1.1 + 1/1.21)
+10000 = I(0.909 + 0.826) = I × 1.735
+I = 10000/1.735 = ₹5761.90 ≈ ₹5762
 ```
 
 ### Pattern 10: Multiple Rates
