@@ -360,13 +360,16 @@ Actually: 1.25₁₀ = 1.01₂
 **Step 3**: Normalize
 ```
 Already normalized (1.xxx form)
-Result: 1.1101 × 2³ = 13.625₁₀
+Result: 1.1101 × 2³ = 14.5₁₀
 ```
 
-**Verify**: 1.5 × 8 + 1.25 × 2 = 12 + 2.5 = 14.5 (oops, let me recalculate)
-
-Actually: 1.5 × 2³ = 12, 1.25 × 2¹ = 2.5, sum = 14.5
+**Verification**: 
+```
+1.5 × 2³ = 1.5 × 8 = 12
+1.25 × 2¹ = 1.25 × 2 = 2.5
+Sum = 12 + 2.5 = 14.5
 Binary: 1110.1₂ = 14.5 ✓
+```
 
 ### Multiplication:
 ```

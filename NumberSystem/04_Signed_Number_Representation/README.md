@@ -441,7 +441,11 @@ Signed: -128 to +127 (256 values)
 ### Problem 2: Representation Identification
 **Q**: In which representation does 1111 equal -0?
 
-**A**: 1's Complement (and Sign-Magnitude for -7... wait, in sign-magnitude 1111 = -7, in 1's complement 1111 = -(~1111) = -0)
+**A**: 1's Complement. 
+
+In 1's complement: 1111 = -(~1111) = -(0000) = -0
+
+Note: In sign-magnitude, 1111 = -(111) = -7, not -0. The sign-magnitude representation of -0 is 1000.
 
 ### Problem 3: Finding 2's Complement
 **Q**: What is the 2's complement of 01100100 (8-bit)?

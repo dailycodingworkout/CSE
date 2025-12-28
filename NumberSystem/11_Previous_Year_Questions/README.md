@@ -63,17 +63,24 @@ Try x = 10:
 Try x = 9:
 729 + 162 + 9 + 7 = 907 ≠ 1177
 
-Solving: x = 10 gives 1217, not matching
+Testing x = 10:
+1000 + 200 + 10 + 7 = 1217 ≠ 1177
 
-Rechecking: If x = 10:
-1×1000 + 2×100 + 1×10 + 7 = 1217
+Note: For this problem, we need to find x such that:
+x³ + 2x² + x + 7 = 1177
 
-But we need 1177. Let's check with other bases.
+Solving the equation:
+x³ + 2x² + x - 1170 = 0
 
-Actually, the original problem might have different numbers.
-For x = 8: invalid (digit 7 present, needs x > 7)
+By testing values, x ≈ 9.7 (not an integer base)
 
-Answer: x = 10 (if the question parameters are as stated)
+This indicates the original GATE question may have had different values.
+The methodology remains: convert both sides and solve for x.
+
+For practice, if (1217)ₓ = (2231)₈ = 1177₁₀:
+x = 10 gives 1217, so the question might be (1217)₁₀ = (2231)₈
+
+Answer: Methodology demonstrated; verify exact question values in actual exam.
 ```
 
 ---
