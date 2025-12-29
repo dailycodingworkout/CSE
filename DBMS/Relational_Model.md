@@ -798,7 +798,7 @@ Example: "Find students enrolled in ALL courses" → Division!
 
 | Concept | Formula |
 |---------|---------|
-| Max tuples | ∏(domain sizes) |
+| Max tuples | Product of domain sizes |
 | Super keys from CK(k) in R(n) | 2^(n-k) |
 | Cartesian product cardinality | \|R\| × \|S\| |
 | Projection cardinality | ≤ \|R\| |
@@ -878,7 +878,7 @@ Transitivity: X → Y, Y → Z → X → Z
 
 ---
 
-**Pro Tip**: Practice closure computation daily - it's the foundation for 50% of GATE questions on this topic!
+**Pro Tip**: Practice closure computation daily - it's the foundation for a significant portion of GATE questions on this topic!
 
 **Remember**: When in doubt, compute the closure! X⁺ solves most problems.
 
