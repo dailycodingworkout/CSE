@@ -415,7 +415,7 @@ Employee(EmpID, DeptID)
 Department(DeptID, DeptName)
 ```
 
-> **🎯 3NF Memory:** "Nothing but the key, so help me Codd" - non-prime attributes depend ONLY on keys, not on other non-prime attributes
+> **🎯 3NF Memory:** "Nothing but the key, so help me Codd" (Edgar F. Codd invented the relational model) - non-prime attributes depend ONLY on keys, not on other non-prime attributes
 
 #### 3NF vs 2NF Relationship
 
@@ -717,7 +717,7 @@ Example: "An employee's skills are independent of their projects" → EmpID ↠ 
 
 ### Trick 8: Properties Always True
 
-- **1NF ⊃ 2NF ⊃ 3NF ⊃ BCNF ⊃ 4NF ⊃ 5NF** (each is subset of previous)
+- **1NF ⊃ 2NF ⊃ 3NF ⊃ BCNF ⊃ 4NF ⊃ 5NF** (higher NF relations are subsets of lower NF; every 3NF relation is also in 2NF and 1NF)
 - Every relation has at least one candidate key
 - Single-attribute candidate key → Automatically in 2NF
 - No non-prime attributes → Automatically in 3NF and BCNF
