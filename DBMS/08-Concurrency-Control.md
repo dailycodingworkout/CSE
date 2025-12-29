@@ -457,6 +457,8 @@ SET TRANSACTION ISOLATION LEVEL READ COMMITTED;
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 ```
 
+> **Note**: Syntax may vary slightly between database systems (MySQL, PostgreSQL, SQL Server). The above is ANSI SQL standard.
+
 ### Implementation Mapping
 
 | Level | Typical Implementation |

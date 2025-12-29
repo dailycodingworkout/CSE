@@ -578,7 +578,9 @@ S: 500 tuples
 V(A, R) = 100
 
 Without optimization: 1000 × 500 = 500,000 comparisons
-With push-down: σ_A=5(R) × S = 10 × 500 = 5,000 comparisons
+With push-down: 
+  - σ_A=5(R) = 1000/100 = 10 tuples (selectivity)
+  - Then: 10 × 500 = 5,000 comparisons
 ```
 
 ---

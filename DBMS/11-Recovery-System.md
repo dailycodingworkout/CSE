@@ -265,7 +265,7 @@ UNDO: Backward order (newest first)
 1. **Steal + No-Force** policy
 2. **Repeating history** during redo
 3. **Logical undo** possible
-4. **CLRs** prevent repeated undo on re-crash
+4. **Compensation Log Records (CLRs)** prevent repeated undo on re-crash
 
 ---
 

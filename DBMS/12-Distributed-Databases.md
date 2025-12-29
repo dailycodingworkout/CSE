@@ -8,7 +8,7 @@ A **Distributed Database (DDB)** is a collection of logically interrelated datab
 
 ### Key Characteristics
 - Data stored at multiple sites
-- Sites connected by network
+- Sites connected by a network
 - Appears as single database to users
 
 ### 🎭 Analogy
