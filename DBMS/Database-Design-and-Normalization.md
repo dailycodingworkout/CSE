@@ -9,7 +9,7 @@
 **Core insight:** Normalization eliminates redundancy by ensuring each fact is stored exactly once.
 
 When a fact appears in multiple places, three problems emerge:
-- **Update Anomaly:** Change it in one place, forget another → database lies
+- **Update Anomaly:** Change it in one place, forget another — database lies
 - **Insertion Anomaly:** Can't add new fact without inventing unrelated data
 - **Deletion Anomaly:** Remove one thing, accidentally destroy unrelated knowledge
 
@@ -235,7 +235,7 @@ For every non-trivial X → A:
 *Problem:* Chain through non-key
 *Fix:* Separate Department table
 
-**Memory:** "Nothing but the key, so help me Codd" (Edgar F. Codd invented the relational model)
+**Memory:** "The key, the whole key, and nothing but the key, so help me Codd" (Edgar F. Codd invented the relational model)
 
 ### BCNF: No Exceptions
 
@@ -349,6 +349,7 @@ For each original FD, check if it can be verified within a single decomposed rel
 ### Pattern 5: Count Superkeys
 
 Single CK of size k, n total: **2^(n-k)**
+*Reasoning:* Each of the (n-k) non-key attributes can be included or excluded independently.
 
 Multiple CKs: Inclusion-exclusion
 
@@ -363,7 +364,10 @@ R(A, B, C, D, E), FDs: {AB → C, C → D, D → E, E → A}
 **Solve:** 
 - B only on LHS → in every CK
 - B⁺ = {B} (not enough)
-- (AB)⁺ = (BC)⁺ = (BD)⁺ = (BE)⁺ = all attributes
+- (AB)⁺: AB→C→D→E→A = {A,B,C,D,E} ✓
+- (BC)⁺: C→D→E→A, BC = {A,B,C,D,E} ✓
+- (BD)⁺: D→E→A, AB→C = {A,B,C,D,E} ✓
+- (BE)⁺: E→A, AB→C→D = {A,B,C,D,E} ✓
 
 **Answer: {AB, BC, BD, BE}** — four candidate keys
 
