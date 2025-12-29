@@ -768,13 +768,13 @@ Enrollment:          Courses:        Enrollment ÷ Courses:
 | Alice   | Math   |  | Math   |      | Alice   |  ← Alice took ALL courses
 | Alice   | Physics|  | Physics|      
 | Bob     | Math   |                  
-| Carol   | Math   |                  ← Bob only took Math (not all)
-| Carol   | Physics|                  ← Carol took both = ALL
+| Carol   | Math   |                  
+| Carol   | Physics|                  ← Carol took both = ALL required courses
 ```
 
-Wait, Carol is missing! Let me recalculate... Carol took Math and Physics = ALL courses required. So Carol should appear.
+So the result is: Alice and Carol (both took ALL required courses).
 
-**The Formula** (how to compute without a division operator):
+**The Formula** (expressing division using basic operators):
 ```
 R ÷ S = π_A(R) − π_A((π_A(R) × S) − R)
 ```
