@@ -155,8 +155,9 @@ Congestion Avoidance:  cwnd += 1 MSS per RTT
 | 89 | OSPF |
 
 ### Key Constants
-- Speed of light (approx): 3 × 10⁸ m/s
-- Copper propagation: 2 × 10⁸ m/s
+- Speed of light in vacuum: 3 × 10⁸ m/s
+- Signal speed in copper cable: 2 × 10⁸ m/s
+- Signal speed in fiber optic: ~2 × 10⁸ m/s (due to refractive index)
 - Ethernet min frame: 64 bytes
 - Ethernet max frame: 1518 bytes
 - MTU (Ethernet): 1500 bytes

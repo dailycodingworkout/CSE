@@ -783,12 +783,14 @@ DORA = Discover → Offer → Request → Acknowledge
 **A**: Mask 255.255.240.0, AND with IP = **172.16.32.0**
 
 ### Pattern 3: Fragmentation
-**Q**: 3000-byte packet, MTU = 1000. How many fragments?
-**A**: Max data = 1000-20 = 980, round to 976 (×8)
-       Fragment 1: 976 data
-       Fragment 2: 976 data
-       Fragment 3: 1028 data (remaining)
-       = **4 fragments** (recalculate if needed)
+**Q**: 3000-byte packet (20B header + 2980B data), MTU = 1000. How many fragments?
+**A**: Max data per fragment = 1000-20 = 980, round down to 976 (multiple of 8)
+       Total data = 2980 bytes
+       Fragment 1: 976 data, Offset = 0
+       Fragment 2: 976 data, Offset = 122 (976/8)
+       Fragment 3: 976 data, Offset = 244
+       Fragment 4: 52 data, Offset = 366
+       = **4 fragments** (each adds 20B header overhead)
 
 ### Pattern 4: Routing Table
 **Q**: Which route for 192.168.5.100?

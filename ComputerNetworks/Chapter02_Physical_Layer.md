@@ -409,12 +409,13 @@ n = Number of bits per sample
 
 | System | Channels | Voice Rate | Total Rate |
 |--------|----------|------------|------------|
-| **T1** | 24 voice + 1 framing bit | 64 kbps each | 1.544 Mbps |
-| **E1** | 30 voice + 2 signaling | 64 kbps each | 2.048 Mbps |
+| **T1** | 24 voice channels + framing bits | 64 kbps each | 1.544 Mbps |
+| **E1** | 30 voice + 2 signaling channels | 64 kbps each | 2.048 Mbps |
 
 ```
-T1 = 24 × 64 kbps + 8 kbps (framing) = 1.544 Mbps
-E1 = 32 × 64 kbps = 2.048 Mbps (30 voice + 2 signaling)
+T1 = 24 channels × 8 bits × 8000 frames/sec + 8000 framing bits = 1.544 Mbps
+   = (24 × 8 + 1) × 8000 = 193 × 8000 = 1.544 Mbps
+E1 = 32 × 64 kbps = 2.048 Mbps (30 voice + 2 signaling/sync channels)
 ```
 
 ### Quantization Error

@@ -39,7 +39,7 @@ Transmission Delay:   Tt = L / B    (L=bits, B=bps)
 Propagation Delay:    Tp = D / V    (D=distance, V=velocity)
 a = Tp / Tt
 
-Velocity: Copper ≈ 2×10⁸ m/s, Light/Fiber ≈ 3×10⁸ m/s
+Velocity: Copper cable ≈ 2×10⁸ m/s, Light in vacuum ≈ 3×10⁸ m/s, Fiber ≈ 2×10⁸ m/s
 ```
 
 ### Sliding Window Efficiency

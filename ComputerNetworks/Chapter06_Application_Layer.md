@@ -621,7 +621,7 @@ TLS Handshake:
 | IMAP | 143 | TCP | Access email |
 | DHCP Server | 67 | UDP | IP configuration |
 | DHCP Client | 68 | UDP | IP configuration |
-| Telnet | 22 | TCP | Remote terminal (insecure) |
+| Telnet | 23 | TCP | Remote terminal (insecure) |
 | SSH | 22 | TCP | Secure remote terminal |
 | SNMP | 161 | UDP | Network management |
 | TFTP | 69 | UDP | Simple file transfer |
