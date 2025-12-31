@@ -369,7 +369,13 @@ Logarithmic equations may yield extraneous solutions
 ```
 log₈(128) = log₈(2⁷) = 7 × log₈(2)
           = 7 × log₂(2)/log₂(8) = 7 × 1/3 = 7/3
-OR: 8^x = 128, (2³)^x = 2⁷, x = 7/3
+
+OR: Let x = log₈(128)
+    8^x = 128
+    (2³)^x = 2⁷
+    2^(3x) = 2⁷
+    3x = 7
+    x = 7/3
 ```
 
 **Q2**: If log 2 = 0.301, log 3 = 0.477, find log 72.

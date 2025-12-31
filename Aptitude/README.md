@@ -94,4 +94,6 @@ Quick formulas for last-minute revision are embedded within each chapter under t
 
 **Start with high-priority (⭐⭐⭐) chapters first!**
 
-*Last Updated: 2024*
+*Last Updated: December 2024 | Version 1.0*
+
+> **Note**: Exam patterns may change. Always verify current patterns from official GATE/ESE notifications.

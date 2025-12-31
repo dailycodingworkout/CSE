@@ -36,4 +36,4 @@ Complete A-Z notes covering all aptitude topics with:
 
 ---
 
-*Last Updated: 2024*
+*Last Updated: December 2024 | Version 1.0*

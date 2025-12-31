@@ -355,7 +355,7 @@ B is 33.33% less than A
 | Same x% twice | x² term appears |
 | Reverse % | x/(100±x) × 100 |
 | Growth n years | P(1+r/100)ⁿ |
-| If A→B const product | x/(100+x) opposite |
+| If A×B = constant, A↑x% | B↓ by x/(100+x) × 100% |
 
 ---
 
