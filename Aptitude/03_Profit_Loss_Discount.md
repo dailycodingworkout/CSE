@@ -356,8 +356,8 @@ MP = 140
 SP = 140 × 0.8 = 112
 Profit% = 12%
 
-Or directly: (40-20-40×20/100) = 12%
-Wait, that formula is for successive: 40 - 20 - 8 = 12% ✓
+Alternative: Net effect = Markup% - Discount% - (Markup% × Discount%)/100
+= 40 - 20 - (40×20)/100 = 40 - 20 - 8 = 12% ✓
 ```
 
 **Q2**: CP of 20 pens = SP of 16 pens. Profit%?

@@ -108,18 +108,15 @@ Where n = old count (before leaving)
 
 **Example**: Average age of 9 people is 28. A new person joins, average becomes 30. Age of new person?
 ```
-Age = 30 + 10 × (30 - 28) = 30 + 20 = 50
-OR: Total was 252, now 300, new person = 48... 
-Wait, let me recalculate:
-New person = 30 + 10×2 = 50 ✓
-Check: (252 + 50)/10 = 302/10 ≠ 30
-Correct formula: New = New avg × new count - Old avg × old count
-= 30×10 - 28×9 = 300 - 252 = 48
+Original sum = 9 × 28 = 252
+New sum = 10 × 30 = 300
+New person's age = 300 - 252 = 48
 ```
 
-**⚡ Correct Formula**:
+**⚡ Formula**:
 ```
-New entry = New avg × (n+1) - Old avg × n = New avg + n(New avg - Old avg)
+New entry = New avg × (n+1) - Old avg × n
+          = 30 × 10 - 28 × 9 = 300 - 252 = 48
 ```
 
 ---
