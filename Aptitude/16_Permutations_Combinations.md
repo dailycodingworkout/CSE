@@ -104,6 +104,11 @@ Arranging n objects in a circle:
 (n-1)!/2 ways
 ```
 
+**💡 Why divide by 2 for necklaces?**
+A necklace can be **flipped over** (turned upside down), making clockwise and anticlockwise arrangements identical. For example, beads arranged as A-B-C-D clockwise look the same as A-D-C-B (anticlockwise) when you flip the necklace. Since each arrangement is counted twice (once for each orientation), we divide by 2.
+
+**When NOT to divide by 2**: If objects have a distinct "front" and "back" (like keys on a keyring with one-sided labels), flipping changes the arrangement, so use (n-1)! only.
+
 ---
 
 ## 📦 Combinations (Selection)
