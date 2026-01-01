@@ -558,10 +558,4 @@ Find the number of integral solutions of $x + y + z = 15$ where $x \geq 2$, $y \
 
 ---
 
-**Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign].**
-
-*Would you like to initiate a **'Multi-Variable Stress Test'** combining this with **Probability** for a Rank-1 simulation?*
-
----
-
-© 2026 GATE & ESE Professional Study Material Series
+*End of Permutation and Combination Study Material*
