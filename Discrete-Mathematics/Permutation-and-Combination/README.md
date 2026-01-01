@@ -436,7 +436,7 @@ $$|A \cup B \cup C| = |A| + |B| + |C| - |A \cap B| - |B \cap C| - |A \cap C| + |
 
 #### **General Formula**
 
-$$\left|\bigcup_{i=1}^{n} A_i\right| = \sum_{i}|A_i| - \sum_{i<j}|A_i \cap A_j| + \sum_{i<j<k}|A_i \cap A_j \cap A_k| - \ldots$$
+$$\left|\bigcup_{i=1}^{n} A_i\right| = \sum_{i}|A_i| - \sum_{i \lt j}|A_i \cap A_j| + \sum_{i \lt j \lt k}|A_i \cap A_j \cap A_k| - \ldots$$
 
 #### **GATE Application: Counting with Restrictions**
 
