@@ -945,14 +945,14 @@ Total arrangements: $5! = 120$
 **Set C:**
 11. $D_6 = 265$
 12. Total - ($x > 5$) = $\binom{22}{2} - \binom{16}{2} = 231 - 120 = 111$
-13. Last digit must be 5. First: 5 choices (not 0,5), remaining 4 positions: 4!. Answer = $5 \times 4! / 2 = 48$. Actually: First 4 positions from {1,2,3,4,6}: $^5P_4 = 120$. So answer = **120**
+13. Last digit must be 5 (for divisibility by 5). First 4 positions filled from {1,2,3,4,6}: $^5P_4 = 120$. **Answer = 120**
 14. $\binom{7}{4} = 35$
 15. $3! \times S(5,3) = 6 \times 25 = 150$ (Stirling number of second kind)
 
 **Set D:**
 16. Select: $\binom{7}{3} \times \binom{4}{2} = 35 \times 6 = 210$. Vowels together: treat as unit, 4! arrangements, vowels internal: 2!. Answer = $210 \times 4! \times 2! = 210 \times 48 = 10080$
 
-17. Select 4 for first table: $\binom{8}{4} = 70$. Arrange at first table: $4!$. Arrange remaining at second: $4!$. If tables identical: divide by 2. **Answer = 70 × 24 × 24 / 2 = 20160** (or 40320 if tables distinguishable)
+17. Tables are distinguishable. Select 4 for first table: $\binom{8}{4} = 70$. Arrange at first table: $4! = 24$. Arrange remaining 4 at second table: $4! = 24$. **Answer = 70 × 24 × 24 = 40320**
 
 18. Sum of digits for divisibility by 3: 0+1+2+3+4+5 = 15 (divisible by 3). Use all 6 digits. First digit: 5 choices (not 0). Remaining: 5!. But we need exactly 6 digits, so: **5 × 5! = 600**
 
