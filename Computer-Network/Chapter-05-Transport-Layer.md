@@ -384,7 +384,13 @@ RTT 3: cwnd = 18
 | Event | Tahoe | Reno |
 |-------|-------|------|
 | Timeout | ssthresh=cwnd/2, cwnd=1, Slow Start | Same |
-| 3 Dup ACKs | ssthresh=cwnd/2, cwnd=1, Slow Start | ssthresh=cwnd/2, cwnd=ssthresh, Cong. Avoid |
+| 3 Dup ACKs | ssthresh=cwnd/2, cwnd=1, Slow Start | ssthresh=cwnd/2, cwnd=ssthresh+3, Fast Recovery |
+
+**Note on TCP Reno Fast Recovery:** After 3 duplicate ACKs:
+1. Set ssthresh = cwnd/2
+2. Set cwnd = ssthresh + 3×MSS (accounts for 3 segments that triggered dup ACKs)
+3. Enter Fast Recovery phase (inflates cwnd for each additional dup ACK)
+4. On new ACK, set cwnd = ssthresh and enter Congestion Avoidance
 
 ### 5.7.6 Congestion Control Graph
 

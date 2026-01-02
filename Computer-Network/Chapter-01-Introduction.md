@@ -158,7 +158,7 @@ $$n = \frac{1 + \sqrt{1 + 360}}{2} = \frac{1 + 19}{2} = 10$$
 #### Layer 5: Session Layer
 - **What:** Dialog control, synchronization
 - **How:** Checkpoints, session tokens
-- **Example:** A video call maintaining connection state
+- **Example:** SQL database sessions with transaction checkpoints, RPC (Remote Procedure Call) sessions
 
 #### Layer 6: Presentation Layer
 - **What:** Data representation, encryption

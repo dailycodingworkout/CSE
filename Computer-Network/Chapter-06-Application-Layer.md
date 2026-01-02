@@ -490,12 +490,14 @@ Client                                          Server
 
 ### DHCP Message Details
 
-| Message | Source | Destination | Port |
-|---------|--------|-------------|------|
-| DISCOVER | 0.0.0.0:68 | 255.255.255.255:67 | Broadcast |
-| OFFER | Server:67 | Client:68 | Unicast/Broadcast |
-| REQUEST | 0.0.0.0:68 | 255.255.255.255:67 | Broadcast |
-| ACK | Server:67 | Client:68 | Unicast/Broadcast |
+| Message | Source IP:Port | Destination IP:Port | Type |
+|---------|----------------|---------------------|------|
+| DISCOVER | 0.0.0.0:68 (client) | 255.255.255.255:67 (server) | Broadcast |
+| OFFER | Server_IP:67 | 255.255.255.255:68 or Client_IP:68 | Unicast/Broadcast |
+| REQUEST | 0.0.0.0:68 (client) | 255.255.255.255:67 (server) | Broadcast |
+| ACK | Server_IP:67 | 255.255.255.255:68 or Client_IP:68 | Unicast/Broadcast |
+
+**Port Reference:** Client always uses port **68**, Server always uses port **67**
 
 ### DHCP Lease
 

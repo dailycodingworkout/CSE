@@ -39,7 +39,9 @@ ANALOG SIGNAL                    DIGITAL SIGNAL
 ### ⚠️ GATE TRAP: Bit Rate vs Baud Rate
 $$\text{Bit Rate} = \text{Baud Rate} \times \log_2(L)$$
 
-where $L$ = number of signal levels
+where $L$ = number of discrete signal levels
+
+**Key Insight:** For binary signaling ($L=2$), bit rate = baud rate (since $\log_2(2) = 1$). This is a common source of confusion!
 
 **Example:** If baud rate = 1000 and 4 signal levels:
 $$\text{Bit Rate} = 1000 \times \log_2(4) = 1000 \times 2 = 2000 \text{ bps}$$

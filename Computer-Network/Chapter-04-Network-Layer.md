@@ -588,7 +588,10 @@ For i = 1 to n-1:
 
 **Complexity:** O(VE)
 
-**Advantage:** Handles negative weights (but not negative cycles)
+**Advantages over Dijkstra:**
+- Handles negative edge weights (Dijkstra cannot)
+- Can **detect negative cycles** (reports if one exists)
+- Works with distributed systems (used in distance vector routing)
 
 ---
 

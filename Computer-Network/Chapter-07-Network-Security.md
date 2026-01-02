@@ -157,10 +157,12 @@ $$M = C^d \mod n$$
 
 **Solution:**
 1. $n = 3 \times 11 = 33$
-2. $\phi(n) = 2 \times 10 = 20$
-3. Find $d$: $7d \equiv 1 \pmod{20}$ → $d = 3$ (since $7 \times 3 = 21 = 20 + 1$)
-4. Encrypt: $C = 5^7 \mod 33 = 78125 \mod 33 = 14$
-5. Decrypt: $M = 14^3 \mod 33 = 2744 \mod 33 = 5$ ✓
+2. $\phi(n) = (p-1)(q-1) = 2 \times 10 = 20$
+3. Find $d$: $7d \equiv 1 \pmod{20}$ → $d = 3$
+   - **Verification:** $e \times d = 7 \times 3 = 21 = 20 + 1 \equiv 1 \pmod{20}$ ✓
+4. **Public key:** $(e, n) = (7, 33)$; **Private key:** $(d, n) = (3, 33)$
+5. Encrypt: $C = M^e \mod n = 5^7 \mod 33 = 78125 \mod 33 = 14$
+6. Decrypt: $M = C^d \mod n = 14^3 \mod 33 = 2744 \mod 33 = 5$ ✓
 
 ### Diffie-Hellman Key Exchange
 
