@@ -59,6 +59,64 @@ Step 3: Apply the same sentence to (C:?)
 Step 4: Select the option that maintains the EXACT relationship
 ```
 
+### 🛠️ Detailed Solving Techniques for Analogies
+
+#### Technique 1: The Sentence Bridge Method
+**How to use:** Create a simple sentence linking the first pair, then apply it to find the answer.
+
+**Example:**
+```
+Question: Painter : Brush :: Writer : ?
+Step 1: Create sentence → "A Painter USES a Brush"
+Step 2: Apply to second pair → "A Writer USES a ___"
+Step 3: Answer → Pen ✓
+```
+
+#### Technique 2: The Relationship Classification First
+**How to use:** Before looking at options, classify the relationship type from the 15 master types.
+
+**Example:**
+```
+Question: Cub : Lion :: Calf : ?
+Step 1: Identify → Cub is the YOUNG of Lion (Young : Adult relationship)
+Step 2: Apply → Calf is the YOUNG of ___
+Step 3: Answer → Cow ✓
+```
+
+#### Technique 3: The Option Testing Method
+**How to use:** When unsure, test each option systematically.
+
+**Example:**
+```
+Question: Doctor : Stethoscope :: Carpenter : ?
+Options: (A) Wood  (B) Furniture  (C) Hammer  (D) House
+
+Test each:
+(A) Doctor uses Stethoscope → Carpenter uses Wood? (Wood is material, not tool) ✗
+(B) Doctor uses Stethoscope → Carpenter uses Furniture? (Furniture is product) ✗
+(C) Doctor uses Stethoscope → Carpenter uses Hammer? (Both are tools) ✓
+(D) Doctor uses Stethoscope → Carpenter uses House? (House is workplace/product) ✗
+
+Answer: (C) Hammer
+```
+
+#### Technique 4: The Elimination by Relationship Type
+**How to use:** Eliminate options that create a different relationship type.
+
+```
+Question: Pen : Poet :: Brush : ?
+Options: (A) Canvas  (B) Painter  (C) Art  (D) Color
+
+Relationship in first pair: Tool : User
+Eliminate non-matching:
+(A) Brush : Canvas = Tool : Surface ✗
+(B) Brush : Painter = Tool : User ✓
+(C) Brush : Art = Tool : Product ✗
+(D) Brush : Color = Tool : Material ✗
+
+Answer: (B) Painter
+```
+
 ### ⚠️ The Genius Trap (Adversarial Analysis)
 
 **Trap Type 1: Order Inversion**

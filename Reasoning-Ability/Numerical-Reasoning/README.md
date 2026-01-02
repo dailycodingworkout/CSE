@@ -129,6 +129,104 @@ Step 9: TRY mixed operations: ×k±c
 Step 10: If stuck, CHECK for wrong term in series
 ```
 
+### 🛠️ Detailed Solving Techniques for Number Series
+
+#### Technique 1: The Difference Table Method (Most Powerful)
+**When:** Complex series that don't follow obvious patterns
+
+```
+Step 1: Write the original series
+Step 2: Calculate first differences (subtract consecutive terms)
+Step 3: If not constant, calculate second differences
+Step 4: Continue until you find constant differences
+Step 5: Work backward to find the next term
+
+Worked Example: Find the next term in 1, 4, 10, 20, 35, ?
+
+Level 0 (Original):  1    4    10    20    35    ?
+Level 1 (1st diff):     3    6    10    15    ?
+Level 2 (2nd diff):        3    4     5    ?
+Level 3 (3rd diff):           1    1    1  (constant!)
+
+Now work backward:
+- Next 3rd diff = 1
+- Next 2nd diff = 5 + 1 = 6
+- Next 1st diff = 15 + 6 = 21
+- Next term = 35 + 21 = 56 ✓
+```
+
+#### Technique 2: The Ratio Check Method
+**When:** Series involves multiplication
+
+```
+Step 1: Calculate a₂/a₁, a₃/a₂, a₄/a₃, ...
+Step 2: If ratios are constant → GP
+Step 3: If ratios follow a pattern → Modified GP
+
+Example: 3, 6, 18, 72, ?
+Ratios: 6/3=2, 18/6=3, 72/18=4 → Ratio increases by 1
+Next ratio = 5
+Next term = 72 × 5 = 360 ✓
+```
+
+#### Technique 3: The Position Formula Method
+**When:** Series looks like squares, cubes, or position-based
+
+```
+Step 1: Write position numbers: n = 1, 2, 3, 4, 5, ...
+Step 2: Check if terms match n², n³, n(n+1), etc.
+Step 3: Check variations: n² ± k, n² + n, etc.
+
+Example: 2, 6, 12, 20, 30, ?
+Check n(n+1): 1×2=2, 2×3=6, 3×4=12, 4×5=20, 5×6=30 ✓
+Next term = 6×7 = 42 ✓
+```
+
+#### Technique 4: The Split Series Method
+**When:** Alternating patterns visible
+
+```
+Step 1: Separate odd-position terms: a₁, a₃, a₅, ...
+Step 2: Separate even-position terms: a₂, a₄, a₆, ...
+Step 3: Find pattern in each sub-series
+Step 4: Apply appropriate pattern for the missing position
+
+Example: 2, 3, 4, 9, 8, 27, ?
+Odd positions (1,3,5): 2, 4, 8 → GP with r=2
+Even positions (2,4,6): 3, 9, 27 → GP with r=3
+Position 7 is odd → Next in 2, 4, 8 series = 16 ✓
+```
+
+#### Technique 5: The Operation Sequence Method
+**When:** Series uses alternating operations
+
+```
+Step 1: Check what operation converts a₁ to a₂
+Step 2: Check what operation converts a₂ to a₃
+Step 3: Look for repeating operation pattern
+
+Example: 2, 4, 7, 14, 17, 34, ?
+Operations: ×2, +3, ×2, +3, ×2
+Pattern: ×2, +3 alternating
+Next operation = +3
+Next term = 34 + 3 = 37 ✓
+```
+
+#### Technique 6: The Wrong Number Detection
+**When:** Question asks to find the incorrect term
+
+```
+Step 1: Identify the most likely pattern
+Step 2: Calculate what each term SHOULD be
+Step 3: Find the term that doesn't match
+Step 4: Verify by replacing with correct value
+
+Example: Find wrong number: 2, 5, 10, 17, 24, 37
+Expected pattern: n² + 1 = 2, 5, 10, 17, 26, 37
+Position 5 should be 26, but given 24
+Wrong number = 24 ✓
+```
+
 ---
 
 ### 📊 The Difference Table Method

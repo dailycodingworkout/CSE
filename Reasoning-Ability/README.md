@@ -101,7 +101,144 @@ Always verify:
 
 ---
 
-## 📊 Topic-wise Weightage Analysis (GATE 2015-2024)
+## 🛠️ Universal Problem-Solving Techniques
+
+### Technique 1: The Backward Solving Method
+> **When:** Answer choices are numerical or specific options
+
+```
+Step 1: Start with the middle option (C in a 5-choice MCQ)
+Step 2: Substitute into the problem
+Step 3: If too high, try lower options; if too low, try higher
+Step 4: Verify the correct option satisfies ALL conditions
+```
+
+**Why it works:** Saves time by eliminating half the options in each iteration.
+
+### Technique 2: The Extreme Case Testing
+> **When:** Problems involve ranges, sequences, or conditions
+
+```
+Step 1: Test with the smallest possible value (n=0, n=1)
+Step 2: Test with a large value (n=100 or n→∞)
+Step 3: Check boundary conditions
+Step 4: If extreme cases work, the pattern is likely correct
+```
+
+**Example:** For series problems, verify your pattern at position 1 and position 10.
+
+### Technique 3: The Elimination Matrix
+> **When:** MCQ with 4-5 options and complex conditions
+
+```
+Step 1: Create a mental/physical table: Options vs Conditions
+Step 2: Check each option against each condition
+Step 3: Mark ✓ (satisfies) or ✗ (violates)
+Step 4: Only one option should have all ✓ marks
+```
+
+### Technique 4: The Anchor Point Method
+> **When:** Arrangement, scheduling, or ordering problems
+
+```
+Step 1: Identify the FIXED element (definite position given)
+Step 2: Place it first—this is your "anchor"
+Step 3: Build other positions relative to the anchor
+Step 4: Use constraints to eliminate impossible arrangements
+```
+
+**Example:** "E sits at position 8" → Place E first, then work outward.
+
+### Technique 5: The Pattern Recognition Ladder
+> **When:** Series, coding, or sequence problems
+
+```
+Level 1: Check for constant difference (AP)
+Level 2: Check for constant ratio (GP)
+Level 3: Check for second-order differences
+Level 4: Check for squares, cubes, primes, factorials
+Level 5: Check for alternating or mixed patterns
+```
+
+**Rule:** Stop at the first level that explains the pattern.
+
+### Technique 6: The Venn Diagram Visualization
+> **When:** Syllogisms, set problems, logical deductions
+
+```
+Step 1: Draw circles for each set/category
+Step 2: Mark definite regions (shaded = no elements, ★ = some exist)
+Step 3: Check conclusion in ALL possible interpretations
+Step 4: Conclusion is valid ONLY if true in every case
+```
+
+### Technique 7: The Time Boxing Strategy
+> **When:** Exam time management
+
+```
+1-mark question: Maximum 1 minute
+2-mark question: Maximum 2 minutes
+If stuck beyond time limit: Mark for review, move on
+```
+
+**Priority Order:** High confidence → Medium confidence → Low confidence → Guesses
+
+### Technique 8: The Substitution Technique
+> **When:** Mathematical operations with symbols
+
+```
+Step 1: Take the given example: a ⊕ b = result
+Step 2: Try basic operations: a+b, a-b, a×b, a÷b
+Step 3: Try compound operations: a²+b², ab+a+b, |a-b|
+Step 4: Verify pattern with ALL given examples
+Step 5: Apply to the question
+```
+
+### Technique 9: The Tree Diagram Method
+> **When:** Blood relations, hierarchical relationships
+
+```
+Step 1: Identify the reference person (usually "I" or a named person)
+Step 2: Draw generations vertically (grandparents → parents → children)
+Step 3: Draw siblings horizontally at the same level
+Step 4: Use (+) for male, (−) for female, or (M)/(F) labels
+Step 5: Trace the path from start to target
+```
+
+### Technique 10: The Coordinate Tracking Method
+> **When:** Direction sense problems
+
+```
+Step 1: Set starting point as origin (0, 0)
+Step 2: Track each movement:
+        North: y += distance
+        South: y -= distance
+        East:  x += distance
+        West:  x -= distance
+Step 3: Calculate final position (x, y)
+Step 4: Distance = √(x² + y²)
+Step 5: Direction = quadrant analysis
+```
+
+---
+
+## 🎯 Technique Selection Guide
+
+| Problem Type | Primary Technique | Backup Technique |
+|--------------|-------------------|------------------|
+| Analogies | Pattern Recognition | Elimination |
+| Syllogisms | Venn Diagram | Rule-based checking |
+| Number Series | Pattern Ladder | Difference table |
+| Blood Relations | Tree Diagram | Chain resolution |
+| Direction Sense | Coordinate Tracking | Visual diagram |
+| Coding-Decoding | Substitution | Position analysis |
+| Seating Arrangement | Anchor Point | Elimination Matrix |
+| Data Interpretation | Direct calculation | Estimation |
+| Logical Puzzles | Anchor Point | Elimination Matrix |
+| Critical Reasoning | Premise-Conclusion mapping | Negation test |
+
+---
+
 
 | Topic | Frequency | Average Marks | Priority |
 |-------|-----------|---------------|----------|

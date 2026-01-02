@@ -95,6 +95,76 @@ Step 4: TRACE from start to end
 Step 5: DETERMINE the final relationship
 ```
 
+### 🛠️ Detailed Solving Techniques for Blood Relations
+
+#### Technique 1: The Family Tree Method (Most Reliable)
+**When:** Complex relationships with multiple people
+
+```
+Step 1: Draw horizontal lines for same generation (siblings)
+Step 2: Draw vertical lines for parent-child relationships
+Step 3: Use symbols: □ = Male, ○ = Female, ─ = Marriage, | = Child
+Step 4: Start with known relationships and build outward
+
+Example: A is B's father. B is C's brother. C is D's mother.
+
+Generation 1:        A
+                     |
+Generation 2:    B ─── C (siblings)
+                       |
+Generation 3:          D
+
+Result: A is D's grandfather
+```
+
+#### Technique 2: The Backward Chain Method
+**When:** "Pointing to a photo" type questions
+
+```
+Step 1: Start from the KNOWN relationship in the statement
+Step 2: Work backward through each "of" in the chain
+Step 3: Simplify at each step
+
+Example: "His mother's only daughter is my mother"
+Chain: His → mother's → only daughter → is my → mother
+
+Step 1: His mother's only daughter = His sister (only daughter means no other sisters)
+Step 2: His sister = My mother
+Step 3: Therefore, He = My mother's brother = My uncle
+```
+
+#### Technique 3: The Generation Count Method
+**When:** Need to quickly determine relationship level
+
+```
+Rules:
+- Same generation: Siblings, Cousins
+- One generation up: Parents, Uncles, Aunts
+- One generation down: Children, Nephews, Nieces
+- Two generations up: Grandparents
+- Two generations down: Grandchildren
+
+Count generations moved:
+- "Father's brother's son" = Up 1 → Stay → Down 1 = Same gen = Cousin
+- "Mother's father" = Up 1 → Up 1 = Up 2 = Grandfather
+```
+
+#### Technique 4: The Symbol Decoding Method
+**When:** Relations given as symbols (+ - × ÷)
+
+```
+Step 1: Create a legend from the given symbol definitions
+Step 2: Parse the expression left to right
+Step 3: Apply each symbol as a relation
+
+Example: A + B - C × D where + = mother, - = brother, × = father
+Parse: A is mother of B, B is brother of C, C is father of D
+Chain: A → B → C → D
+       mom  bro  dad
+A is C's grandmother (mother of C's uncle/father)
+A is D's great-grandmother
+```
+
 ---
 
 ### 🔑 Relationship Chains (The Fast Decode Table)
@@ -459,6 +529,82 @@ Step 2: FIND position difference for each letter
 Step 3: DETECT pattern in differences
 Step 4: VERIFY pattern with complete word
 Step 5: APPLY pattern to solve question
+```
+
+### 🛠️ Detailed Solving Techniques for Coding-Decoding
+
+#### Technique 1: The Position Difference Method (Most Common)
+**When:** Letter-based coding with shifts
+
+```
+Step 1: Write alphabet positions for original word
+Step 2: Write alphabet positions for coded word
+Step 3: Calculate difference for each position
+Step 4: Identify the pattern in differences
+
+Worked Example: SISTER → RHRSDQ
+S=19→R=18 (diff=-1)
+I=9→H=8   (diff=-1)
+S=19→R=18 (diff=-1)
+T=20→S=19 (diff=-1)
+E=5→D=4   (diff=-1)
+R=18→Q=17 (diff=-1)
+
+Pattern: Subtract 1 from each letter ✓
+```
+
+#### Technique 2: The Reverse Logic Method
+**When:** Word reversal or letter swapping
+
+```
+Step 1: Check if code is exact reverse of original
+Step 2: Check if pairs are swapped (AB→BA pattern)
+Step 3: Check if halves are swapped
+
+Example: COMPUTER → RETUPMOC
+Reverse of COMPUTER = RETUPMOC ✓
+Pattern: Simple reversal
+```
+
+#### Technique 3: The Vowel-Consonant Separation Method
+**When:** Different rules for vowels and consonants
+
+```
+Step 1: Identify vowels and consonants in original
+Step 2: Check if vowels follow one pattern
+Step 3: Check if consonants follow another pattern
+
+Example: If vowels +1 and consonants -1:
+GATE → H(G-1)B(A+1)S(T-1)F(E+1) = HBSF
+```
+
+#### Technique 4: The Number-Sum Method
+**When:** Word → Number coding
+
+```
+Step 1: Convert each letter to position number
+Step 2: Check for: Sum, Product, or specific formula
+Step 3: Verify with given example
+
+Example: FACE = 21
+F=6, A=1, C=3, E=5
+Sum = 6+1+3+5 = 15 ≠ 21
+Try: Sum of alternate letters? 6+3=9, 1+5=6, 9+6=15 ≠ 21
+Try: (F×A) + (C×E) = 6 + 15 = 21 ✓
+```
+
+#### Technique 5: The Pattern-by-Position Method
+**When:** Different shifts for different positions
+
+```
+Check these common patterns:
+- 1st letter +1, 2nd letter +2, 3rd letter +3...
+- Odd positions +1, Even positions -1
+- First half +2, Second half -2
+
+Example: ABC → BDF
+A+1=B, B+2=D, C+3=F
+Pattern: Position-based increasing shift ✓
 ```
 
 ---

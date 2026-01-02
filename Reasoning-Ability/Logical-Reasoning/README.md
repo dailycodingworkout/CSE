@@ -126,6 +126,65 @@ Step 4: Apply conversion and complement rules if needed
 Step 5: Eliminate options that are only SOMETIMES true
 ```
 
+### 🛠️ Detailed Solving Techniques for Syllogisms
+
+#### Technique 1: The 3-Circle Venn Diagram Method
+**When:** Standard syllogism with two premises
+
+```
+Step 1: Draw three overlapping circles for all terms
+Step 2: Shade regions that CANNOT contain elements
+Step 3: Place ★ in regions that MUST contain at least one element
+Step 4: Check if conclusion is true in ALL valid regions
+
+Example:
+Premises: All A are B. Some B are C.
+- Shade A outside B (no A exists outside B)
+- Place ★ in B∩C overlap (some B are C)
+- Conclusion "Some A are C"? → ★ might be in B-only, not A∩C → NOT VALID
+```
+
+#### Technique 2: The Rule-Based Quick Check
+**When:** Need fast verification without drawing
+
+```
+Quick Rules:
+1. A + A → A (valid) | Example: All A are B + All B are C → All A are C ✓
+2. A + E → E (valid) | Example: All A are B + No B are C → No A are C ✓
+3. E + A → O* (valid) | Some C are not A (with proper order)
+4. I + A → I (valid) | Example: Some A are B + All B are C → Some A are C ✓
+5. E + E → Invalid (no definite conclusion)
+6. I + I → Invalid (no definite conclusion)
+
+Apply: Check if your conclusion matches the expected output type.
+```
+
+#### Technique 3: The Possibility Check
+**When:** Question asks "Can this conclusion be true?"
+
+```
+Step 1: A conclusion "can be true" if at least ONE valid diagram supports it
+Step 2: Unlike definite conclusions, possibilities need only one valid case
+Step 3: Draw the MOST INCLUSIVE interpretation first
+
+Example:
+Premise: Some A are B.
+Can "All A are B" be true? 
+→ Yes! "Some" means "at least one" which includes "all"
+```
+
+#### Technique 4: The Complementary Pair Method
+**When:** Two conclusions are complementary (one must be true)
+
+```
+Complementary pairs:
+- "All A are B" and "Some A are not B" → One must be true
+- "No A are B" and "Some A are B" → One must be true
+
+If neither conclusion follows individually, check if they form a complementary pair.
+Then at least one of them follows.
+```
+
 ---
 
 ### 📐 Conversion Rules
