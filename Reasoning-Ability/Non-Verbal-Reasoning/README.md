@@ -324,9 +324,13 @@ Exception: 12:00 and 6:00 remain same
 
 **Trap 2: Combined Reflection**
 ```
-If asked for the mirror image of a water image, this equals a 180° rotation.
-Mathematical notation: Mirror ∘ Water = Rotation(180°)
-Example: Applying water reflection then mirror reflection produces the same result as rotating 180°.
+In standard 2D Cartesian coordinates:
+- Mirror reflection (across vertical Y-axis): (x, y) → (-x, y)
+- Water reflection (across horizontal X-axis): (x, y) → (x, -y)
+- Combined effect: (x, y) → (-x, -y), which equals 180° rotation
+
+Note: This equivalence holds for reflections about perpendicular axes passing
+through the origin. The order of reflections does not matter in this case.
 ```
 
 ---

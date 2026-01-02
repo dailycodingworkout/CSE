@@ -656,71 +656,46 @@ Who is sitting in the middle of the row?
 ```
 
 **Solution:**
-Positions: 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8
+Positions: 1 - 2 - 3 - 4 - 5 - 6 - 7 - 8 (all facing North)
 
-Constraints analysis:
-1. E sits at position 1 or 8
-2. D is second left of H → D_H (with one between)
-3. B is between H and C → H-B-C or C-B-H
-4. G is 3 right of A → A_G positions: (1,4), (2,5), (3,6), (4,7), (5,8)
-5. F not next to E
+**Step 1: Analyze constraints**
+1. E sits at position 1 or 8 (end position)
+2. D is second to the left of H (meaning exactly one position between them: D-?-H)
+3. B is immediate neighbor of both H and C (H-B-C or C-B-H sequence)
+4. G sits third to right of A (possible pairs: A at 1 → G at 4, A at 2 → G at 5, etc.)
+5. F is not an immediate neighbor of E
 
-Combining constraints 2 and 3: Since D is second left of H, and B is between H and C, we get possible sequences like D-X-H-B-C or D-X-C-B-H (where X is an unknown person).
-This constraint means D, H, B, C must form a block of consecutive positions.
+**Step 2: Try E = 8 (at right end)**
 
-If E=1, then D-X-H-B-C could be in middle: positions like 3-4-5-6-7
+From constraint 2: D-?-H means H = D + 2
+Possible pairs: (D=3, H=5), (D=4, H=6), (D=5, H=7)
 
-Let's try: A=2, G=5 (satisfying constraint 4)
-If E=1, F cannot be at 2. A is at 2, so F is elsewhere.
+From constraint 3: B is between H and C.
+If H=5, then B can be 4 or 6, and C on the other side of B from H.
+Try B=6, then C=7 ✓ (sequence: H=5, B=6, C=7)
 
-Trying: 1=E, 2=A, 5=G
-D-X-H-B-C needs 4 positions in sequence
-Could be: 3-4-5-6-7 but G=5, so D-4-G(H?)-6-7 doesn't work.
+This gives: D=3, H=5, B=6, C=7, E=8
 
-Let me try: 1=E, 4=A, 7=G (A_G with 3 positions between)
-D-X-H-B-C in remaining positions: 2,3,5,6,8
-D=2, X=3, H=5, B=6, C=8 with X=? and F somewhere
+**Step 3: Apply remaining constraints**
+From constraint 4: G is 3 positions right of A.
+Remaining positions: 1, 2, 4 for A, F, G
+For A=1, G=4 ✓ (1 + 3 = 4)
 
-So: 1=E, 2=D, 3=F, 4=A, 5=H, 6=B, 7=G, 8=C
+This places: A=1, G=4, and F=2 (only position left)
 
-Verify:
-- E at end ✅
-- D second left of H (D=2, H=5, difference=3... wait, should be 2 positions left)
+**Step 4: Verify all constraints**
+Final arrangement: 1=A, 2=F, 3=D, 4=G, 5=H, 6=B, 7=C, 8=E
 
-Actually "second to the left" means D-X-H, so H position - D position = 2
-If H=5, D=3. Let me redo.
+✓ E at end (position 8)
+✓ D second to left of H (D=3, H=5, exactly one position between)
+✓ B between H and C (H=5, B=6, C=7 - consecutive)
+✓ G is 3 right of A (A=1, G=4, difference = 3)
+✓ F not adjacent to E (F=2, E=8 - not neighbors)
 
-1=E, 3=D, 5=H, 6=B, 7=C (H-B-C satisfied)
-A and G: if A=2, G=5 (conflicts with H=5)
-If A=4, G=7 (conflicts with C=7)
+**Step 5: Find the middle**
+For 8 positions, middle positions are 4 and 5.
 
-Let E=8:
-Positions for D-H: H-D difference = 2
-H=5, D=3 or H=6, D=4 or H=7, D=5
-
-Try H=6, D=4, then B adjacent to H: B=5 or B=7
-If B=7, C adjacent to B: C=8=E conflict
-If B=5, C=4=D conflict
-
-Try H=5, D=3:
-B adjacent to H: B=4 or B=6
-C adjacent to B (other side of H): 
-If B=4, C=3=D conflict
-If B=6, C=7 ✅
-
-So far: 3=D, 5=H, 6=B, 7=C, 8=E
-A,F,G in 1,2,4
-G is 3 right of A: A=1,G=4 ✅
-F=2
-
-Final: 1=A, 2=F, 3=D, 4=G, 5=H, 6=B, 7=C, 8=E
-
-Check F not adjacent to E: F=2, E=8 ✅
-
-Middle of 8 seats = positions 4 and 5 (or typically 4.5)
-Middle positions are 4 (G) and 5 (H)
-
-**Answer:** G and H are in the middle (position 4 and 5)
+**Answer:** G (position 4) and H (position 5) are in the middle
 
 ---
 
