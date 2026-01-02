@@ -184,9 +184,8 @@ Average WT = (0 + 6 + 3 + 7)/4 = 4
 
 **Gantt Chart:**
 ```
-│P1│  P2  │P3│  P2  │   P4   │   P1   │
-0  2     4  5     7        11       16
-Wait... Let me redo this properly.
+│P1│ P2 │P3│P2│  P4  │   P1   │
+0  2   4  5  7     11       16
 ```
 
 **Step-by-step:**

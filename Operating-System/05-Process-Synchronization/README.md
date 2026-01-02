@@ -385,8 +385,9 @@ void philosopher(int i) {
         think();
     }
 }
-// DEADLOCK: All pick left, none can pick right!
 ```
+
+**⚠️ DEADLOCK:** All philosophers pick left chopstick, none can pick right!
 
 **Solutions to Prevent Deadlock:**
 
