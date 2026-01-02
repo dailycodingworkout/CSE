@@ -31,6 +31,16 @@ This comprehensive study material covers **every concept** in DBMS required for 
 | [08](./08-Query-Processing/README.md) | Query Processing & Optimization | ⭐⭐⭐ | Medium |
 | [09](./09-Recovery-System/README.md) | Recovery System | ⭐⭐⭐ | Medium |
 
+### 🎯 [Problem-Solving Techniques Guide](./Problem-Solving-Techniques.md) 🆕
+**Step-by-step algorithms and techniques for solving GATE questions** including:
+- Candidate key finding (attribute classification method)
+- Super key counting (inclusion-exclusion)
+- Serializability checking (precedence graph)
+- B+ tree calculations
+- SQL NULL handling traps
+- Normalization quick checks
+- Recovery analysis methods
+
 ---
 
 ## 🔥 GATE DBMS Weightage Analysis (2015-2024)
