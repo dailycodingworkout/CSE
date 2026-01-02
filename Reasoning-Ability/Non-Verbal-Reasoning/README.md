@@ -324,8 +324,9 @@ Exception: 12:00 and 6:00 remain same
 
 **Trap 2: Combined Reflection**
 ```
-If asked "mirror image of water image" = 180° rotation
-Mirror ∘ Water = Rotation(180°)
+If asked for the mirror image of a water image, this equals a 180° rotation.
+Mathematical notation: Mirror ∘ Water = Rotation(180°)
+Example: Applying water reflection then mirror reflection produces the same result as rotating 180°.
 ```
 
 ---

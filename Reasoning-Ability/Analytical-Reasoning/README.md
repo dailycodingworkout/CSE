@@ -665,8 +665,8 @@ Constraints analysis:
 4. G is 3 right of A → A_G positions: (1,4), (2,5), (3,6), (4,7), (5,8)
 5. F not next to E
 
-Combining constraints 2&3: D_B-H-C or D_C-H-B... 
-This gives: D-X-H-B-C or variants
+Combining constraints 2 and 3: Since D is second left of H, and B is between H and C, we get possible sequences like D-X-H-B-C or D-X-C-B-H (where X is an unknown person).
+This constraint means D, H, B, C must form a block of consecutive positions.
 
 If E=1, then D-X-H-B-C could be in middle: positions like 3-4-5-6-7
 

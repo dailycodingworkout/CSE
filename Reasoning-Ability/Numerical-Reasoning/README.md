@@ -474,23 +474,22 @@ What day of the week was January 15, 2000?
 ```
 
 **Solution:**
-- 1600 years: 0 odd days
-- 300 years (1600-1900): 1 odd day
-- 99 years (1900-1999): 24 leap + 75 ordinary = 48 + 75 = 123 = 17×7 + 4 = 4 odd days
-- 2000 is leap year, so Jan 1 to Jan 15:
-- Jan 1-15: 15 days = 2 weeks + 1 day = 1 odd day
 
-Wait, let me recalculate:
-- 1 to 1999: 1999 years
-  - 400 years × 4 = 1600 years → 0 odd days
-  - 300 years → 1 odd day
-  - 99 years → need to calculate
-  
-Actually, simpler approach for 2000:
-- Reference: Jan 1, 2000 was a Saturday (known fact, or calculate from 1 AD)
-- Jan 15 = Jan 1 + 14 days = Saturday + 14 = Saturday + 0 = Saturday
+**Method: Using Reference Date**
+- Known fact: January 1, 2000 was a Saturday
+- From Jan 1 to Jan 15 = 14 days = 2 complete weeks
+- 2 weeks = 0 odd days (no shift in day of week)
+- Therefore, January 15, 2000 = Saturday + 0 = Saturday
 
 **Answer:** Saturday
+
+**Alternative Verification (Odd Days Method):**
+- 1600 years: 0 odd days (400 years × 4)
+- 300 years (1601-1900): 1 odd day
+- 99 years (1901-1999): 24 leap + 75 ordinary = 24×2 + 75×1 = 123 odd days = 17×7 + 4 = 4 odd days
+- Total for 1999 years: 0 + 1 + 4 = 5 odd days
+- Year 2000 up to Jan 15: 15 days = 1 odd day
+- Total: 5 + 1 = 6 odd days = Saturday ✓
 
 ---
 

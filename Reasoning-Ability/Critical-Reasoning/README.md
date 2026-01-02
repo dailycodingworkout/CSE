@@ -503,7 +503,7 @@ breakfast improves exam scores?
 | 12 | **Red Herring** | Distracting from the issue | "Why discuss climate when economy is bad?" |
 | 13 | **False Cause** | Wrong causal relationship | "Crime ↑ as ice cream ↑ = ice cream causes crime" |
 | 14 | **Appeal to Ignorance** | Can't disprove = True | "You can't prove X is false, so X is true" |
-| 15 | **Equivocation** | Same word, different meanings | "God is love, love is blind, Stevie Wonder is blind, Stevie Wonder is God" |
+| 15 | **Equivocation** | Same word, different meanings | "A feather is light, light is fast, therefore a feather is fast" (conflates 'light' as weight vs. 'light' as illumination) |
 
 ---
 

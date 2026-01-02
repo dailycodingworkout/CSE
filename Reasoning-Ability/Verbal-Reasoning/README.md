@@ -436,7 +436,7 @@ EDUCATION → Find 4-letter words: DATE, DUCT, TIDE, CITE
 #### Type 3: Start and End Letters Given
 ```
 Form a word from RAEHDC starting with 'C' and ending with 'R'
-Answer: CHARRED? → Actually ARCHER
+Answer: ARCHER (C-A-R-H-E-D rearranged with C at start and R at end)
 ```
 
 ---
