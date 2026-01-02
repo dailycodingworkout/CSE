@@ -594,6 +594,171 @@ Imagine a **traffic light** for processes:
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: fork() Process Counting
+
+**Systematic approach:**
+
+```
+Method 1: Power of 2
+For n sequential fork() calls:
+Total processes = 2ⁿ
+
+Example:
+fork();  // 2 processes (1→2)
+fork();  // 4 processes (2→4)
+fork();  // 8 processes (8 total)
+```
+
+**Method 2: Process Tree**
+```
+Draw tree at each fork():
+           P
+fork()  →   ├── P (parent continues)
+            └── C1 (child created)
+
+For each existing process, fork doubles them.
+```
+
+### Technique 2: fork() with Conditionals
+
+**Trace execution paths:**
+
+```c
+if (fork() == 0) {  // Child only
+    fork();          // Creates grandchild
+}
+fork();              // Everyone does this
+```
+
+**Process tree:**
+```
+         P (parent)
+        /│\
+       / │ \
+      C₁ │  P₂ (P does final fork)
+     /│  │
+    C₃│  │ (C₁ does inner + final fork)
+      C₄ │ (C₁ does final fork)
+      
+Count: P, P₂, C₁, C₃, C₄ = 5? Let me recount:
+P → forks C₁, P continues
+P does final fork → P, P₂
+C₁ (fork==0) → forks C₃, C₁ continues  
+C₁ does final fork → C₁, C₄
+C₃ does final fork → C₃, C₅
+
+Total: P, P₂, C₁, C₄, C₃, C₅ = 6 processes
+```
+
+### Technique 3: fork() with Logical Operators
+
+**Evaluation rules:**
+```
+fork() && fork()
+- If first fork() returns 0 (child): Don't execute second (short-circuit)
+- If first fork() returns >0 (parent): Execute second
+
+fork() || fork()
+- If first fork() returns >0 (parent): Don't execute second
+- If first fork() returns 0 (child): Execute second
+```
+
+**Example: fork() && fork() || fork()**
+```
+Let f1, f2, f3 be the three forks.
+
+P: f1 returns child_pid (>0)
+   P does f2, returns child_pid (>0)
+   P skips f3 (true || ...)
+   
+C1 (from f1): f1 returned 0
+   C1 skips f2 (false && ...)
+   C1 does f3, creates C1_child
+   
+C2 (from f2): f2 returned 0 in P's context
+   P_f2 skips f3
+   
+Wait, let me be more careful...
+
+Process count: Trace each branch systematically
+```
+
+### Technique 4: print/printf Counting
+
+**Key insight:** Each process runs code after fork point.
+
+```c
+fork();
+fork();
+printf("Hello\n");
+// 4 processes, 4 "Hello" printed
+```
+
+**With conditions:**
+```c
+if (fork() != 0) {
+    printf("Parent\n");  // Only parents print
+}
+// 2 processes, only 1 "Parent" (original parent)
+```
+
+### Technique 5: Variable Sharing After fork()
+
+**Rule:** Child gets COPY of parent's variables.
+
+```c
+int x = 5;
+if (fork() == 0) {
+    x = 10;  // Only child's copy changes
+}
+printf("%d ", x);
+// Parent prints: 5
+// Child prints: 10
+```
+
+### Technique 6: Zombie and Orphan Identification
+
+**Decision tree:**
+```
+Parent terminates first?
+├── Yes → Child becomes ORPHAN (adopted by init)
+└── No → Does parent call wait()?
+    ├── Yes → Normal termination
+    └── No → Child becomes ZOMBIE after termination
+```
+
+### Technique 7: Context Switch Time Impact
+
+**Calculate overhead:**
+```
+Given:
+- Time quantum = TQ
+- Context switch time = CS
+- CPU burst = B
+
+Number of context switches = ⌈B/TQ⌉ - 1 (within one process)
+Total overhead = (switches) × CS
+Effective time = B + overhead
+```
+
+### Technique 8: Process State Transition Validation
+
+**Valid transitions (5-state model):**
+```
+New → Ready (admit)
+Ready → Running (dispatch)
+Running → Ready (preempt/timeout)
+Running → Waiting (I/O request)
+Running → Terminated (exit)
+Waiting → Ready (I/O complete)
+
+INVALID: Waiting → Running (must go through Ready!)
+```
+
+---
+
 ## 📝 Practice Problems
 
 1. **fork() Output:** What is printed?

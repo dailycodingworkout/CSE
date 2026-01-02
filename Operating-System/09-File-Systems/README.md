@@ -576,6 +576,143 @@ Single → Two → Tree → Graph
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: Maximum File Size Calculation (UNIX inode)
+
+**Step-by-step template:**
+
+```
+Given: Block size = B, Pointer size = P, 
+       D direct, SI single indirect, DI double indirect, TI triple indirect
+
+Step 1: Calculate pointers per block
+        PPB = B / P
+
+Step 2: Calculate contribution from each level
+        Direct:         D × B
+        Single indirect: PPB × B
+        Double indirect: PPB² × B
+        Triple indirect: PPB³ × B
+
+Step 3: Sum all contributions
+        Max File Size = D×B + PPB×B + PPB²×B + PPB³×B
+```
+
+**Example:**
+```
+B=4KB, P=4B, D=12, SI=1, DI=1, TI=1
+PPB = 4KB/4B = 1024
+
+Direct:  12 × 4KB = 48KB
+Single:  1024 × 4KB = 4MB
+Double:  1024² × 4KB = 4GB
+Triple:  1024³ × 4KB = 4TB
+
+Max ≈ 4TB
+```
+
+### Technique 2: Disk Block Access Counting
+
+**For UNIX inode, which block number requires how many accesses?**
+
+```
+Block 0-11:     1 access (direct)
+Block 12-1035:  2 accesses (inode → single indirect → data)
+Block 1036-... : 3 accesses (double indirect)
+Beyond:         4 accesses (triple indirect)
+
+Formula for boundaries:
+Direct limit = D - 1
+Single limit = D + PPB - 1
+Double limit = D + PPB + PPB² - 1
+```
+
+### Technique 3: Bitmap Size Calculation
+
+**Formula:**
+$$\text{Bitmap Size (bits)} = \frac{\text{Disk Size}}{\text{Block Size}}$$
+
+$$\text{Bitmap Size (bytes)} = \frac{\text{Disk Size}}{\text{Block Size} \times 8}$$
+
+**Example:**
+```
+Disk = 1TB, Block = 4KB
+Blocks = 1TB / 4KB = 256M blocks
+Bitmap = 256M bits = 32MB
+```
+
+### Technique 4: Allocation Method Selection
+
+**Decision matrix:**
+
+| Requirement | Best Method |
+|-------------|-------------|
+| Fast sequential access | Contiguous |
+| Fast random access | Contiguous or Indexed |
+| File grows often | Linked or Indexed |
+| Minimal space overhead | Contiguous |
+| No external fragmentation | Linked or Indexed |
+
+### Technique 5: Contiguous Allocation Problems
+
+**First/Best/Worst Fit simulation:**
+
+```
+Step 1: List holes with sizes
+        Holes: [(start, size), ...]
+        
+Step 2: For each request:
+        First Fit: Scan from beginning, use first adequate hole
+        Best Fit: Find smallest adequate hole
+        Worst Fit: Find largest hole
+        
+Step 3: Update hole list (split or remove hole)
+Step 4: Track fragmentation
+```
+
+### Technique 6: FAT Table Traversal
+
+**To find block N of a file:**
+
+```
+Step 1: Start at first block (from directory entry)
+Step 2: Follow FAT chain N times
+        for i = 1 to N:
+            current = FAT[current]
+Step 3: Return current block number
+
+Accesses: FAT is in memory, so just 1 disk access for data
+```
+
+### Technique 7: Directory Path Resolution
+
+**For path /usr/local/bin/ls:**
+
+```
+Step 1: Start at root inode (known location)
+Step 2: Read root directory, find "usr" → inode X
+Step 3: Read inode X, read directory, find "local" → inode Y
+Step 4: Read inode Y, read directory, find "bin" → inode Z
+Step 5: Read inode Z, read directory, find "ls" → inode W
+Step 6: inode W contains file data
+
+Disk accesses = 2 × (path components) for (inode + directory) each
+```
+
+### Technique 8: Hard Link vs Symbolic Link
+
+**Problem-solving distinction:**
+
+| Scenario | Hard Link | Symbolic Link |
+|----------|-----------|---------------|
+| Delete original | File persists | Link breaks (dangling) |
+| Cross filesystem | Not allowed | Allowed |
+| Reference count | Increases | No effect |
+| Finding target | Direct inode | Path lookup |
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1

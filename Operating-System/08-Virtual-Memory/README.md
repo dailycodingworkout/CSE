@@ -544,6 +544,164 @@ Like your **desk**: Active documents on desk (working set), others in drawer (di
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: Page Replacement - Frame State Tracking
+
+**Universal approach for ANY algorithm:**
+
+```
+Step 1: Create frame table
+        ┌────────┬────┬────┬────┬────┬────┬────┐
+        │ Ref    │ F1 │ F2 │ F3 │ PF │ Victim │
+        ├────────┼────┼────┼────┼────┼────────┤
+        │   1    │    │    │    │    │        │
+        └────────┴────┴────┴────┴────┴────────┘
+
+Step 2: For each reference:
+        a. Is page in any frame? → Hit (no fault)
+        b. If not, is there empty frame? → Use it (fault)
+        c. If no empty frame → Apply algorithm to find victim (fault)
+        
+Step 3: Update frame contents after each step
+Step 4: Count total page faults
+```
+
+### Technique 2: Algorithm-Specific Decision Rules
+
+| Algorithm | Victim Selection Rule |
+|-----------|----------------------|
+| **FIFO** | Oldest page (first loaded) |
+| **Optimal** | Page used farthest in future (look ahead) |
+| **LRU** | Page used farthest in past (look back) |
+| **Clock** | First page with ref bit = 0 |
+
+**Quick identification:**
+- "Which will be used last?" → Look FORWARD → Optimal
+- "Which was used earliest?" → Look BACKWARD → LRU
+- "Which came in first?" → Check LOAD ORDER → FIFO
+
+### Technique 3: LRU Stack Implementation Trick
+
+**Maintain a stack of pages:**
+```
+On reference to page P:
+1. Remove P from stack (if present)
+2. Push P to top of stack
+3. Victim = bottom of stack
+
+Example:
+Ref: 1 2 3 4 1 2 5
+Stack evolution:
+[1]
+[2,1]
+[3,2,1]
+[4,3,2,1] ← 4 frames full
+[1,4,3,2] ← 1 moved to top
+[2,1,4,3] ← 2 moved to top
+[5,2,1,4] ← 5 added, 3 evicted (bottom)
+```
+
+### Technique 4: Optimal Algorithm - Future Reference Table
+
+**Pre-compute next use for each position:**
+
+```
+Ref:      7  0  1  2  0  3  0  4  2  3  0  3
+Next use: 
+  7: ∞ (never used again)
+  0: 5, 7, 11
+  1: ∞
+  2: 9
+  3: 6, 10, 12
+  
+At each fault, victim = page with largest "next use" value
+```
+
+### Technique 5: Belady's Anomaly Quick Check
+
+**Only FIFO exhibits Belady's Anomaly!**
+
+If problem asks "which algorithm may have more faults with more frames?":
+- Answer: FIFO
+- LRU, Optimal are "stack algorithms" → never exhibit anomaly
+
+### Technique 6: EAT Calculation Template
+
+**Given:** h (hit ratio), $T_m$ (memory time), $T_{TLB}$ (TLB time)
+
+$$\text{EAT} = h \times (T_{TLB} + T_m) + (1-h) \times (T_{TLB} + 2T_m)$$
+
+**Simplified (ignoring TLB time):**
+$$\text{EAT} = T_m(2 - h)$$
+
+**With page faults:**
+$$\text{EAT} = (1-p) \times T_m + p \times T_{pf}$$
+
+**Finding required page fault rate:**
+$$p \leq \frac{\text{Target EAT} - T_m}{T_{pf} - T_m}$$
+
+### Technique 7: Working Set Calculation
+
+**To find Working Set at time t with window Δ:**
+```
+1. Look at last Δ references before time t
+2. List unique pages in that window
+3. That's your working set
+4. Size = count of unique pages
+```
+
+**Example:**
+```
+Ref sequence: 1 2 3 4 1 2 5 1 2 3 4 5
+              │←───────Δ=5────────→│
+                                    t=12
+                                    
+Last 5 refs: 1 2 3 4 5
+Working set = {1, 2, 3, 4, 5}, size = 5
+```
+
+### Technique 8: Thrashing Detection & Solution
+
+**Detection criteria:**
+- CPU utilization low + Page fault rate high = Thrashing
+
+**Solution flowchart:**
+```
+Thrashing detected?
+├── Check: D > m? (total demand > available frames)
+│   ├── Yes → Reduce multiprogramming (suspend process)
+│   └── No → Increase frames for process with high PFF
+└── Monitor Page Fault Frequency (PFF)
+    ├── PFF > upper threshold → Allocate more frames
+    └── PFF < lower threshold → Reduce frames
+```
+
+### Technique 9: Frame Allocation Calculations
+
+**Equal allocation:**
+$$\text{Frames per process} = \frac{m}{n}$$
+
+**Proportional allocation:**
+$$a_i = \frac{s_i}{\sum_j s_j} \times m$$
+
+**Priority allocation:** Weight by priority, then apply proportional.
+
+### Technique 10: Clock Algorithm Simulation
+
+**Step-by-step:**
+```
+1. Arrange frames in circular order
+2. Maintain clock hand pointer
+3. On page fault:
+   a. Check current frame's ref bit
+   b. If ref = 0: Replace this page, move hand
+   c. If ref = 1: Clear ref bit, move hand, goto (a)
+4. On page hit: Set ref bit = 1
+```
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1

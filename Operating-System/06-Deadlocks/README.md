@@ -517,6 +517,156 @@ Imagine a **tightrope**:
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: Deadlock Detection via RAG
+
+**Step-by-step approach:**
+
+```
+Step 1: Draw all processes as circles, resources as rectangles
+Step 2: Draw dots inside rectangles for instances
+Step 3: Draw edges:
+        - Request: P → R (process wants resource)
+        - Assignment: R → P (resource given to process)
+Step 4: Check for cycle
+        - Single instance: Cycle = Deadlock
+        - Multiple instance: Cycle = Possible deadlock (need reduction)
+```
+
+**RAG Reduction Algorithm (Multiple Instances):**
+```
+1. Find a process whose requests can be satisfied
+2. Remove all its edges (pretend it completes)
+3. Repeat until no more reductions possible
+4. If edges remain → Deadlock
+```
+
+### Technique 2: Banker's Algorithm - Systematic Approach
+
+**The "Greedy Safe Sequence" Method:**
+
+```
+Step 1: Setup Tables
+        ┌─────────┬────────────┬─────┬──────┐
+        │ Process │ Allocation │ Max │ Need │
+        ├─────────┼────────────┼─────┼──────┤
+        │  P0     │  (A,B,C)   │     │      │
+        └─────────┴────────────┴─────┴──────┘
+        
+Step 2: Calculate Need = Max - Allocation
+
+Step 3: Calculate Available = Total - ΣAllocation
+
+Step 4: Create Work = Available (copy)
+
+Step 5: Find process where Need ≤ Work
+        (Compare element-wise: ALL must satisfy)
+
+Step 6: If found:
+        - Work = Work + Allocation[process]
+        - Mark process as finished
+        - Add to safe sequence
+        - Go to Step 5
+
+Step 7: If all finished → Safe
+        If stuck with unfinished → Unsafe
+```
+
+### Technique 3: Minimum Resources Formula
+
+**For n processes, each needing maximum k resources:**
+
+$$\text{Minimum resources for deadlock-free} = n(k-1) + 1$$
+
+**Proof strategy:** In worst case, each process holds (k-1) resources. One more resource allows any process to complete.
+
+**Variations:**
+- Different max for each process: $\sum(max_i - 1) + 1$
+- At least one must complete: $\sum(max_i) - n + 1$
+
+### Technique 4: Quick Deadlock Condition Check
+
+**Use "MHNC" checklist:**
+
+| Condition | Quick Test |
+|-----------|------------|
+| **M**utual Exclusion | Is resource shareable? If yes, can't deadlock on it |
+| **H**old and Wait | Does process hold while requesting? |
+| **N**o Preemption | Can we forcibly take resource? |
+| **C**ircular Wait | Draw dependency, check cycle |
+
+**If ANY condition is FALSE → No deadlock possible**
+
+### Technique 5: Request Handling in Banker's
+
+**When process Pᵢ requests Request[i]:**
+
+```
+Step 1: Check Request[i] ≤ Need[i]?
+        NO → Error (exceeded claim)
+        
+Step 2: Check Request[i] ≤ Available?
+        NO → Wait (resources unavailable)
+        
+Step 3: Tentatively allocate:
+        Available -= Request[i]
+        Allocation[i] += Request[i]
+        Need[i] -= Request[i]
+        
+Step 4: Run Safety Algorithm
+        Safe → Grant request
+        Unsafe → Rollback, make process wait
+```
+
+### Technique 6: Finding ALL Safe Sequences
+
+**Systematic exploration:**
+```
+At each step, list ALL processes that CAN run (Need ≤ Work)
+Create branches for each choice
+Continue until all complete
+Each complete path = one safe sequence
+```
+
+**Counting formula:** If at each step there are $c_1, c_2, ..., c_n$ choices:
+$$\text{Total safe sequences} = c_1 \times c_2 \times ... \times c_n$$
+
+### Technique 7: Resource Allocation Graph Construction
+
+**Drawing tips:**
+```
+1. Use squares for resource types
+2. Put dots inside for instances
+3. Arrow TO process = allocated
+4. Arrow FROM process = requested
+5. Check cycles by tracing arrows
+```
+
+**Quick cycle detection:**
+- Start from any edge
+- Follow the direction
+- If you return to start → Cycle exists
+
+### Technique 8: Prevention Strategy Selection
+
+| Goal | Break Which Condition | How |
+|------|----------------------|-----|
+| Simple, always works | Circular Wait | Resource ordering |
+| Maximize utilization | Hold and Wait | Request all upfront |
+| For preemptible resources | No Preemption | Allow preemption |
+
+**Decision flowchart:**
+```
+Is resource preemptible (e.g., CPU)?
+├── Yes → Allow preemption
+└── No → Can we order resources?
+    ├── Yes → Circular wait prevention
+    └── No → Request all at once
+```
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1

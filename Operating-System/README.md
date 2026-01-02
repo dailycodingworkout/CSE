@@ -85,9 +85,27 @@ $$\text{Total Access Time} = \text{Seek Time} + \text{Rotational Latency} + \tex
 ## 📖 How to Use This Material
 
 1. **First Pass**: Read the concepts with examples
-2. **Second Pass**: Solve the GATE PYQs at the end of each chapter
-3. **Third Pass**: Focus on tricks and edge cases
-4. **Final Pass**: Time-bound practice with NAT precision
+2. **Second Pass**: Master the **🛠️ Problem-Solving Techniques** in each chapter
+3. **Third Pass**: Solve the GATE PYQs at the end of each chapter
+4. **Fourth Pass**: Focus on tricks and edge cases
+5. **Final Pass**: Time-bound practice with NAT precision
+
+---
+
+## 🛠️ Problem-Solving Techniques Included
+
+Each chapter now includes dedicated **Problem-Solving Techniques** sections:
+
+| Chapter | Key Techniques |
+|---------|---------------|
+| Process Management | fork() counting, process tree tracing, state transitions |
+| CPU Scheduling | Table method, timeline tracking, Gantt chart construction |
+| Synchronization | Semaphore tracing, deadlock pattern detection, output prediction |
+| Deadlocks | RAG analysis, Banker's algorithm steps, minimum resources |
+| Memory Management | Address translation, page table sizing, EAT calculations |
+| Virtual Memory | Frame state tracking, LRU stack method, working set calculation |
+| File Systems | Max file size calculation, inode block access counting |
+| Disk Management | SSTF step-by-step, SCAN/LOOK ordering, RAID capacity |
 
 ---
 

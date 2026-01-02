@@ -556,6 +556,110 @@ Imagine a **water tap**:
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: The Table Method (Universal Approach)
+
+**Step-by-step framework for ANY scheduling problem:**
+
+```
+Step 1: Create a master table
+┌─────────┬────┬────┬────┬─────┬────┬────┐
+│ Process │ AT │ BT │ CT │ TAT │ WT │ RT │
+├─────────┼────┼────┼────┼─────┼────┼────┤
+│   P1    │    │    │    │     │    │    │
+│   P2    │    │    │    │     │    │    │
+└─────────┴────┴────┴────┴─────┴────┴────┘
+
+Step 2: Draw Gantt chart based on algorithm
+Step 3: Fill CT from Gantt chart
+Step 4: Calculate TAT = CT - AT
+Step 5: Calculate WT = TAT - BT
+Step 6: Calculate RT = First Response - AT
+Step 7: Compute averages
+```
+
+### Technique 2: Timeline Tracking (For Preemptive Algorithms)
+
+**For SRTF/Preemptive Priority:**
+
+```
+Create a timeline with events:
+Time │ Event           │ Ready Queue (Remaining BT) │ Running
+─────┼─────────────────┼───────────────────────────┼─────────
+  0  │ P1 arrives      │ P1(7)                      │ P1
+  2  │ P2 arrives      │ P1(5), P2(4)               │ P2 ← P2 has less RT
+  4  │ P3 arrives      │ P1(5), P2(2), P3(1)        │ P3 ← P3 has least RT
+  5  │ P3 completes    │ P1(5), P2(2)               │ P2
+  ...
+```
+
+**Key:** At each arrival/completion, re-evaluate who runs.
+
+### Technique 3: Round Robin Quick Method
+
+**Shortcut for RR problems:**
+
+1. **List all processes with remaining burst times**
+2. **Cycle through queue, subtract TQ (or remaining BT if < TQ)**
+3. **Track when each process finishes**
+
+**Quick formula for number of context switches:**
+$$\text{Context Switches} = \sum_{i} \lceil \frac{BT_i}{TQ} \rceil - 1 + \text{new arrivals during execution}$$
+
+### Technique 4: FCFS Convoy Effect Detection
+
+**Quick check:** If a long burst time process arrives first, followed by short ones → Convoy effect → High average WT.
+
+**Comparison trick:** Calculate WT for original order vs sorted order (shortest first).
+
+### Technique 5: Gantt Chart Construction Rules
+
+| Algorithm | Gantt Chart Rule |
+|-----------|------------------|
+| FCFS | Order of arrival |
+| SJF | At decision point, pick shortest BT among arrived |
+| SRTF | At each arrival, compare remaining times |
+| Priority | At decision point, pick highest priority among arrived |
+| RR | Cyclic, each gets TQ or remaining (whichever is less) |
+
+### Technique 6: The "Decision Point" Method
+
+**For non-preemptive algorithms:**
+1. Decision points occur when a process **completes**
+2. At each decision point, look at ready queue
+3. Apply algorithm rule to select next process
+
+**For preemptive algorithms:**
+1. Decision points occur at **arrivals** AND **completions**
+2. At each point, compare with currently running process
+3. Preempt if necessary
+
+### Technique 7: Verification Checklist
+
+After solving, verify:
+- [ ] TAT is always positive (CT > AT)
+- [ ] WT ≥ 0 for all processes
+- [ ] RT ≤ WT (response comes before completion)
+- [ ] Sum of all time in Gantt = last completion time
+- [ ] No idle time unless no process is ready
+
+### Technique 8: MLFQ Solving Strategy
+
+```
+Track for each process:
+1. Current queue level
+2. Remaining burst time
+3. Time spent in current quantum
+
+Rules to apply:
+- New process → Queue 0
+- Uses full TQ without completing → Demote
+- Gives up CPU (I/O or done) → Stay or promote
+```
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1

@@ -496,6 +496,149 @@ Total: 7 + 19 + 8 + 66 + 58 + 30 + 20 = 208 cylinders
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: Disk Scheduling - Universal Approach
+
+**Step-by-step for ANY algorithm:**
+
+```
+Step 1: Note initial head position
+Step 2: List all requests
+Step 3: Apply algorithm-specific rule to order requests
+Step 4: Calculate total head movement:
+        Total = Σ |current_position - next_position|
+Step 5: Count the movements, not absolute positions
+```
+
+### Technique 2: Algorithm-Specific Ordering Rules
+
+| Algorithm | Ordering Rule |
+|-----------|--------------|
+| **FCFS** | Order of arrival (given order) |
+| **SSTF** | At each step, pick closest to current head |
+| **SCAN** | Go in direction until end, reverse, continue |
+| **LOOK** | Go in direction until last request, reverse |
+| **C-SCAN** | Go in direction until end, jump to start, continue |
+| **C-LOOK** | Go until last request, jump to first request |
+
+### Technique 3: SSTF Step-by-Step
+
+```
+Current: 50
+Requests: [82, 170, 43, 140, 24, 16, 190]
+
+Step 1: Distances from 50: |82-50|=32, |170-50|=120, |43-50|=7, ...
+        Closest: 43 (distance 7)
+        Move: 50 → 43, Total = 7
+
+Step 2: From 43, recalculate distances
+        Closest: 24 (distance 19)
+        Move: 43 → 24, Total = 7+19 = 26
+
+Step 3: Continue until all served
+```
+
+### Technique 4: SCAN/LOOK Direction Decision
+
+**Read problem carefully for:**
+1. Initial direction (toward 0 or toward max)
+2. Does it go to physical end (SCAN) or last request (LOOK)?
+
+```
+SCAN toward 0:
+50 → (serve requests ≤ 50 in decreasing order) → 0 → (reverse) → (serve > 50 in increasing order)
+
+LOOK toward 0:
+50 → (serve requests ≤ 50 in decreasing order) → (lowest request) → (reverse)
+```
+
+### Technique 5: C-SCAN Total Movement
+
+**Movement calculation:**
+```
+If direction is toward max:
+1. Movement = (Max - Initial) + Max + (Last request on return sweep)
+
+If jump is "free" (not counted):
+Movement = (Max - Initial) + (Last request from start)
+```
+
+**Check problem for whether jump counts!**
+
+### Technique 6: Disk Access Time Calculation
+
+**Master formula:**
+$$T_{access} = T_{seek} + T_{rotation} + T_{transfer}$$
+
+**Component calculations:**
+
+```
+Average Seek: Given directly or = 0.5 × max_seek_time
+              Or for uniform distribution ≈ (1/3) × total_tracks × time_per_track
+
+Average Rotation: = 0.5 × (60/RPM) seconds
+                  = 30/RPM seconds
+                  = 30000/RPM ms
+
+Transfer: = (bytes_to_transfer) / (track_capacity × rotations_per_second)
+         = bytes / (sectors_per_track × bytes_per_sector × RPM/60)
+```
+
+### Technique 7: RAID Capacity Calculations
+
+**Quick formulas:**
+
+| RAID Level | Usable Capacity | Fault Tolerance |
+|------------|-----------------|-----------------|
+| 0 | n × disk | 0 disks |
+| 1 | n/2 × disk | n/2 disks |
+| 5 | (n-1) × disk | 1 disk |
+| 6 | (n-2) × disk | 2 disks |
+| 10 | n/2 × disk | 1 per mirror |
+
+### Technique 8: RAID Performance Analysis
+
+**Read performance:**
+- RAID 0: n × single disk (parallel)
+- RAID 1: 2× single disk (read from either)
+- RAID 5: (n-1) × single disk (one busy with parity)
+
+**Write performance:**
+- RAID 0: n × single disk
+- RAID 1: 1× single disk (must write to both)
+- RAID 5: Slower (read-modify-write for parity)
+
+### Technique 9: Seek Optimization Comparison
+
+**To compare algorithms:**
+
+```
+Create table:
+┌───────────┬───────────────────────────────────┬───────────┐
+│ Algorithm │ Order of Service                   │ Total Seek│
+├───────────┼───────────────────────────────────┼───────────┤
+│ FCFS      │ 82, 170, 43, 140, 24, 16, 190     │ 640       │
+│ SSTF      │ 43, 24, 16, 82, 140, 170, 190     │ 236       │
+│ SCAN      │ 43, 24, 16, 0, 82, 140, 170, 190  │ 240       │
+└───────────┴───────────────────────────────────┴───────────┘
+
+Ranking: SSTF ≈ SCAN < LOOK < C-SCAN < FCFS (typically)
+```
+
+### Technique 10: Transfer Rate Calculations
+
+**Sustained transfer rate:**
+$$Rate = \text{Sectors per track} \times \text{Bytes per sector} \times \text{RPM}/60$$
+
+**Example:**
+```
+7200 RPM, 500 sectors/track, 512 bytes/sector
+Rate = 500 × 512 × (7200/60) = 500 × 512 × 120 = 30.72 MB/s
+```
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1

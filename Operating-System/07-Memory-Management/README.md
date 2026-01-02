@@ -578,6 +578,137 @@ $$\text{EAT} = h \times (\text{cheap}) + (1-h) \times (\text{expensive})$$
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: Address Translation Step-by-Step
+
+**Universal method for paging problems:**
+
+```
+Step 1: Extract page number and offset from logical address
+        Page Number = Logical Address ÷ Page Size (integer division)
+        Offset = Logical Address mod Page Size
+        
+Step 2: Look up frame number in page table
+        Frame = PageTable[Page Number]
+        
+Step 3: Calculate physical address
+        Physical Address = Frame × Page Size + Offset
+```
+
+**Alternative using bits:**
+```
+Given: Logical address = 13500, Page size = 4KB = 2¹²
+
+Binary: 13500 = 11010010011100
+Split: | 0011 | 010010011100 |
+         ↑          ↑
+      Page(3)   Offset(1212)
+      
+If Page 3 → Frame 5:
+Physical = 5 × 4096 + 1212 = 21692
+```
+
+### Technique 2: Page Table Size Calculation
+
+**Formula:**
+$$\text{Page Table Size} = \text{Number of Pages} \times \text{PTE Size}$$
+
+$$\text{Number of Pages} = \frac{2^{\text{Virtual Address Bits}}}{2^{\text{Offset Bits}}} = 2^{VA - Offset}$$
+
+**Example template:**
+```
+Given: 32-bit VA, 4KB pages, 4-byte PTE
+
+Offset bits = log₂(4KB) = 12
+Page number bits = 32 - 12 = 20
+Number of pages = 2²⁰
+Page table size = 2²⁰ × 4 bytes = 4MB
+```
+
+### Technique 3: TLB and EAT Calculations
+
+**EAT Formula Selection:**
+
+| Scenario | Formula |
+|----------|---------|
+| TLB only | $EAT = h(T_{TLB} + T_M) + (1-h)(T_{TLB} + 2T_M)$ |
+| Simplified (no TLB time) | $EAT = T_M(2-h)$ |
+| With page faults | $EAT = (1-p) \times EAT_{no\_fault} + p \times T_{pf}$ |
+
+**Finding hit ratio from EAT:**
+$$h = \frac{2T_M + T_{TLB} - EAT}{T_M}$$
+
+### Technique 4: Multi-Level Paging Analysis
+
+**Memory accesses on TLB miss:**
+$$\text{Accesses} = \text{Number of levels} + 1$$
+
+**Address breakdown:**
+```
+For 2-level (32-bit VA, 4KB pages, 4B PTE):
+┌──────────────────────────────────────────────────┐
+│ Outer Page (10) │ Inner Page (10) │ Offset (12) │
+└──────────────────────────────────────────────────┘
+
+Outer table: 2¹⁰ entries × 4B = 4KB (fits in 1 page!)
+Inner tables: 2¹⁰ × 4KB = 4MB total (but only allocate what's used)
+```
+
+### Technique 5: Segmentation Address Translation
+
+**Step-by-step:**
+```
+Step 1: Extract segment number (s) and offset (d)
+Step 2: Look up segment table: Base[s], Limit[s]
+Step 3: Check: Is d < Limit[s]?
+        NO → Segmentation fault
+        YES → Physical Address = Base[s] + d
+```
+
+### Technique 6: Fragmentation Analysis
+
+**Quick decision tree:**
+```
+What type of memory allocation?
+├── Fixed-size blocks (Paging)
+│   └── Internal fragmentation (waste inside block)
+│       Amount = Block size - Actual data size
+│       Average = Page size / 2
+│
+└── Variable-size blocks (Segmentation, Variable partitions)
+    └── External fragmentation (scattered holes)
+        May have total free > request, but not contiguous
+```
+
+### Technique 7: Allocation Strategy Comparison
+
+**For variable partitions:**
+
+| Strategy | How to Apply | When Best |
+|----------|-------------|-----------|
+| First Fit | Scan from start, use first hole that fits | Fast, good |
+| Best Fit | Scan all, use smallest adequate hole | Minimizes leftover |
+| Worst Fit | Scan all, use largest hole | Leaves big remainder |
+| Next Fit | Scan from last position | Distributes holes |
+
+**50% Rule:** About 50% of memory is unusable due to external fragmentation.
+
+### Technique 8: Inverted Page Table Lookup
+
+**Given (PID, VPN), find frame:**
+```
+1. Hash (PID, VPN) to get index
+2. Check entry at index
+3. If match: return frame number
+4. If collision: follow chain, repeat check
+5. If not found: page fault
+```
+
+**Trade-off:** Fixed table size (= number of frames) vs. slower lookup
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1

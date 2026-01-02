@@ -689,6 +689,140 @@ Imagine a **parking lot counter**:
 
 ---
 
+## 🛠️ Problem-Solving Techniques
+
+### Technique 1: Semaphore Tracing Method
+
+**Systematic tracing approach:**
+
+```
+Step 1: Create a timeline table
+┌──────┬────────┬────────┬─────┬─────┬────────────────────┐
+│ Time │ P1 Op  │ P2 Op  │ S1  │ S2  │ Blocked Processes  │
+├──────┼────────┼────────┼─────┼─────┼────────────────────┤
+│  0   │        │        │  1  │  0  │                    │
+│  1   │wait(S1)│        │  0  │  0  │                    │
+└──────┴────────┴────────┴─────┴─────┴────────────────────┘
+
+Step 2: Apply wait/signal rules:
+        wait(S): S-- ; if S<0, block
+        signal(S): S++ ; if S≤0, wake one blocked
+
+Step 3: Track which process is blocked on which semaphore
+Step 4: Determine execution order from unblocking sequence
+```
+
+### Technique 2: Producer-Consumer Template
+
+**Foolproof solution structure:**
+
+```c
+// PRODUCER - "EMP-MU ... MU-FULL"
+wait(empty);     // E - wait for empty slot
+wait(mutex);     // M - enter critical section
+// ... produce ...
+signal(mutex);   // M - exit critical section
+signal(full);    // F - signal item added
+
+// CONSUMER - "FULL-MU ... MU-EMP"
+wait(full);      // F - wait for item
+wait(mutex);     // M - enter critical section
+// ... consume ...
+signal(mutex);   // M - exit critical section
+signal(empty);   // E - signal slot freed
+```
+
+**CRITICAL:** Order is wait(resource) → wait(mutex), NOT reversed!
+
+### Technique 3: Readers-Writers Pattern Recognition
+
+**First Readers-Writers (Reader preference):**
+```
+reader_count = 0
+mutex = 1 (for reader_count)
+rw_mutex = 1 (for writer exclusion)
+
+Reader:
+  wait(mutex); reader_count++
+  if (reader_count == 1) wait(rw_mutex)  // First reader locks
+  signal(mutex)
+  // READ
+  wait(mutex); reader_count--
+  if (reader_count == 0) signal(rw_mutex)  // Last reader unlocks
+  signal(mutex)
+
+Writer:
+  wait(rw_mutex)
+  // WRITE
+  signal(rw_mutex)
+```
+
+### Technique 4: Dining Philosophers - Solution Selection
+
+| Approach | Implementation | Pros/Cons |
+|----------|---------------|-----------|
+| **Limit to N-1** | Allow max 4 philosophers | Simple, some parallelism lost |
+| **Ordered resources** | Always pick lower-numbered first | Simple, works well |
+| **Asymmetric** | Odd=left first, Even=right first | Good parallelism |
+| **Central arbiter** | Ask permission to eat | Bottleneck at arbiter |
+
+**Quick deadlock-free check:** "Can ALL processes hold 1 resource simultaneously?" If no, deadlock possible.
+
+### Technique 5: Critical Section Verification
+
+**Check solution against 3 requirements:**
+
+| Requirement | How to Verify |
+|-------------|--------------|
+| **Mutual Exclusion** | Can two processes be in CS at same time? Trace both entering. |
+| **Progress** | If CS is empty and someone wants in, can they enter? |
+| **Bounded Waiting** | Is there a limit on how many times others can skip ahead? |
+
+### Technique 6: Semaphore Value Interpretation
+
+**At any point:**
+$$S_{current} = S_{initial} + \text{signals} - \text{waits that proceeded}$$
+
+**Interpretation:**
+- $S > 0$: Available resources/slots
+- $S = 0$: All used, next wait will block
+- $S < 0$: $|S|$ processes are blocked (in blocking implementation)
+
+### Technique 7: Deadlock Detection in Sync Problems
+
+**Look for these patterns:**
+```
+DEADLOCK Pattern 1: Circular wait
+P1: wait(A); wait(B);
+P2: wait(B); wait(A);  ← If P1 holds A, P2 holds B → Deadlock
+
+DEADLOCK Pattern 2: Wrong semaphore order
+Producer: wait(mutex); wait(empty);  ← If buffer full, holds mutex forever
+Consumer: wait(mutex); ...           ← Blocked waiting for mutex
+
+SAFE Pattern: Resource before mutex
+wait(resource); wait(mutex); ... signal(mutex); signal(resource);
+```
+
+### Technique 8: Output Prediction for Concurrent Code
+
+**Method:** Build a tree of possible interleavings
+
+```
+Given: P1 prints "A", P2 prints "B"
+       Both run concurrently
+
+Possible outputs: "AB" or "BA"
+
+With synchronization (S initially 0):
+P1: print("A"); signal(S);
+P2: wait(S); print("B");
+
+Only output: "AB" (P2 must wait for P1's signal)
+```
+
+---
+
 ## 📝 Practice Problems
 
 ### Problem 1: Semaphore Tracing
