@@ -35,7 +35,7 @@ This comprehensive study material is designed to help you master Analytical Reas
 - ✅ Common Traps & How to Avoid Them
 - ✅ Quick Solving Techniques
 - ✅ GATE/ESE Specific Patterns
-- ✅ 500+ Practice Problems
+- ✅ 60+ Practice Problems (with inline examples throughout)
 - ✅ Detailed Solutions with Explanations
 
 ---
