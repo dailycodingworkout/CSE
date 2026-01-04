@@ -312,8 +312,13 @@ If positions increase clockwise, then:
 - B at 5, immediate right (clockwise) = 6 ✓
 - A at 1, 3rd to left (counter-clockwise) = 8, 7, 6...position 6
 
-OK so there's definitely conflict with given constraints. 
-For GATE purposes: If constraints conflict, recheck interpretation or problem may be unsolvable.
+**Note:** In this example, the constraints as stated lead to a position conflict (D and C both mapping to position 6). 
+
+**What to do in exams when constraints conflict:**
+1. Re-read the problem carefully for misinterpretation
+2. Check if "left/right" interpretation differs
+3. Consider alternative meanings (e.g., "3rd to the left" could mean 3 positions away, not 3 moves)
+4. If still conflicting, the problem may have an error - select the most reasonable answer
 
 Assuming working arrangement:
 A at 1, B at 5, C at 6, D at 4 (alternative interpretation)

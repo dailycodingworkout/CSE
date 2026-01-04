@@ -565,7 +565,18 @@ NOT SUFFICIENT
 ```
 **Answer: (E) - Both statements together are not sufficient**
 
-🔴 **The Trap:** Students assume entire journey was at 60 km/h. Statement 1 only gives first hour!
+🔴 **The Trap:** Students assume the entire journey was at 60 km/h. 
+
+**Why this is wrong:**
+- Statement 1 says "60 km in the **first hour**" - this is only part of the journey
+- Statement 2 gives total distance (180 km), but says nothing about total time
+- Remaining 120 km could take any amount of time
+- Without knowing the time for the remaining distance, average speed is indeterminate
+
+**How to avoid this trap:**
+- Read statements literally - "first hour" means only that specific hour
+- Don't extrapolate patterns unless explicitly stated
+- Average speed = Total Distance / Total Time - both components must be known
 </details>
 
 ### Problem 5 (Complex)

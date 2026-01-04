@@ -93,6 +93,8 @@ O = OUT partially (Negative Particular)
 | Some S are not P | **Cannot convert** ✗ | - |
 
 > **🔴 Critical:** "Some S are not P" CANNOT be converted to "Some P are not S"
+>
+> **Example:** "Some birds are not eagles" is TRUE. But "Some eagles are not birds" is FALSE (all eagles are birds). This shows why O-type propositions cannot be converted.
 
 ### Rule 2: The Complementary Pairs
 - **A and O** are contradictories (one true → other false)
