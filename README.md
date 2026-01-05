@@ -1,4 +1,4 @@
-# GATE CSE Study Materials
+# Competitive Exam Study Materials (GATE, ESE, PSU, BANK)
 
 ## Study Resources
 

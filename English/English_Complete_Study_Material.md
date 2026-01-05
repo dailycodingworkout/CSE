@@ -24,7 +24,7 @@
 
 | Exam | English Weightage | Question Types | Time Per Question |
 |------|-------------------|----------------|-------------------|
-| **GATE** | 15 marks (10 questions) | Grammar, Vocabulary, RC | ~2-3 minutes |
+| **GATE** | 15 marks (10 questions) | Grammar, Vocabulary, RC | ~2-2.5 minutes |
 | **ESE** | 2 marks each (Paper-1) | Comprehension, Grammar | ~2 minutes |
 | **PSU** | Varies by company | Similar to GATE | ~2 minutes |
 | **BANK (IBPS/SBI)** | 30-40 questions | RC, Cloze, Error Spotting | ~45 seconds |
