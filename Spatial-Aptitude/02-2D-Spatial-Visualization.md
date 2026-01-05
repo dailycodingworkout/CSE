@@ -398,9 +398,9 @@ Triangles = Not directly applicable (use for grids)
 For a **single triangle** divided by lines from ONE vertex:
 ```
 If n lines from vertex divide opposite side:
-Total triangles = n(n+1)/2 + n(n+1)/2 = n(n+1)
+Small triangles created = n + 1
 
-Wait—let me give you the correct formula:
+For complex configurations, use the size-based method below.
 ```
 
 ### 💡 Aha Moment: The Combination Approach
