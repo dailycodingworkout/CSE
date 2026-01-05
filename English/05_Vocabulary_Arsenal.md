@@ -487,7 +487,9 @@ EPHEMERAL ←→ PERMANENT
 
 <details>
 <summary>Answer</summary>
-<b>advise</b> (verb form needed)
+<b>advise</b>
+
+"Advise" is the verb form (to give advice), while "advice" is the noun. After "will," a verb is required: "will advise."
 </details>
 
 **Q4.** Synonym of VERBOSE:

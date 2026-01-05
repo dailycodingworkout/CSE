@@ -255,9 +255,9 @@ Use "for" with duration (five years), "since" with a point in time (since 2019).
 
 <details>
 <summary>Answer</summary>
-<b>(B) have → has</b> (or No error in British English)
+<b>(B) have → has</b>
 
-When acting as a unit, committee takes singular verb in American English.
+When acting as a unit, "committee" takes a singular verb. Competitive exams in India (GATE, ESE, Bank exams) typically follow American English conventions, where collective nouns are singular. Therefore, "has decided" is the expected answer.
 </details>
 
 ---

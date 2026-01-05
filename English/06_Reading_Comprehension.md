@@ -539,7 +539,7 @@ D) Confused and uncertain
 
 <details>
 <summary>Answer</summary>
-<b>C</b> - The author acknowledges "impressive results" but also notes caution ("leading researchers caution against overenthusiasm") and presents both sides of the debate.
+<b>C</b> - The author's tone is balanced (presenting both benefits and concerns) and cautious (the key indicator is "leading researchers caution against overenthusiasm" and the acknowledgment that "the gap...remains vast"). The passage neither dismisses AI achievements nor uncritically celebrates them.
 </details>
 
 ---
