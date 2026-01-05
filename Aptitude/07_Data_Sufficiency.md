@@ -16,6 +16,11 @@ Data Sufficiency (DS) problems test your ability to:
 - **NOT actually solve** the problem (in most cases)
 - **Identify** the minimum data needed to arrive at a unique answer
 
+> ⚠️ **CRITICAL WARNING:**
+> The #1 mistake students make is actually solving the problem!
+> DS tests WHETHER you CAN solve, not WHAT the answer is.
+> Stop as soon as you know sufficiency - don't calculate further!
+
 ### Why It Matters
 - Tests **logical thinking**, not calculation ability
 - Common in: Bank PO/Clerk, CAT, GMAT, GATE

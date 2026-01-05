@@ -228,12 +228,37 @@ Status: INVALID (Cannot conclude anything from two negatives)
 ### "Only A are B"
 Interpretation: **All B are A** (Not "All A are B")
 
+> ⚠️ **Critical Distinction:**
+> - "Only A are B" → **All B are A** (Reverse the direction!)
+> - "All A are B" → All A are B (Same direction)
+
 ```
 "Only doctors are in this room"
 = Everyone in this room is a doctor
 = All (people) in this room are doctors
 ≠ All doctors are in this room
+
+Venn Diagram:
+┌───────────────────────┐
+│      Doctors          │
+│   ┌─────────────┐     │
+│   │   Room      │     │
+│   │  (people)   │     │
+│   └─────────────┘     │
+└───────────────────────┘
+(Room is INSIDE Doctors, not the other way around)
+
+Compare with "All doctors are in this room":
+┌───────────────────────┐
+│        Room           │
+│   ┌─────────────┐     │
+│   │   Doctors   │     │
+│   └─────────────┘     │
+└───────────────────────┘
+(Doctors is INSIDE Room)
 ```
+
+**Memory Trick:** When you see "Only", flip the arrow direction!
 
 ### "Only a few A are B"
 Interpretation: 
