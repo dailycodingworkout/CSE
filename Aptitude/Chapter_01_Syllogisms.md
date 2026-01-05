@@ -35,7 +35,76 @@ Every syllogism statement falls into one of **four types**:
 
 ---
 
-## 3. Venn Diagram Method: The Universal Solver
+## 3. The Distribution Table
+
+### **What is Distribution?**
+
+A term is **distributed** when the proposition makes a claim about ALL members of that class.
+
+### **The Master Distribution Table:**
+
+| Proposition Type | Subject (S) | Predicate (P) |
+|-----------------|-------------|---------------|
+| **A** (All S are P) | ✅ Distributed | ❌ Not Distributed |
+| **E** (No S is P) | ✅ Distributed | ✅ Distributed |
+| **I** (Some S are P) | ❌ Not Distributed | ❌ Not Distributed |
+| **O** (Some S are not P) | ❌ Not Distributed | ✅ Distributed |
+
+### **Why This Matters:**
+
+Understanding distribution is critical for:
+1. **Checking validity** of syllogisms without Venn diagrams
+2. **Applying the three validity rules** (see below)
+3. **Quick elimination** of invalid conclusions
+
+### **The Three Distribution Rules for Valid Syllogisms:**
+
+**Rule 1: Middle Term Distribution**
+> The middle term (M) must be distributed at least ONCE in the premises.
+
+*Violation Example:*
+- "Some M are P" (M not distributed)
+- "Some S are M" (M not distributed)
+- **Invalid** — Middle term never distributed!
+
+**Rule 2: Conclusion Term Distribution**
+> If a term is distributed in the conclusion, it must also be distributed in its premise.
+
+*Violation Example:*
+- "All M are P" (P not distributed)
+- "All S are M"
+- Conclusion: "All S are P" (P still not distributed — valid)
+- But: "All P are S" (P distributed in conclusion but not in premises — **Invalid!**)
+
+**Rule 3: Negative Statement Rule**
+> - If one premise is negative, the conclusion must be negative.
+> - If both premises are affirmative, the conclusion cannot be negative.
+> - Two negative premises yield no valid conclusion.
+
+### **Quick Distribution Memory Trick: "ASEP"**
+
+| Proposition | Distributed Term(s) | Mnemonic |
+|-------------|---------------------|----------|
+| **A** | Subject only | **A**ll talks about **S**ubject completely |
+| **E** | Both S and P | **E**xcludes **E**verything (both terms) |
+| **I** | Neither | **I**ndefinite (no complete claim) |
+| **O** | Predicate only | **O**nly the **P**redicate is fully excluded |
+
+### **Application Example:**
+
+**Premises:**
+1. All cats (M) are mammals (P) — Type A: M distributed, P not
+2. All mammals (M) are animals (S) — Type A: M distributed, S not
+
+**Validity Check:**
+- Middle term (mammals): Distributed in premise 2 ✓
+- If conclusion is "All cats are animals" (A-type): 
+  - Cats distributed in conclusion → Cats distributed in premise 1 ✓
+- **Valid syllogism!**
+
+---
+
+## 4. Venn Diagram Method: The Universal Solver
 
 ### **Why Venn Diagrams Work:**
 - Visual representation eliminates ambiguity
@@ -60,7 +129,7 @@ Every syllogism statement falls into one of **four types**:
 
 ---
 
-## 4. The Six Figures and Moods
+## 5. The Six Figures and Moods
 
 ### **The Three Terms:**
 - **Major Term (P):** Predicate of conclusion
@@ -90,7 +159,7 @@ The position of Middle Term determines the Figure:
 
 ---
 
-## 5. Quick Tricks for Competitive Exams
+## 6. Quick Tricks for Competitive Exams
 
 ### **Trick 1: The Complementary Pair Rule**
 
@@ -127,7 +196,7 @@ When neither conclusion follows individually, check:
 
 ---
 
-## 6. Edge Cases and Examiner Traps
+## 7. Edge Cases and Examiner Traps
 
 ### **Trap 1: The "Only" Confusion**
 
@@ -161,7 +230,7 @@ In modern logic, "All S are P" does NOT assume S exists.
 
 ---
 
-## 7. Possibility-Based Syllogisms (Bank Exams Special)
+## 8. Possibility-Based Syllogisms (Bank Exams Special)
 
 ### **The Possibility Framework:**
 
@@ -182,7 +251,7 @@ In modern logic, "All S are P" does NOT assume S exists.
 
 ---
 
-## 8. Solved Examples with Complete Analysis
+## 9. Solved Examples with Complete Analysis
 
 ### **Example 1: Basic Two-Premise Syllogism**
 
@@ -325,7 +394,7 @@ II. All flowers are roses — **Possibility**
 
 ---
 
-## 9. The Anti-Solution: Common Mistakes of Top Students
+## 10. The Anti-Solution: Common Mistakes of Top Students
 
 ### **Mistake 1: Assuming Convertibility of "All"**
 - Wrong: "All S are P" → "All P are S"
@@ -345,7 +414,7 @@ II. All flowers are roses — **Possibility**
 
 ---
 
-## 10. The 5-Second Snap-Check
+## 11. The 5-Second Snap-Check
 
 Before marking any answer, verify:
 
@@ -357,7 +426,7 @@ Before marking any answer, verify:
 
 ---
 
-## 11. Practice Problem Set
+## 12. Practice Problem Set
 
 ### **Level 1: Foundation**
 
@@ -385,7 +454,7 @@ Conclusions: I. Some politicians are honest — Possibility. II. All honest are 
 
 ---
 
-## 12. Answer Key with Explanations
+## 13. Answer Key with Explanations
 
 **Q1:** Only I follows. (Chain: Cats → Animals → Living Things; but reverse not implied)
 
@@ -412,7 +481,7 @@ Wait — let me re-analyze Q4:
 
 ---
 
-## 13. Mental Slider Visualization
+## 14. Mental Slider Visualization
 
 **Imagine a 3D Control Panel:**
 
@@ -424,7 +493,7 @@ Wait — let me re-analyze Q4:
 
 ---
 
-## 14. High-Intensity Mnemonic: "The Court of AEIO"
+## 15. High-Intensity Mnemonic: "The Court of AEIO"
 
 *Imagine a royal court:*
 
@@ -437,7 +506,7 @@ Wait — let me re-analyze Q4:
 
 ---
 
-## 15. Quick Reference Table
+## 16. Quick Reference Table
 
 | Statement Type | Keyword | Convertible To | Cannot Convert To |
 |---------------|---------|----------------|-------------------|
