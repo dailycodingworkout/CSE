@@ -529,6 +529,4 @@ This chapter provides quick reference for:
 
 ---
 
-*Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign]*
-
-*Would you like to initiate a **'Multi-Variable Stress Test'** combining concepts across chapters for a Rank-1 simulation?*
+*Best of luck for your examinations!*
