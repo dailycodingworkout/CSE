@@ -306,7 +306,7 @@ Track **age changes over time** with consistent logic
 - **Why Lethal**: Everyone's age increases equally, but average changes depend on group changes
 
 ### 2️⃣ Question
-The average age of a family of 4 is 25 years. A child is born, and 3 years later, the average age is 22 years. What is the current average age (3 years after the child's birth)?
+The average age of a family of 4 is 25 years. A child is born. What will be the average age of the family 3 years after the child's birth?
 
 ### 3️⃣ Examiner's Intent
 - Tests age progression with new member
@@ -316,20 +316,14 @@ The average age of a family of 4 is 25 years. A child is born, and 3 years later
 1. Initially: Total age = $4 \times 25 = 100$ years
 2. Child born at age 0: Total = 100, members = 5
 3. After 3 years: Each of 5 members is 3 years older
-4. New total = $100 + 5 \times 3 = 115$ years (wait, child was born, then 3 years pass)
-5. Actually: Total after 3 years = $(100 + 4 \times 3) + 3 = 100 + 12 + 3 = 115$
-6. Average = $115/5 = 23$ years
-7. But problem says average is 22? Let's reread...
-8. The problem states average IS 22 after 3 years. Let's verify consistency.
-9. If avg after 3 years = 22, then total = $5 \times 22 = 110$
-10. Original 4 members after 3 years: $100 + 12 = 112$. Child at 3: total = $112 + 3 = 115 \neq 110$
-11. There's an inconsistency in the problem. Assuming the given average is correct:
-12. **Answer: 22 years** (as stated)
+4. Total after 3 years = $100 + (5 \times 3) = 100 + 15 = 115$ years
+5. Average = $115/5 = 23$ years
+6. **Answer: 23 years**
 
 ### 5️⃣ Trap Autopsy
-- **Common wrong answer**: 23 years (correct calculation, problem may have error)
-- **Why it feels correct**: Logical reasoning from given data
-- **Exact failure point**: Problem contains internal inconsistency
+- **Common wrong answer**: 22 years (not counting child's 3 years properly)
+- **Why it feels correct**: Forgetting that newborn also ages 3 years
+- **Exact failure point**: Not including all 5 members in the time progression
 
 ### 6️⃣ Generalization Map
 1. Member leaves family
@@ -395,7 +389,7 @@ Understand **batting average** vs **bowling average** (lower is better for bowli
 - **Why Lethal**: Context determines whether higher or lower is better
 
 ### 2️⃣ Question
-A bowler has taken 40 wickets giving away 800 runs. After the next match, the bowling average drops to 18. If 4 wickets were taken in that match, how many runs were given?
+A bowler has taken 40 wickets giving away 800 runs. After the next match, the bowling average becomes 19. If 5 wickets were taken in that match, how many runs were given?
 
 ### 3️⃣ Examiner's Intent
 - Tests bowling average = Runs / Wickets (lower is better)
@@ -404,23 +398,17 @@ A bowler has taken 40 wickets giving away 800 runs. After the next match, the bo
 ### 4️⃣ Solution (Logic-First)
 1. Bowling average = Total runs / Total wickets
 2. Initial average = $800/40 = 20$
-3. After match: Total wickets = $40 + 4 = 44$
-4. New average = $18 = (800 + r)/44$
-5. $800 + r = 18 \times 44 = 792$
-6. $r = 792 - 800 = -8$???
-7. This is impossible (can't give negative runs). Let me recheck...
-8. If new average is 18 (lower/better), total runs must be $18 \times 44 = 792$
-9. But we already have 800 runs! The average can only decrease if runs per wicket in new match < current average
-10. In new match: 4 wickets. For average to drop from 20 to 18:
-11. $(800 + r)/44 = 18 \Rightarrow r = -8$. Impossible.
-12. **The problem has no valid solution** — or the average "dropping" means getting worse (increasing runs per wicket).
-13. If "drops" means improves (gets lower): no solution.
-14. If "drops" is misused to mean "becomes": new avg = 18, impossible.
+3. After match: Total wickets = $40 + 5 = 45$
+4. New average = $19 = (800 + r)/45$
+5. $800 + r = 19 \times 45 = 855$
+6. $r = 855 - 800 = 55$ runs
+7. Verification: Average in match = $55/5 = 11$ (which is < 20, so average improves)
+8. **Answer: 55 runs**
 
 ### 5️⃣ Trap Autopsy
-- **Common wrong answer**: Attempting calculation without checking feasibility
-- **Why it feels correct**: Following the formula mechanically
-- **Exact failure point**: Not verifying that answer is physically possible
+- **Common wrong answer**: 80 runs (thinking average stays same)
+- **Why it feels correct**: Assuming same performance rate
+- **Exact failure point**: Not computing what's needed for target average
 
 ### 6️⃣ Generalization Map
 1. Batting average (runs per out)

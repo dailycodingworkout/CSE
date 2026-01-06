@@ -60,26 +60,24 @@ Use **digit manipulation** combined with **place value algebra**. Express the nu
 - **Why Lethal**: Multiple variables create illusion of complexity when they cancel
 
 ### 2️⃣ Question
-A three-digit number is such that the sum of its digits equals the product of its digits. If the hundreds digit is twice the units digit, and the tens digit is the average of the other two, find the number.
+A three-digit number is such that the sum of its digits equals 12. If the hundreds digit is twice the units digit, and the tens digit equals the units digit, find the number.
 
 ### 3️⃣ Examiner's Intent
 - Tests systematic variable reduction
 - Top-100 fail by creating three equations and getting lost in algebra
 
 ### 4️⃣ Solution (Logic-First)
-1. Let units digit = $u$, then hundreds = $2u$, tens = $(u + 2u)/2 = 1.5u$
-2. For tens to be integer, $u$ must be even: $u \in \{2, 4\}$
-3. If $u = 2$: digits are 4, 3, 2. Sum = 9, Product = 24. ❌
-4. If $u = 4$: digits are 8, 6, 4. Sum = 18, Product = 192. ❌
-5. **Re-examine**: Tens = average means $(h + u)/2 = t$, so $t = (2u + u)/2 = 1.5u$
-6. Check $u = 2$: $h = 4, t = 3, u = 2$. Sum = 9, Product = 24. Not equal.
-7. **Insight**: The constraints are overconstrained. Check boundary $u = 1$: $h = 2, t = 1.5$ (invalid)
-8. The answer is **No such number exists** or we need integer interpretation
+1. Let units digit = $u$, then hundreds = $2u$, tens = $u$
+2. Sum of digits: $2u + u + u = 4u = 12$
+3. Therefore $u = 3$
+4. Digits: hundreds = 6, tens = 3, units = 3
+5. The number is **633**
+6. Verification: $6 + 3 + 3 = 12$ ✓
 
 ### 5️⃣ Trap Autopsy
-- **Common wrong answer**: 432 or 864
-- **Why it feels correct**: Candidates force integer values without checking sum = product
-- **Exact failure point**: Not validating the final condition
+- **Common wrong answer**: 432 (guessing without proper algebra)
+- **Why it feels correct**: Candidates guess numbers that "look right"
+- **Exact failure point**: Not setting up systematic equations
 
 ### 6️⃣ Generalization Map
 1. Change "average" to "geometric mean"

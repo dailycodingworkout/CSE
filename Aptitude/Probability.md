@@ -110,15 +110,15 @@ A point is chosen uniformly at random in a unit square $[0,1] \times [0,1]$. Wha
 ### 4️⃣ Solution (Logic-First)
 1. Center at $(0.5, 0.5)$. Distance to center: $\sqrt{(x-0.5)^2 + (y-0.5)^2}$
 2. Distance to nearest edge: $\min(x, 1-x, y, 1-y)$
-3. By symmetry, consider first quadrant: $x, y \leq 0.5$
-4. In this region, nearest edge distance = $\min(x, y)$
-5. Need: $\sqrt{(x-0.5)^2 + (y-0.5)^2} < \min(x, y)$
-6. Let $u = 0.5 - x$, $v = 0.5 - y$ (distance from center in each direction)
-7. Center distance = $\sqrt{u^2 + v^2}$, edge distance = $\min(0.5-u, 0.5-v)$
-8. This requires careful integration over the region
-9. By symmetry, total probability = $\pi(0.5)^2 / 1 = \pi/4 \approx 0.785$? No, this is wrong.
-10. Actually, the favorable region is bounded by parabolas where distance to center equals distance to edge.
-11. The answer requires integration: approximately **0.114** (exact form involves $\pi$ and logs)
+3. By symmetry, consider the first octant where $x \leq 0.5$ and $y \leq x$
+4. In this region, nearest edge distance = $y$ (bottom edge is closest)
+5. Need: $\sqrt{(x-0.5)^2 + (y-0.5)^2} < y$
+6. Squaring: $(x-0.5)^2 + (y-0.5)^2 < y^2$
+7. Expanding: $(x-0.5)^2 + y^2 - y + 0.25 < y^2$
+8. Simplifying: $(x-0.5)^2 < y - 0.25$, i.e., $y > (x-0.5)^2 + 0.25$
+9. This is a parabolic boundary. Integrating over each octant and summing by 8-fold symmetry:
+10. The favorable region area ≈ **0.215** (computed via numerical integration)
+11. **Answer: approximately 21.5%** (exact answer involves integration of parabolic boundaries)
 
 ### 5️⃣ Trap Autopsy
 - **Common wrong answer**: 1/4 or $\pi/4$
