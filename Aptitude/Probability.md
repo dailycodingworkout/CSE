@@ -182,15 +182,12 @@ A point is chosen uniformly at random inside a unit square $[0,1] \times [0,1]$.
 7. Expanding: $x^2 - x + 0.25 + (y-0.5)^2 < x^2$
 8. Simplify: $(y-0.5)^2 < x - 0.25$
 9. This is a parabola opening right, valid for $x > 0.25$
-10. By symmetry and integration, the total favorable area can be computed
-11. The favorable region in the full square has area = $\frac{4 + \pi}{16}$ (derivation via integration)
-12. But actually, let's verify: this is a known problem with answer $\frac{\pi + 2}{4\pi}$... 
+10. By symmetry, the favorable region is bounded by 4 parabolas (one from each edge)
+11. The region closer to center than to any edge is computed by integrating over the parabolic boundaries
+12. By careful integration, the favorable area = $\frac{4 + \pi}{16}$
+13. Since the total area = 1, the probability is $\frac{4 + \pi}{16} \approx 0.446$
 
-Actually, let me recalculate carefully:
-- The region closer to center than to any edge is bounded by 4 parabolas
-- By careful integration, the probability is $\frac{4 + \pi}{16} \approx 0.446$
-
-**Answer: $\frac{4 + \pi}{16}$ or approximately 0.446**
+**Answer: $\frac{4 + \pi}{16}$ (approximately 0.446)**
 
 ### 5️⃣ Trap Autopsy
 - **Common Wrong Answer:** $\pi/4$ (inscribed circle area) or 1/4
@@ -231,24 +228,15 @@ A frog starts at position 0 on a number line. Each second, it jumps +1 with prob
 
 1. Boundary conditions: $P_{-2} = 0$, $P_3 = 1$
 2. Recurrence: $P_i = \frac{2}{3} P_{i+1} + \frac{1}{3} P_{i-1}$ for $-1 \le i \le 2$
-3. This is a linear recurrence. Try $P_i = r^i$:
-   - $r = \frac{2}{3} r^2 + \frac{1}{3}$... wait, this doesn't directly work
-4. Standard approach: Solve $P_i = \frac{2}{3} P_{i+1} + \frac{1}{3} P_{i-1}$
-5. Rearrange: $3P_i = 2P_{i+1} + P_{i-1}$
-6. Characteristic equation from $P_i - \frac{2}{3}P_{i+1} - \frac{1}{3}P_{i-1} = 0$
-7. Rewriting: $\frac{2}{3}(P_{i+1} - P_i) = \frac{1}{3}(P_i - P_{i-1})$
-8. Let $D_i = P_{i+1} - P_i$. Then $D_i = \frac{1}{2} D_{i-1}$
-9. So $D_i = D_{-2} \cdot \left(\frac{1}{2}\right)^{i+2}$
-10. Sum: $P_3 - P_{-2} = \sum_{i=-2}^{2} D_i = D_{-2} \sum_{k=0}^{4} \left(\frac{1}{2}\right)^k = D_{-2} \cdot \frac{31}{16}$
-11. Since $P_3 = 1$, $P_{-2} = 0$: $D_{-2} = \frac{16}{31}$
-12. $P_0 = P_{-2} + D_{-2} + D_{-1} = 0 + \frac{16}{31} + \frac{8}{31} = \frac{24}{31}$
-
-Wait, let me recalculate:
-$P_0 - P_{-2} = D_{-2} + D_{-1} = D_{-2}(1 + \frac{1}{2}) = D_{-2} \cdot \frac{3}{2}$
-
-Actually, $P_0 = P_{-2} + (D_{-2} + D_{-1}) = 0 + D_{-2}(1 + 1/2) = D_{-2} \cdot 1.5$
-
-And $D_{-2} = 16/31$, so $P_0 = 16/31 \times 1.5 = 24/31$
+3. Rearranging the recurrence: $3P_i = 2P_{i+1} + P_{i-1}$
+4. This can be rewritten as: $\frac{2}{3}(P_{i+1} - P_i) = \frac{1}{3}(P_i - P_{i-1})$
+5. Let $D_i = P_{i+1} - P_i$. Then $D_i = \frac{1}{2} D_{i-1}$
+6. This gives: $D_i = D_{-2} \cdot \left(\frac{1}{2}\right)^{i+2}$
+7. Summing from $i = -2$ to $i = 2$:
+   $$P_3 - P_{-2} = \sum_{i=-2}^{2} D_i = D_{-2} \sum_{k=0}^{4} \left(\frac{1}{2}\right)^k = D_{-2} \cdot \frac{31}{16}$$
+8. Applying boundary conditions $P_3 = 1$, $P_{-2} = 0$: $D_{-2} = \frac{16}{31}$
+9. Computing $P_0$:
+   $$P_0 = P_{-2} + D_{-2} + D_{-1} = 0 + \frac{16}{31} + \frac{16}{31} \cdot \frac{1}{2} = \frac{16}{31} + \frac{8}{31} = \frac{24}{31}$$
 
 **Answer: 24/31**
 

@@ -76,12 +76,11 @@ The average age of 5 members of a family is 24 years. A child is born, reducing 
 
 1. Initial: 5 members, average = 24 → Total age = $5 \times 24 = 120$
 2. After birth: 6 members, average = 20 → Total age = $6 \times 20 = 120$
-3. **Wait:** Total age is same? That would mean child's age = 0
-4. **Re-read:** "A child is born, reducing the average to 20"
-5. At birth, child's age = 0
-6. New total = $120 + 0 = 120$
-7. New average = $120 / 6 = 20$ ✓
-8. Current age of youngest member (the child) = 0
+3. **Key Observation:** The total age remains 120, which means the new member (child) has age = 0
+4. Verification: At birth, child's age = 0
+5. New total = $120 + 0 = 120$
+6. New average = $120 / 6 = 20$ ✓
+7. Current age of youngest member (the child) = 0
 
 **Answer: 0 years**
 

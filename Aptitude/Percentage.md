@@ -311,25 +311,13 @@ In an election between two candidates, 10% of votes were invalid. The winning ca
 5. Loser gets 46% of valid = $0.46 \times 0.90T = 0.414T$
 6. Margin = $0.486T - 0.414T = 0.072T$
 7. $0.072T = 4800$
-8. $T = \frac{4800}{0.072} = 66666.67...$
+8. $T = \frac{4800}{0.072} = \frac{4800 \times 1000}{72} = \frac{4800000}{72} = 66666.\overline{6}$
+9. Expressing as a fraction: $T = \frac{200000}{3}$
+10. In practical terms, if the question expects integer total votes, round to **66,667**
 
-Wait, this should be whole. Let me recompute:
-$0.072T = 4800$
-$T = 4800/0.072 = 66666.\overline{6}$
+**Note:** The non-integer result indicates this is a constructed problem where the margin and percentages don't yield a whole number. The mathematical answer is $\frac{200000}{3} \approx 66667$.
 
-This suggests the problem intends slightly different numbers or we round. Let's verify:
-- Winner: 54% of 0.9T = 0.486T
-- Loser: 46% of 0.9T = 0.414T
-- Difference: 0.072T = 4800
-- T = 66,666.67
-
-If we need integer: T = 66,667 (approximately)
-
-But typically exam problems give clean numbers. Let's assume T = 66,667 or the intended answer is 66,666⅔, implying the actual answer is:
-
-**Answer: 66,667 (rounded) or more precisely $\frac{200000}{3}$**
-
-If the question intended clean answer, possible that 54% should yield $T = 60,000$ under different interpretation.
+**Answer: 66,667 (or exactly $\frac{200000}{3}$)**
 
 ### 5️⃣ Trap Autopsy
 - **Common Wrong Answer:** 60,000 (from applying 54% to total directly)
