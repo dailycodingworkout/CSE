@@ -393,13 +393,16 @@ This means: distance from head to cycle start = distance from meeting point to c
 
 ```python
 def find_middle(self):
+    if not self.head:
+        return None
+    
     slow = fast = self.head
     
     while fast and fast.next:
         slow = slow.next
         fast = fast.next.next
     
-    return slow.data if slow else None
+    return slow.data
 
 # Time: O(n), Space: O(1)
 ```

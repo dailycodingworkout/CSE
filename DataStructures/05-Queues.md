@@ -395,8 +395,10 @@ def sliding_window_max(arr, k):
     dq = deque()  # Store indices
     
     for i in range(len(arr)):
-        # Remove indices outside window
-        while dq and dq[0] < i - k + 1:
+        # Remove indices outside current window
+        # Window spans from index (i - k + 1) to i, so remove if dq[0] < window_start
+        window_start = i - k + 1
+        while dq and dq[0] < window_start:
             dq.popleft()
         
         # Remove smaller elements (they'll never be max)

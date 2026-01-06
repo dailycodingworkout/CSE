@@ -84,7 +84,7 @@ def hash_string(s, m):
         h = (h * 31 + ord(char)) % m
     return h
 
-# 31 is prime and allows efficient computation (31 * x = x << 5 - x)
+# 31 is prime and allows efficient computation: 31 * x = (x << 5) - x
 ```
 
 ---

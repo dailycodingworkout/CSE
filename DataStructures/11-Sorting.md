@@ -212,8 +212,8 @@ Merge back:
 > Merge sort is the only O(n log n) stable sort that's also consistent (same time for all inputs)
 
 ### Recurrence Relation
-$$T(n) = 2T(n/2) + O(n)$$
-**Solution**: O(n log n) by Master Theorem
+$$T(n) = 2T(n/2) + \Theta(n)$$
+**Solution**: $\Theta(n \log n)$ by Master Theorem
 
 ---
 
