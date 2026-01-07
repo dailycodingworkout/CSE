@@ -170,7 +170,9 @@ Equivalent discount: a + b - ab/100
 
 ---
 
-## Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign].
+## Comprehensive Aptitude Preparation Guide
+
+**Quality Standard:** All questions are designed to match or exceed GATE/ESE/PSU difficulty levels with focus on conceptual clarity and trap avoidance.
 
 > **"The exam will feel easy when you've seen harder problems here."**
 

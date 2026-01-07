@@ -244,17 +244,9 @@ At least 2W = $252 - 6 - 60 = 186$ ✓
 
 **Step 2:** Choose 2 columns from 8: $\binom{8}{2} = 28$
 
-**Step 3:** Place rooks (since identical, only 1 way per row-column selection)
-Each rook goes to one intersection. But wait—2 rows × 2 columns gives 4 cells, and we place 2 rooks.
+**Step 3:** The chosen 2 rows and 2 columns form a 2×2 grid with 4 intersection cells. For 2 non-attacking rooks on this grid, they must be placed on one of the two diagonals (2 valid placements).
 
-**For 2 identical non-attacking rooks:**
-
-**Method:** Choose 2 rows and 2 columns, then place rooks on the diagonal.
-
-- Choose 2 rows: $\binom{8}{2} = 28$
-- Choose 2 columns: $\binom{8}{2} = 28$
-- For each 2×2 selection, there are 2 diagonal placements (both valid, non-attacking)
-- Since rooks are identical, each board configuration is counted exactly once
+**Step 4:** Since rooks are identical, each board configuration is counted exactly once.
 
 **Total = $28 \times 28 \times 2 = 1568$**
 

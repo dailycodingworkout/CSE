@@ -125,7 +125,7 @@ $$= \frac{64 \times 0.0183}{6} = \frac{1.1712}{6} = 0.1952$$
 
 ## Question 7 | Independent Events Deep Dive (MSQ)
 
-**Problem:** For events A and B with P(A) = 0.5, P(B) = 0.4, which of the following CANNOT be true?
+**Problem:** For events A and B with P(A) = 0.5, P(B) = 0.4, which of the following CAN be true?
 
 A) P(A ∩ B) = 0  
 B) P(A ∩ B) = 0.2  
@@ -146,11 +146,9 @@ $$0 \leq P(A \cap B) \leq 0.4$$
 - C) 0.4: Valid ✓ (B ⊆ A is possible)
 - D) P(A ∪ B) = 0.5: This implies P(A ∩ B) = 0.5 + 0.4 - 0.5 = 0.4 = P(B), meaning B ⊆ A. Valid ✓
 
-**Key Insight:** All options represent valid probability scenarios.
-- The bounds for P(A ∩ B) are: $\max(0, P(A) + P(B) - 1) \leq P(A \cap B) \leq \min(P(A), P(B))$
-- Here: $0 \leq P(A \cap B) \leq 0.4$
+**Answer: A, B, C, D (all are valid probability scenarios)**
 
-**Answer: All options A, B, C, D are possible** (No option is impossible)
+**Key Insight:** Any value of P(A ∩ B) within the bounds [0, 0.4] represents a valid probability configuration.
 
 ---
 
@@ -220,7 +218,7 @@ $$E[X | X > 4] = \frac{4 + 10}{2} = 7$$
 
 **Problem:** If X ~ N(100, 225), find P(X < 85). Given: Φ(1) = 0.8413. (Answer to 4 decimal places)
 
-**Note:** N(μ, σ²) means variance = 225, so σ = 15.
+**Note:** In the notation N(μ, σ²), the second parameter represents the variance. So σ² = 225 means σ = √225 = 15.
 
 ### Solution via Technique:
 **Standardize:**

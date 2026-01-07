@@ -65,7 +65,7 @@ $$= 21 \times 29 \times 73 = 21 \times 2117 \equiv 21 \times 17 = 357 \equiv 57 
 
 **Answer: None of the given options (Actual: 57)**
 
-**Anti-Solution (The Inversion):** If you only compute last digit: $3^{75}$, cycle is 4, $75 \mod 4 = 3$, so last digit is $3^3 = 27 \rightarrow 7$. But this gives WRONG answer for two digits!
+**Anti-Solution (Common Mistake):** Computing only the last digit of $73^{75}$: The units digit of $73$ is $3$, and powers of $3$ cycle with period 4: $3, 9, 27, 81, ...$. Since $75 \mod 4 = 3$, the last digit is $3^3 = 27 \rightarrow 7$. But this approach fails for finding the last TWO digits!
 
 ---
 

@@ -199,24 +199,13 @@ $$= 20 + 1 = 21\%$$
 
 **Valid votes = 1200 / 0.20 = 6000**
 
-**Total votes = 6000 / 0.85 ≈ 7058.82**
+**Total votes:** Let T = total votes, then valid votes = 0.85T
 
-Hmm, not a round number. Let me recheck:
+The vote difference is 20% of valid votes:
+$$0.20 \times 0.85T = 0.17T = 1200$$
+$$T = \frac{1200}{0.17} = \frac{120000}{17} \approx 7059$$
 
-If total = T, valid = 0.85T
-Difference = 0.20 × 0.85T = 0.17T = 1200
-T = 1200/0.17 ≈ 7058.82
-
-For clean answer, let's verify: 7059 × 0.85 = 6000.15 (approximately 6000)
-0.20 × 6000 = 1200 ✓
-
-**Answer: 7059** (or approximately 7058.82)
-
-Actually, let's use exact math:
-0.17T = 1200
-T = 1200/0.17 = 120000/17 ≈ 7058.82
-
-**Answer: 120000/17 ≈ 7059**
+**Answer: 7059** (rounded from exact value 120000/17)
 
 ---
 
