@@ -511,6 +511,8 @@ Visualize a **rubber band**:
 
 ---
 
-## Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign]. 
+## Mastery Checkpoint
 
-Would you like to initiate a **'Multi-Variable Stress Test'** combining Percentage with Average and Profit/Loss for a Rank-1 simulation?
+**You have completed the Percentage module.** Percentage calculations appear in almost every quantitative section and combine with profit/loss, SI/CI, and data interpretation problems.
+
+**Congratulations!** You have completed all five core aptitude modules. Review the master README for quick reference formulas and use the 4-week practice roadmap to consolidate your preparation.

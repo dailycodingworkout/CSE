@@ -46,34 +46,22 @@ D) 07
 **Trap Alert:** Students often find only last digit or miscalculate the cycle for mod 100.
 
 ### Solution via Technique:
-**The Golden Rule for Last Two Digits:**
-For numbers ending in 3, 7, 9: Find the cyclicity mod 100.
+**Using Euler's Theorem:** $\phi(100) = 40$, so $73^{40} \equiv 1 \mod 100$
 
-**Step 1:** $73 \equiv -27 \mod 100$
+**Step 1:** Reduce the exponent
+- $75 = 40 + 35$, so $73^{75} \equiv 73^{35} \mod 100$
 
-**Step 2:** Find $(-27)^{75} \mod 100 = -(27)^{75} \mod 100$
-
-**Step 3:** Use Euler's theorem: $\phi(100) = 40$
-- $27^{75} = 27^{40} \times 27^{35} \equiv 27^{35} \mod 100$
-- $27^{35} = 27^{32} \times 27^3$
-- $27^2 = 729 \equiv 29 \mod 100$
-- $27^4 \equiv 29^2 = 841 \equiv 41 \mod 100$
-- $27^8 \equiv 41^2 = 1681 \equiv 81 \mod 100$
-- $27^{16} \equiv 81^2 = 6561 \equiv 61 \mod 100$
-- $27^{32} \equiv 61^2 = 3721 \equiv 21 \mod 100$
-- $27^{35} = 27^{32} \times 27^3 = 21 \times 19683 \equiv 21 \times 83 = 1743 \equiv 43 \mod 100$
-
-**Correct Method (Direct Powers of 73):**
+**Step 2:** Build powers of 73 mod 100 using binary exponentiation
+- $73^1 \equiv 73 \mod 100$
 - $73^2 = 5329 \equiv 29 \mod 100$
 - $73^4 \equiv 29^2 = 841 \equiv 41 \mod 100$
 - $73^8 \equiv 41^2 = 1681 \equiv 81 \mod 100$
-
-Using Euler's theorem: $\phi(100) = 40$, so $73^{40} \equiv 1 \mod 100$
-- $75 = 40 + 35$, so $73^{75} \equiv 73^{35} \mod 100$
-- $73^{35} = 73^{32} \times 73^{2} \times 73^{1}$
 - $73^{16} \equiv 81^2 = 6561 \equiv 61 \mod 100$
 - $73^{32} \equiv 61^2 = 3721 \equiv 21 \mod 100$
-- $73^{35} \equiv 21 \times 29 \times 73 = 21 \times 2117 \equiv 21 \times 17 = 357 \equiv 57 \mod 100$
+
+**Step 3:** Combine: $73^{35} = 73^{32} \times 73^{2} \times 73^{1}$
+$$73^{35} \equiv 21 \times 29 \times 73 \mod 100$$
+$$= 21 \times 29 \times 73 = 21 \times 2117 \equiv 21 \times 17 = 357 \equiv 57 \mod 100$$
 
 **Answer: None of the given options (Actual: 57)**
 
@@ -341,6 +329,8 @@ Imagine a **circular dial** with $n$ positions (0 to $n-1$). As you multiply by 
 
 ---
 
-## Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign]. 
+## Mastery Checkpoint
 
-Would you like to initiate a **'Multi-Variable Stress Test'** combining Number System with Probability for a Rank-1 simulation?
+**You have completed the Number System module.** Master these concepts to build a strong foundation for all quantitative aptitude sections in GATE/ESE/PSU exams.
+
+**Next Steps:** Practice the Permutation & Combination module to explore counting techniques that often combine with number theory problems.

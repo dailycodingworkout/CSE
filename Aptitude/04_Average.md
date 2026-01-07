@@ -423,6 +423,8 @@ At slower speeds, you spend MORE time, which dominates the average:
 
 ---
 
-## Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign]. 
+## Mastery Checkpoint
 
-Would you like to initiate a **'Multi-Variable Stress Test'** combining Average with Percentage for a Rank-1 simulation?
+**You have completed the Average module.** Understanding weighted averages and the AM-GM-HM relationship is essential for data interpretation questions in GATE/ESE/PSU exams.
+
+**Next Steps:** Practice the Percentage module to master the final core quantitative concept.

@@ -172,12 +172,7 @@ $$\text{Total} = \binom{12}{4} \times \binom{8}{4} \times \binom{4}{4} = 495 \ti
       - MOTHE...: Next is E, then R
       - MOTHER: Rank = 1
 
-**Calculation:**
-$240 + 24 + 24 + 6 + 6 + 6 + 2 + 1 = 309$
-
-**Wait, let me recalculate systematically:**
-
-Words before MOTHER:
+**Calculation:** Words before MOTHER in dictionary order:
 1. Starting with E: $5! = 120$
 2. Starting with H: $5! = 120$
 3. Starting with ME: $4! = 24$
@@ -186,8 +181,7 @@ Words before MOTHER:
 6. Starting with MOH: $3! = 6$
 7. Starting with MOR: $3! = 6$
 8. Starting with MOTE: $2! = 2$
-9. Starting with MOTHE: $1! = 1$
-10. MOTHER itself: 1
+9. Starting with MOTHE: $1! = 1$ (only MOTHER comes after MOTHE_)
 
 **Rank = $120 + 120 + 24 + 24 + 6 + 6 + 6 + 2 + 1 + 1 = 310$**
 
@@ -418,6 +412,8 @@ Visualize n objects on a **conveyor belt**.
 
 ---
 
-## Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign]. 
+## Mastery Checkpoint
 
-Would you like to initiate a **'Multi-Variable Stress Test'** combining PNC with Probability for a Rank-1 simulation?
+**You have completed the Permutation & Combination module.** These counting principles form the foundation for probability problems and appear frequently in GATE/ESE/PSU exams.
+
+**Next Steps:** Practice the Probability module to see how PNC concepts apply to real-world scenarios and conditional problems.

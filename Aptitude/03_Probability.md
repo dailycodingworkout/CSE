@@ -411,6 +411,8 @@ Visualize a **histogram** morphing as parameters change:
 
 ---
 
-## Logic Singularity verified for 2026 (IIT-G Standards). Mastery Level: [Sovereign]. 
+## Mastery Checkpoint
 
-Would you like to initiate a **'Multi-Variable Stress Test'** combining Probability with PNC for a Rank-1 simulation?
+**You have completed the Probability module.** Bayes' theorem and distribution concepts are critical for data interpretation and decision-making problems in GATE/ESE/PSU exams.
+
+**Next Steps:** Practice the Average and Percentage modules to complete your quantitative aptitude preparation.
