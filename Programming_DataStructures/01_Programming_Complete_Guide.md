@@ -40,7 +40,7 @@
 
 | Data Type | 32-bit Size | 64-bit Size | Range |
 |-----------|-------------|-------------|-------|
-| `char` | 1 byte | 1 byte | -128 to 127 (signed) / 0 to 255 (unsigned) |
+| `char` | 1 byte | 1 byte | **Implementation-defined** signedness: signed char (-128 to 127), unsigned char (0 to 255) |
 | `short` | 2 bytes | 2 bytes | -32,768 to 32,767 |
 | `int` | 4 bytes | 4 bytes | $-2^{31}$ to $2^{31}-1$ |
 | `long` | 4 bytes | **8 bytes** | System dependent |
@@ -206,8 +206,8 @@ void foo(int arr[]) {
 | OR | `\|` | 1 if at least one bit is 1 |
 | XOR | `^` | 1 if bits are different |
 | NOT | `~` | Flip all bits |
-| Left Shift | `<<` | Multiply by $2^n$ |
-| Right Shift | `>>` | Divide by $2^n$ (for unsigned) |
+| Left Shift | `<<` | Multiply by $2^n$ (undefined if overflow for signed) |
+| Right Shift | `>>` | Divide by $2^n$ (for unsigned; implementation-defined for signed) |
 
 ### 🎯 Golden Formulas for Bit Manipulation
 
@@ -240,9 +240,12 @@ n & (n-1)
 ### 🔥 GATE TRAP #9: Right Shift on Negative Numbers
 ```c
 int a = -8;
-printf("%d", a >> 1);  // Implementation-defined! (Usually -4 with arithmetic shift)
+printf("%d", a >> 1);  // Implementation-defined behavior in C!
+// Result depends on whether implementation uses:
+// - Arithmetic shift: -4 (sign bit preserved)
+// - Logical shift: large positive number (zeros filled)
 ```
-**Safe Practice:** Use unsigned for right shifts.
+**Safe Practice:** Use unsigned types for right shifts to ensure defined behavior.
 
 ### 🔥 GATE TRAP #10: XOR Swap
 ```c
@@ -582,8 +585,8 @@ int *arr[3];          // 3 pointers, each can point anywhere
 |-----------|----------------|--------------|
 | Access by index | $O(1)$ | $O(1)$ |
 | Search | $O(n)$ | $O(\log n)$ (binary) |
-| Insert at end | $O(1)$ | $O(n)$ |
-| Insert at position | $O(n)$ | $O(n)$ |
+| Insert at end (no order maintained) | $O(1)$ | $O(n)$ (must maintain order) |
+| Insert at specific position | $O(n)$ | $O(n)$ |
 | Delete | $O(n)$ | $O(n)$ |
 
 ---
@@ -1316,7 +1319,7 @@ int neg = ~x + 1;  // 11111011 = -5
 ### 🔥 GATE TRAP #50: Overflow in Bit Operations
 ```c
 unsigned int x = 0xFFFFFFFF;
-x = x << 1;  // x = 0xFFFFFFFE (MSB lost)
+x = x << 1;  // x = 0xFFFFFFFE (MSB shifted out, LSB becomes 0)
 
 int x = 0x7FFFFFFF;  // Max positive int
 x = x + 1;           // Overflow to -2147483648
@@ -1548,6 +1551,8 @@ struct X {
 int i = 5;
 printf("%d %d %d", i, ++i, i++);
 // Undefined behavior! Don't predict.
+// Why? Variable 'i' is modified multiple times without intervening sequence point.
+// Also: Order of evaluation of function arguments is unspecified in C.
 // GATE asks: "What is the output OR it is undefined?"
 ```
 
