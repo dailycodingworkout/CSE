@@ -141,22 +141,16 @@ $$\max(0, 0.5 + 0.4 - 1) \leq P(A \cap B) \leq \min(0.5, 0.4)$$
 $$0 \leq P(A \cap B) \leq 0.4$$
 
 **Check options:**
-- A) 0: Valid ✓ (disjoint events)
-- B) 0.2: Valid ✓ (this is also independent: 0.5 × 0.4 = 0.2)
-- C) 0.4: Valid ✓ (B ⊆ A)
-- D) P(A ∪ B) = 0.5 → P(A ∩ B) = P(A) + P(B) - P(A ∪ B) = 0.5 + 0.4 - 0.5 = 0.4
+- A) 0: Valid ✓ (A and B are disjoint)
+- B) 0.2: Valid ✓ (A and B are independent: 0.5 × 0.4 = 0.2)
+- C) 0.4: Valid ✓ (B ⊆ A is possible)
+- D) P(A ∪ B) = 0.5: This implies P(A ∩ B) = 0.5 + 0.4 - 0.5 = 0.4 = P(B), meaning B ⊆ A. Valid ✓
 
-All seem valid! Let me recheck D:
-If P(A ∪ B) = 0.5 and P(A) = 0.5, then A ∪ B = A, meaning B ⊆ A.
-Then P(A ∩ B) = P(B) = 0.4, which is within bounds.
+**Key Insight:** All options represent valid probability scenarios.
+- The bounds for P(A ∩ B) are: $\max(0, P(A) + P(B) - 1) \leq P(A \cap B) \leq \min(P(A), P(B))$
+- Here: $0 \leq P(A \cap B) \leq 0.4$
 
-Actually, all options are valid. The question might be asking which is impossible...
-
-Wait, if P(A ∩ B) = 0.4 = P(B), then B ⊆ A. And P(A ∪ B) = P(A) = 0.5. This is consistent.
-
-All options are actually possible! If this is a real exam question, there might be an error.
-
-**Answer: None are impossible** (or the question needs revision)
+**Answer: All options A, B, C, D are possible** (No option is impossible)
 
 ---
 

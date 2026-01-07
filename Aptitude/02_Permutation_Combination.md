@@ -253,34 +253,16 @@ At least 2W = $252 - 6 - 60 = 186$ ✓
 **Step 3:** Place rooks (since identical, only 1 way per row-column selection)
 Each rook goes to one intersection. But wait—2 rows × 2 columns gives 4 cells, and we place 2 rooks.
 
-Actually, for non-attacking rooks on different rows and columns:
+**For 2 identical non-attacking rooks:**
+
+**Method:** Choose 2 rows and 2 columns, then place rooks on the diagonal.
+
 - Choose 2 rows: $\binom{8}{2} = 28$
 - Choose 2 columns: $\binom{8}{2} = 28$
-- For each pair, there are 2 ways to assign rooks to cells IF rooks are distinct.
-- But rooks are identical, so just 1 way per pair.
+- For each 2×2 selection, there are 2 diagonal placements (both valid, non-attacking)
+- Since rooks are identical, each board configuration is counted exactly once
 
-Wait, this overcounts. Let me think again:
-
-For 2 identical non-attacking rooks:
-- First rook: 64 squares
-- Second rook: Must be on different row and column: $(8-1) \times (8-1) = 49$ squares
-- But this counts each pair twice: $(64 \times 49) / 2 = 1568$
-
-Hmm, that's wrong too. Let me be more careful:
-
-For rooks on positions $(r_1, c_1)$ and $(r_2, c_2)$:
-- $r_1 \neq r_2$ and $c_1 \neq c_2$
-
-Choose 2 rows: $\binom{8}{2} = 28$
-Choose 2 columns: $\binom{8}{2} = 28$
-
-This gives us a 2×2 grid. The 2 rooks on this grid such that they don't share row/column: 2 ways (diagonal placements).
-
-But rooks are identical, so each configuration is counted once.
-
-Actually, for identical rooks: after choosing 2 rows and 2 columns, there are 2 diagonal configurations, but since rooks are same, both configurations are... still 2 different board positions!
-
-So total = $28 \times 28 \times 2 = 1568$
+**Total = $28 \times 28 \times 2 = 1568$**
 
 **Answer: 1568**
 

@@ -63,22 +63,17 @@ For numbers ending in 3, 7, 9: Find the cyclicity mod 100.
 - $27^{32} \equiv 61^2 = 3721 \equiv 21 \mod 100$
 - $27^{35} = 27^{32} \times 27^3 = 21 \times 19683 \equiv 21 \times 83 = 1743 \equiv 43 \mod 100$
 
-**Step 4:** $(-27)^{75} = -27^{75} \equiv -43 \equiv 57 \mod 100$
-
-Wait, let me recalculate more carefully:
-$73^{75} \mod 100$. Using direct approach:
+**Correct Method (Direct Powers of 73):**
 - $73^2 = 5329 \equiv 29 \mod 100$
 - $73^4 \equiv 29^2 = 841 \equiv 41 \mod 100$
-- $73^5 = 73^4 \times 73 \equiv 41 \times 73 = 2993 \equiv 93 \mod 100$
-- The cycle repeats every 20 for numbers coprime to 100.
-- $75 = 20 \times 3 + 15$
-- Need $73^{15} \mod 100$
-- $73^{15} = 73^{8} \times 73^{4} \times 73^{2} \times 73$
 - $73^8 \equiv 41^2 = 1681 \equiv 81 \mod 100$
-- $73^{15} \equiv 81 \times 41 \times 29 \times 73 \mod 100$
-- $81 \times 41 = 3321 \equiv 21 \mod 100$
-- $21 \times 29 = 609 \equiv 9 \mod 100$
-- $9 \times 73 = 657 \equiv 57 \mod 100$
+
+Using Euler's theorem: $\phi(100) = 40$, so $73^{40} \equiv 1 \mod 100$
+- $75 = 40 + 35$, so $73^{75} \equiv 73^{35} \mod 100$
+- $73^{35} = 73^{32} \times 73^{2} \times 73^{1}$
+- $73^{16} \equiv 81^2 = 6561 \equiv 61 \mod 100$
+- $73^{32} \equiv 61^2 = 3721 \equiv 21 \mod 100$
+- $73^{35} \equiv 21 \times 29 \times 73 = 21 \times 2117 \equiv 21 \times 17 = 357 \equiv 57 \mod 100$
 
 **Answer: None of the given options (Actual: 57)**
 
@@ -287,18 +282,14 @@ Sum of digits of 1 to 99: Each digit 0-9 appears equally in units and tens place
 - For 100: $1+0+0 = 1$
 - **Total = 901**
 
-$901 = 900 + 1$, and $901 \div 3 = 300.33...$
-
-**Check:** $9 \times 100 = 900$ and $0+1+2+...+9 = 45$. So digit sum from 1-99 = $45 \times 20 / 2$... 
-
-Let me recalculate properly:
-- Sum of digits from 1 to 9 = 45
+**Sum of digits calculation:**
+- Sum of digits from 1 to 9: $1+2+...+9 = 45$
 - Sum of digits from 10 to 99:
-  - Tens digit sum: $(1+2+...+9) \times 10 = 450$
-  - Units digit sum: $(0+1+...+9) \times 9 = 405$
-  - Total = 855
-- Sum from 100: 1
-- **Grand total = 45 + 855 + 1 = 901**
+  - Tens place: $(1+2+...+9) \times 10 = 450$
+  - Units place: $(0+1+...+9) \times 9 = 405$
+  - Total for 10-99: $450 + 405 = 855$
+- Sum of digits of 100: $1+0+0 = 1$
+- **Grand total = $45 + 855 + 1 = 901$**
 
 $901 = 3 \times 300 + 1$, so NOT divisible by 3.
 

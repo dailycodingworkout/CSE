@@ -113,55 +113,23 @@ $$\frac{0.2C}{C - 100} \times 100 = \frac{40}{3}$$
 
 $$\frac{20C}{C - 100} = \frac{40}{3}$$
 
-$$60C = 40(C - 100)$$
+**Cross-multiplying:** $60C = 40(C - 100)$
 $$60C = 40C - 4000$$
 $$20C = -4000$$
 
-Hmm, this gives negative. Let me recheck:
+**Note:** This gives a negative value, indicating the problem as stated has inconsistent parameters. When both CP and SP are reduced by the same amount, the profit PERCENTAGE always INCREASES (not decreases to 40/3 = 13.33% from 20%).
 
-$$60C = 40C - 4000$$
+**Corrected Problem Interpretation:** If the new profit is 40% (not 40/3%), then:
+$$\frac{0.2C}{C - 100} = 0.4$$
+$$0.2C = 0.4C - 40$$
+$$0.2C = 40$$
+$$C = 200$$
 
-Wait, that's wrong. Let me redo:
-$$\frac{20C}{C - 100} = \frac{40}{3}$$
-$$3 \times 20C = 40(C - 100)$$
-$$60C = 40C - 4000$$
+**Answer: ₹200** (with corrected interpretation)
 
-This gives 20C = -4000, C = -200 which is wrong.
-
-Let me reconsider: Perhaps the new profit percentage is 40/3 = 13.33%, which is LESS than 20%.
-
-$$60C = 40(C - 100)$$
-$$60C = 40C - 4000$$
-$$20C = -4000$$
-
-The math seems off. Let me try:
-$$\frac{0.2C}{C-100} = \frac{40}{300} = \frac{2}{15}$$
-$$0.2C \times 15 = 2(C - 100)$$
-$$3C = 2C - 200$$
-$$C = -200$$
-
-Still negative. The question might have an error or I'm misinterpreting.
-
-Let me try: If BOTH reduce by 100, profit % might INCREASE if CP drops faster relative to profit.
-
-Actually, let's verify: if CP = 200, SP = 240
+**Verification:** CP = 200, SP = 240
 New CP = 100, New SP = 140
-New profit = 40, New profit % = 40/100 = 40%
-
-So profit INCREASES. Let me try CP = 600:
-Original: SP = 720
-New: CP = 500, SP = 620
-Profit = 120, Profit% = 120/500 = 24%
-
-Still increasing. The question seems inconsistent with 40/3% being less than 20%.
-
-Let me reinterpret: Perhaps "40/3%" is 40/3 = 13.33%? That's less than 20%, which contradicts what happens.
-
-**Alternate interpretation:** Maybe there's a typo and it should be 50/3% = 16.67% or the profit decreases differently.
-
-For exam purposes, I'll show the method:
-
-**Answer: 200** (assuming profit increases scenario)
+New Profit = 40, New Profit% = 40%
 
 ---
 

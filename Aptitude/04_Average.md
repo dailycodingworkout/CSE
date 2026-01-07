@@ -188,36 +188,17 @@ Numbers: 32, 34, **36**, 38, 40
 ### Solution via Technique:
 **Sum of ages 5 years ago:** $4 \times 30 = 120$
 
-**Present sum of 4 original members:** $120 + 4 \times 5 = 140$
+**Present sum of 4 original members:** $120 + (4 \times 5) = 140$
 
-**Present sum of 5 members:** $5 \times 28 = 140$
+**Present sum of all 5 members (including baby):** $5 \times 28 = 140$
 
-**Baby's age:** $140 - 140 = 0$... 
+**Baby's age:** $140 - 140 = 0$
 
-Wait, that can't be right. Let me recalculate:
+**Interpretation:** The baby was just born (age ≈ 0). This is mathematically consistent—the addition of a newborn (age 0) doesn't change the total sum, but increases the count, which lowers the average from 35 (what 4 members would average now) to 28.
 
-**Sum of 4 members 5 years ago:** 120
-**Sum of 4 members now:** 120 + 20 = 140
-**Sum of 5 members now:** 140
-**Baby's age = 140 - 140 = 0**
-
-This means the baby was just born (age = 0 or nearly 0). But "5 years ago" suggests the baby might have been born within these 5 years.
-
-Actually, the problem says a baby was born (sometime in the last 5 years), so:
-
-Let baby's current age = b years.
-Present sum = 140 + b
-Average = (140 + b)/5 = 28
-140 + b = 140
-b = 0
+**Verification:** If baby = 0: Sum = 140, Average = 140/5 = 28 ✓
 
 **Answer: 0** (newborn)
-
-Actually, let me re-read: "A baby was born" - this happened sometime, and NOW the average is 28.
-
-If baby is currently age 0: Sum = 140 + 0 = 140, Avg = 140/5 = 28 ✓
-
-**Answer: 0** (or the baby was just born)
 
 ---
 
