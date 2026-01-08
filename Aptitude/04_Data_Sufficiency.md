@@ -276,14 +276,14 @@ $x - y > 0 \Rightarrow x > y$
 **Step 2: Analyze Statement II alone**
 $\frac{x}{y} > 1$
 
-**Case 1:** If $y > 0$: $x > y$ ✓
-**Case 2:** If $y < 0$: $x < y$ (inequality flips!)
+**Case 1:** If $y > 0$: Multiplying both sides by y (positive) preserves inequality → $x > y$ ✓
+**Case 2:** If $y < 0$: Multiplying both sides by y (negative) reverses inequality → $x < y$
 
 **Example:**
-- x = 10, y = 5 → x/y = 2 > 1, x > y ✓
-- x = -10, y = -5 → x/y = 2 > 1, but x < y ✗
+- x = 10, y = 5 → x/y = 2 > 1, and x > y ✓
+- x = -10, y = -5 → x/y = (-10)/(-5) = 2 > 1, but x = -10 < -5 = y (since -10 is more negative)
 
-**NOT SUFFICIENT** (Answer could be YES or NO)
+**NOT SUFFICIENT** (Answer could be YES or NO depending on sign of y)
 
 **Answer: (A) I alone sufficient**
 

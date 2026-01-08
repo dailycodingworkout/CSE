@@ -45,7 +45,7 @@ Syllogism = **Set theory operations** on categorical statements.
 ### ⚠️ TRAP #1: The "All → All" Reversal Trap
 **The Inversion:** Assuming "All dogs are animals" means "All animals are dogs."
 
-$$\text{All } A \text{ are } B \not\Rightarrow \text{All } B \text{ are } A$$
+**Important:** "All A are B" does NOT imply "All B are A"
 
 **Only valid:** All A are B → Some B are A (I-conversion)
 

@@ -21,6 +21,7 @@
 #### The Master Equation
 
 **Relative Speed (Minute vs Hour):**
+The relative angular velocity (ω) represents how fast the minute hand gains on the hour hand:
 $$\omega_{rel} = 6° - 0.5° = 5.5°/\text{min}$$
 
 **Angle between hands at time $h:m$:**
