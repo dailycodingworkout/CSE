@@ -97,16 +97,134 @@ Data given in paragraph form, requiring extraction before calculation.
 
 ## 3. Essential Formulas
 
-### Percentage Calculations
+### Percentage Calculations (Multiplier Method)
 
-**Basic Percentage:**
+> ⚡ **The Multiplier Approach:** Convert percentages to multipliers for faster calculations!
+
+**Core Principle:**
+```
+x% increase → Multiply by (1 + x/100)
+x% decrease → Multiply by (1 - x/100)
+
+Examples:
+20% profit  → × 1.20
+20% loss    → × 0.80
+15% increase → × 1.15
+25% decrease → × 0.75
+10% profit  → × 1.10
+10% loss    → × 0.90
+```
+
+**Quick Multiplier Reference Table:**
+| % Change | Profit/Increase | Loss/Decrease |
+|----------|-----------------|---------------|
+| 5% | × 1.05 | × 0.95 |
+| 10% | × 1.10 | × 0.90 |
+| 12.5% | × 1.125 | × 0.875 |
+| 15% | × 1.15 | × 0.85 |
+| 20% | × 1.20 | × 0.80 |
+| 25% | × 1.25 | × 0.75 |
+| 30% | × 1.30 | × 0.70 |
+| 33.33% | × 1.333 | × 0.667 |
+| 40% | × 1.40 | × 0.60 |
+| 50% | × 1.50 | × 0.50 |
+
+**Basic Percentage (Traditional):**
 $$\text{Percentage} = \frac{\text{Part}}{\text{Whole}} \times 100$$
 
-**Percentage Change:**
+**Percentage Change (Traditional):**
 $$\text{\% Change} = \frac{\text{New} - \text{Old}}{\text{Old}} \times 100$$
 
 **Percentage Point Difference:**
 $$\text{PP Diff} = \text{New \%} - \text{Old \%}$$
+
+---
+
+### Profit & Loss (Multiplier Method)
+
+> 🎯 **Key Insight:** Always think in multipliers, not percentages!
+
+**Basic Formulas:**
+```
+Selling Price (SP) = Cost Price (CP) × Multiplier
+
+For Profit:  SP = CP × (1 + Profit%/100)
+For Loss:    SP = CP × (1 - Loss%/100)
+
+Examples:
+20% Profit: SP = CP × 1.20
+20% Loss:   SP = CP × 0.80
+```
+
+**Reverse Calculation:**
+```
+CP = SP / Multiplier
+
+If SP = 1200 and Profit = 20%:
+CP = 1200 / 1.20 = 1000
+```
+
+**Successive Profit/Loss (Chain Multiplication):**
+```
+Multiple transactions? Just multiply all multipliers!
+
+Example: 20% profit followed by 10% loss
+Final Multiplier = 1.20 × 0.90 = 1.08
+Net Result = 8% Profit
+
+Example: 20% profit followed by 20% loss
+Final Multiplier = 1.20 × 0.80 = 0.96
+Net Result = 4% Loss (NOT 0%!)
+```
+
+**Combined/Average Profit-Loss Problems:**
+
+For finding average or effective rate when buying at different prices:
+
+```
+If buying at x% profit (multiplier a) and y% loss (multiplier b):
+Combined Multiplier for equal quantities = (a + b) / 2
+
+Example: Buy half at 20% profit, half at 20% loss
+Multipliers: 1.20 and 0.80
+Average = (1.20 + 0.80) / 2 = 1.00 (Break-even)
+```
+
+**Harmonic Mean for Equal Investment:**
+```
+When SAME AMOUNT is invested at different rates:
+Effective Multiplier = 2 / (1/a + 1/b)
+
+Example: Invest ₹1000 each at 20% profit and 20% loss rates
+Multipliers: 1.20 and 0.80
+Effective = 2 / (1/1.20 + 1/0.80)
+          = 2 / (0.833 + 1.25)
+          = 2 / 2.083
+          = 0.96 (4% Loss overall)
+```
+
+**Markup and Discount (Multiplier Chain):**
+```
+Marked Price = CP × Markup Multiplier
+Selling Price = MP × Discount Multiplier
+Final SP = CP × Markup Multiplier × Discount Multiplier
+
+Example: 25% markup, then 20% discount
+Markup: × 1.25
+Discount: × 0.80
+Net: 1.25 × 0.80 = 1.00 (Break-even, no profit/loss)
+```
+
+**False Weight/Quantity Problems:**
+```
+Profit% = (Actual - Claimed) / Claimed × 100
+
+Using Multiplier:
+If selling 800g as 1000g:
+Multiplier = 1000/800 = 1.25 → 25% Profit
+```
+
+---
 
 ### Ratio Calculations
 
@@ -409,15 +527,39 @@ Multiply by 1.5 = Add half
 Multiply by 1.25 = Add quarter
 ```
 
-### Technique 3: Percentage Change Shortcuts
+### Technique 3: Percentage Change Shortcuts (Multiplier Method)
 
-**Successive Percentage Change:**
-If x% followed by y%:
-$$\text{Net Change} = x + y + \frac{xy}{100}$$
+**Successive Percentage Change - The Easy Way:**
+```
+Just multiply the multipliers!
 
-**Example:**
 20% increase then 10% increase:
-Net = 20 + 10 + (20×10)/100 = 32%
+= 1.20 × 1.10 = 1.32 → 32% increase ✓
+
+Traditional Formula (for reference):
+Net Change = x + y + xy/100
+= 20 + 10 + (20×10)/100 = 32%
+```
+
+**Successive Profit/Loss Examples:**
+```
+20% profit then 20% loss:
+= 1.20 × 0.80 = 0.96 → 4% loss
+
+30% profit then 10% profit:
+= 1.30 × 1.10 = 1.43 → 43% profit
+
+25% loss then 25% loss:
+= 0.75 × 0.75 = 0.5625 → 43.75% loss
+```
+
+**Finding Unknown Percentage:**
+```
+If net result is 8% profit after 20% profit and x% loss:
+1.20 × (1 - x/100) = 1.08
+(1 - x/100) = 1.08/1.20 = 0.90
+x = 10% loss
+```
 
 ### Technique 4: Ratio Simplification
 
@@ -536,6 +678,76 @@ Don't assume equal segments
 
 ## 14. Practice Problems
 
+### Problem Set: Profit & Loss (Multiplier Method)
+
+**Q1:** A shopkeeper marks up goods by 25% and then offers a 20% discount. What is the profit or loss percentage?
+
+**Solution (Multiplier Method):**
+```
+Markup: × 1.25
+Discount: × 0.80
+Net = 1.25 × 0.80 = 1.00 → No profit, No loss (Break-even)
+```
+
+**Q2:** A trader makes 20% profit on first item and 20% loss on second item. If both items have the same cost price, find net result.
+
+**Solution:**
+```
+For equal CP with equal quantity:
+First item: × 1.20
+Second item: × 0.80
+Average multiplier = (1.20 + 0.80) / 2 = 1.00 → Break-even
+```
+
+**Q3:** A merchant invests equal amounts in two items. One gives 20% profit, other gives 20% loss. Find net result.
+
+**Solution (Harmonic Mean for Equal Investment):**
+```
+Multipliers: 1.20 and 0.80
+Effective = 2 / (1/1.20 + 1/0.80)
+          = 2 / (0.833 + 1.25)
+          = 2 / 2.083
+          = 0.96 → 4% Loss
+```
+
+**Q4:** An article is sold at 20% profit. If cost price is ₹1000, find selling price.
+
+**Solution:**
+```
+SP = CP × Multiplier
+SP = 1000 × 1.20 = ₹1200
+```
+
+**Q5:** After successive discounts of 20% and 10%, the selling price is ₹720. Find the marked price.
+
+**Solution:**
+```
+Discount chain: × 0.80 × 0.90 = × 0.72
+MP × 0.72 = 720
+MP = 720 / 0.72 = ₹1000
+```
+
+**Q6:** A dealer offers 10% discount and still makes 20% profit. Find the markup percentage if CP is ₹1000.
+
+**Solution:**
+```
+SP = CP × Profit Multiplier = 1000 × 1.20 = ₹1200
+SP = MP × Discount Multiplier
+1200 = MP × 0.90
+MP = 1200 / 0.90 = ₹1333.33
+Markup = (1333.33 - 1000) / 1000 × 100 = 33.33%
+Or: Markup Multiplier = 1333.33/1000 = 1.333 → 33.33%
+```
+
+**Q7:** Successive profits of 10%, 20%, and 25% on an item. Find overall profit%.
+
+**Solution:**
+```
+Net Multiplier = 1.10 × 1.20 × 1.25 = 1.65 → 65% Profit
+```
+
+---
+
 ### Problem Set: Table
 
 **Data:**
@@ -640,19 +852,26 @@ CAGR = (180/100)^(1/4) - 1 = (1.8)^0.25 - 1 ≈ 0.158 = 15.8%
 ┌─────────────────────────────────────────────────────┐
 │           DATA INTERPRETATION QUICK REF             │
 ├─────────────────────────────────────────────────────┤
-│ PERCENTAGE FORMULAS:                                │
-│ % = (Part/Whole) × 100                             │
-│ % Change = (New-Old)/Old × 100                     │
-│ Successive: x + y + xy/100                         │
+│ MULTIPLIER METHOD (KEY!):                           │
+│ x% profit → × (1 + x/100)  e.g. 20% → × 1.20       │
+│ x% loss   → × (1 - x/100)  e.g. 20% → × 0.80       │
+│ Successive: Multiply all multipliers               │
+│ e.g. 20% profit + 20% loss = 1.20 × 0.80 = 0.96   │
+├─────────────────────────────────────────────────────┤
+│ PROFIT & LOSS:                                      │
+│ SP = CP × Multiplier                               │
+│ CP = SP / Multiplier                               │
+│ Equal quantity: (a + b) / 2                        │
+│ Equal investment: 2 / (1/a + 1/b)                  │
+├─────────────────────────────────────────────────────┤
+│ QUICK MULTIPLIERS:                                  │
+│ 10%: 1.10/0.90   20%: 1.20/0.80   25%: 1.25/0.75  │
+│ 15%: 1.15/0.85   30%: 1.30/0.70   50%: 1.50/0.50  │
 ├─────────────────────────────────────────────────────┤
 │ PIE CHART:                                          │
 │ Degrees = (%) × 3.6                                │
 │ Value = (%) × Total / 100                          │
 │ 360° = 100%                                        │
-├─────────────────────────────────────────────────────┤
-│ QUICK PERCENTAGES:                                  │
-│ 10% = ÷10    25% = ÷4    33.3% = ÷3               │
-│ 20% = ÷5     50% = ÷2    12.5% = ÷8               │
 ├─────────────────────────────────────────────────────┤
 │ GROWTH RATE:                                        │
 │ Simple: (Final-Initial)/Initial × 100              │
