@@ -236,122 +236,41 @@ K(11) + 2 = 13 = M
 ### Question 3: The Numeric Coding [PSU Pattern]
 
 **Problem:**
-If ROAD = 51 and SWAN = 58, then LION = ?
+If CAT = 24 and DOG = 26, then FOX = ?
 
 **Options:**
-(A) 47  
-(B) 50  
-(C) 53  
-(D) 49
+(A) 42  
+(B) 45  
+(C) 39  
+(D) 48
 
 ---
 
 **🎯 SOLUTION via Value Extraction:**
 
-**Step 1: Analyze ROAD = 51**
+**Step 1: Analyze CAT = 24**
 ```
-R + O + A + D = 18 + 15 + 1 + 4 = 38 ≠ 51
+C + A + T = 3 + 1 + 20 = 24 ✓
+```
+Direct sum of positions works!
+
+**Step 2: Verify with DOG = 26**
+```
+D + O + G = 4 + 15 + 7 = 26 ✓
+```
+Pattern confirmed: **Sum of alphabetical positions**
+
+**Step 3: Apply to FOX**
+```
+F + O + X = 6 + 15 + 24 = 45
 ```
 
-**Try: Position + some factor**
-```
-ROAD: 18 + 15 + 1 + 4 = 38
-51 - 38 = 13 (difference)
-```
+**Answer: (B) 45**
 
-**Step 2: Analyze SWAN = 58**
-```
-S + W + A + N = 19 + 23 + 1 + 14 = 57
-58 - 57 = 1 (difference)
-```
-
-Differences are 13 and 1 - not consistent. Let's try another approach.
-
-**Try: Reverse alphabet positions**
-```
-Reverse: A=26, B=25, ..., Z=1
-ROAD: R=9, O=12, A=26, D=23 → 9+12+26+23 = 70 ≠ 51
-```
-
-**Try: Alternate positions (odd +, even -)**
-```
-ROAD: R(18) - O(15) + A(1) - D(4) = 18 - 15 + 1 - 4 = 0 ≠ 51
-```
-
-**Try: First letter × something + sum**
-```
-ROAD: R(18) × 2 + O+A+D = 36 + 15 = 51 ✓
-SWAN: S(19) × 2 + W+A+N = 38 + 23+1+14 = 38 + 38 = 76 ≠ 58
-```
-
-**Try: Sum of all + number of letters × factor**
-```
-ROAD: 38 + 4×? = 51 → 4× = 13 (not integer)
-```
-
-**Try: First and last letter doubled**
-```
-ROAD: R×2 + O + A + D×2 = 36 + 15 + 1 + 8 = 60 ≠ 51
-```
-
-**Final Pattern Found:**
-```
-ROAD: R+O+A+D + 13 = 38 + 13 = 51 ✓
-SWAN: S+W+A+N + 1 = 57 + 1 = 58 ✓
-```
-
-Notice: ROAD has 4 letters. 13 = sum of digit positions? No.
-Notice: ROAD ends with D(4), SWAN ends with N(14). 
-51 = 38 + 13, 58 = 57 + 1...
-
-**Alternative: Consonant sum vs Vowel sum**
-```
-ROAD: Consonants R+D = 18+4 = 22, Vowels O+A = 15+1 = 16
-22 + 16 = 38, need +13 for 51
-
-SWAN: Consonants S+W+N = 19+23+14 = 56, Vowels A = 1
-56 + 1 = 57, need +1 for 58
-```
-
-**Pattern: Sum of positions + number of consonants × 3 + number of vowels**
-```
-ROAD: 38 + 2×3 + 2×? → Let's try: 38 + 6 + 7 = 51 ✓? 
-But 7 from where?
-```
-
-**Simpler Pattern Check: Sum + last letter - first letter**
-```
-ROAD: 38 + D(4) - R(18)? = 38 - 14 = 24 ≠ 51
-```
-
-**WORKING PATTERN: Sum of squares of digits**
-Actually, let's use: Sum + reverse of sum digits
-```
-ROAD sum = 38, reverse = 83? No.
-```
-
-**Final Working Pattern: Sum + number of letters + constant**
-```
-ROAD: 38 + 4 + 9 = 51 ✓
-SWAN: 57 + 4 - 3 = 58 ✓? No, different constants.
-```
-
-**Verified Pattern: Direct position sum + (total vowels × 6.5)**
-```
-ROAD: 38 + 2×6.5 = 38 + 13 = 51 ✓
-SWAN: 57 + 1×1 = 58 ✓? Vowel count for SWAN = 1, but 57+1=58 ✓
-```
-
-This suggests: **Sum + (vowel count adjustment)**
-
-For LION:
-```
-L + I + O + N = 12 + 9 + 15 + 14 = 50
-Vowels: I, O = 2 vowels
-Answer = 50 + 0 = 50 (or direct sum)
-```
-
-**Answer: (B) 50**
+**TECHNIQUE:** When given numeric codes for words:
+1. First try direct sum of positions (A=1, B=2, ...)
+2. If not matching, try reverse positions (A=26, B=25, ...)
+3. If still not matching, look for patterns like vowel/consonant weighting
 
 ---
 

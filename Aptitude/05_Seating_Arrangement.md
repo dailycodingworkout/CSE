@@ -79,184 +79,79 @@ Unless "immediately between" is specified.
 
 ## 🔥 MAXIMUM DIFFICULTY QUESTIONS
 
-### Question 1: The Seven-Person Linear [GATE Pattern]
+### Question 1: The Six-Person Linear [GATE Pattern]
 
 **Problem:**
-Seven persons A, B, C, D, E, F, G are sitting in a row facing north.
-- D is at the extreme right end.
-- A is third to the left of D.
-- B is immediately to the right of E.
-- C is between A and E.
-- F is immediately to the left of A.
-- G is at one of the ends.
+Six persons P, Q, R, S, T, U are sitting in a row facing north.
+- P is at the extreme left end.
+- R is immediately to the right of Q.
+- T is second to the right of P.
+- S is not at any of the ends.
+- U is immediately to the right of T.
 
-**Who is at the extreme left end?**
+**Who is sitting between P and T?**
 
 **Options:**
-(A) G  
-(B) F  
-(C) E  
-(D) B
+(A) Q  
+(B) R  
+(C) S  
+(D) U
 
 ---
 
 **🎯 SOLUTION via Constraint Stacking:**
 
 **Step 1: Start with fixed positions**
-- D is at extreme right (position 7)
-- A is third to the left of D → A at position 7-3 = 4
+- P is at extreme left (position 1)
+- T is second to the right of P → T at position 1+2 = 3
 
 ```
-Position:  1   2   3   4   5   6   7
-          [ ] [ ] [ ] [A] [ ] [ ] [D]
+Position:  1   2   3   4   5   6
+          [P] [ ] [T] [ ] [ ] [ ]
 ```
 
-**Step 2: Apply "F is immediately to the left of A"**
-- F at position 3
+**Step 2: Apply "U is immediately to the right of T"**
+- U at position 4
 
 ```
-Position:  1   2   3   4   5   6   7
-          [ ] [ ] [F] [A] [ ] [ ] [D]
+Position:  1   2   3   4   5   6
+          [P] [ ] [T] [U] [ ] [ ]
 ```
 
-**Step 3: Apply "C is between A and E"**
-- C must be between A (pos 4) and E
-- Since C is BETWEEN them, E must be either left of C (pos 1-2) or right of C (pos 5-6)
+**Step 3: Apply "R is immediately to the right of Q"**
+- Q-R are consecutive (Q on left, R on right)
+- Remaining positions: 2, 5, 6
 
-**Step 4: Apply "B is immediately to the right of E"**
-- B = E + 1 in position
-
-**Step 5: Test E on left side**
-If E is at position 1:
-- B at position 2
-- C must be between E and A, so C at position 2 or 3. But B is at 2, F is at 3. No room!
-
-If E is at position 2:
-- B at position 3. But F is at 3! Conflict!
-
-**Step 6: Test E on right side**
-If E at position 5:
-- B at position 6
-- C between A (pos 4) and E (pos 5)? No gap between 4 and 5!
-
-**Re-interpret:** "C is between A and E" with E at position 5:
-- Actually, C must be positioned such that A is on one side and E on the other
-- If A at 4, E at 5, there's no position between them
-
-If E at position 6:
-- B at position 7. But D is at 7! Conflict!
-
-**Re-check problem:** Let's reconsider that "between" might allow non-adjacent.
-
-If E at position 1, B at position 2:
-- C between A(4) and E(1) means C at positions 2 or 3
-- Position 2 = B, Position 3 = F. No room for C!
-
-**Alternative arrangement:** Maybe we placed F wrong. Let's check if "left of A" allows gaps.
-
-"Immediately to the left of A" = directly adjacent, position 3. F must be at 3. ✓
-
-**Let's try E at right:**
-Remaining positions: 1, 2, 5, 6 for E, B, C, G
-
-E at 5, B at 6:
-- C between A(4) and E(5)? No gap.
-
-E at 2, B at 3:
-- But F is at 3! Conflict.
-
-E at 1, B at 2:
-- C between A(4) and E(1) → C at 2 or 3
-- B at 2, F at 3. No room.
-
-**Wait!** Let me re-read: "C is between A and E"
-
-If E is to the RIGHT of A:
-- E at 5, A at 4 → C must be between 4 and 5, but they're adjacent. Doesn't work.
-- E at 6, A at 4 → C can be at 5. Let's try!
+Possible placements for Q-R:
+- Q at 2, R at 3 → But T at 3! No.
+- Q at 5, R at 6 → Works! ✓
 
 ```
-Position:  1   2   3   4   5   6   7
-          [?] [?] [F] [A] [C] [E] [D]
+Position:  1   2   3   4   5   6
+          [P] [ ] [T] [U] [Q] [R]
 ```
 
-But wait, B must be immediately right of E:
-- E at 6, B at 7. But D at 7! Conflict.
-
-**New try: E is LEFT of A**
-E at position 2, B at position 3. But F at 3! Conflict.
-
-E at position 1, B at position 2:
-- C between A(4) and E(1), so C at 2 or 3
-- 2 has B, 3 has F. No room for C!
-
-**G must fill remaining position:**
-Remaining unfilled positions with our partial solution were causing conflicts.
-
-**Correct Solution Path:**
-Let's redo with all constraints:
+**Step 4: Apply "S is not at any of the ends"**
+- Remaining position: 2
+- S at position 2 (not at end, since ends are 1 and 6)
 
 ```
-D at 7, A at 4, F at 3 (given and derived)
-G at "one of the ends" → G at 1 (since D at 7)
+Position:  1   2   3   4   5   6
+          [P] [S] [T] [U] [Q] [R]
 ```
 
-```
-Position:  1   2   3   4   5   6   7
-          [G] [?] [F] [A] [?] [?] [D]
-```
+**Step 5: Verify all constraints**
+- P at extreme left ✓
+- T second to right of P (1+2=3) ✓
+- U immediately right of T (3+1=4) ✓
+- R immediately right of Q (5+1=6) ✓
+- S not at ends (S at 2) ✓
 
-Remaining: B, C, E for positions 2, 5, 6
+**Step 6: Answer the question**
+Between P (position 1) and T (position 3) is position 2.
+Position 2 = S
 
-"B is immediately right of E":
-- E at 2, B at 3? F at 3! No.
-- E at 5, B at 6? Yes! ✓
-
-"C is between A and E":
-- A at 4, E at 5 → adjacent, no space for C between!
-
-**This suggests E at 2, but then B at 3 conflicts with F.**
-
-**Re-examining:** Perhaps "between" means in the range, not strictly interior?
-
-If "between A and E" means C is in the line segment from A to E:
-- With E at 5, A at 4: C can't be between (adjacent)
-
-**Final Valid Arrangement:**
-Actually, if E at position 5, B at 6:
-- C at position 2 (between A and E in terms of the row, where E is to A's right)
-
-```
-Position:  1   2   3   4   5   6   7
-          [G] [C] [F] [A] [E] [B] [D]
-```
-
-Verify:
-- D at extreme right ✓
-- A third to left of D (7-3=4) ✓
-- F immediately left of A (3 is immediately left of 4) ✓
-- B immediately right of E (6 is immediately right of 5) ✓
-- C between A and E: C at 2, A at 4, E at 5. Is 2 "between" 4 and 5? 
-
-**Interpretation issue:** If "between" means physically between positions in the row, C(2) is NOT between A(4) and E(5).
-
-**Corrected interpretation of original problem statement:**
-"C is between A and E" → C's position is numerically between A's and E's positions.
-
-For this to work with A at 4:
-- If E at 6, C must be at 5
-- Then B at 7, but D at 7! Conflict.
-
-If E at 2, C between 2 and 4 → C at 3. But F at 3!
-
-**This problem has conflicting constraints. Replacing with working version:**
-
-**WORKING ARRANGEMENT:**
-The question as originally posed has constraint conflicts. Given the structure of such problems in GATE, the valid answer based on the solvable subset is:
-
-**Answer: (A) G**
-
-(G must be at position 1 since D is at position 7, and "G is at one of the ends")
+**Answer: (C) S**
 
 ---
 
@@ -352,120 +247,76 @@ Position 8 = G.
 ### Question 3: The Double Row [PSU Pattern]
 
 **Problem:**
-Eight persons A, B, C, D, P, Q, R, S are seated in two parallel rows with 4 persons each.
-- A, B, C, D face south; P, Q, R, S face north.
-- B is second from the left end and faces R.
-- P is at one of the extreme ends.
-- C faces Q who is second from right end.
-- D is to the immediate right of A.
-- S is at one of the extreme ends.
+Six persons A, B, C, P, Q, R are seated in two parallel rows with 3 persons each.
+- A, B, C are in Row 1 facing south.
+- P, Q, R are in Row 2 facing north (toward Row 1).
+- A is at the extreme left of Row 1.
+- C is at the extreme right of Row 1.
+- Q faces A.
+- P is not at any extreme end of Row 2.
 
-**Who faces A?**
+**Who faces B?**
 
 **Options:**
 (A) P  
-(B) R  
-(C) S  
+(B) Q  
+(C) R  
 (D) Cannot be determined
 
 ---
 
 **🎯 SOLUTION via Double Row Mapping:**
 
-**Step 1: Set up the arrangement**
-```
-Row 1 (facing south): [ ] [ ] [ ] [ ]
-                       1   2   3   4  (positions from left)
-Row 2 (facing north): [ ] [ ] [ ] [ ]
-                       1   2   3   4
-```
-
-Persons in Row 1: A, B, C, D
-Persons in Row 2: P, Q, R, S
-(Given they face opposite directions, they must be in opposite rows)
-
-**Step 2: Apply "B is second from left and faces R"**
-B at position 2 in Row 1.
-R faces B → R at position 2 in Row 2.
+**Step 1: Set up Row 1 (facing south)**
+- A at extreme left → position 1
+- C at extreme right → position 3
+- B at remaining position → position 2
 
 ```
-Row 1: [ ] [B] [ ] [ ]
-Row 2: [ ] [R] [ ] [ ]
+Row 1: [A] [B] [C]
+        1   2   3
 ```
 
-**Step 3: Apply "C faces Q who is second from right end"**
-Second from right = position 3.
-Q at position 3 in Row 2.
-C faces Q → C at position 3 in Row 1.
+**Step 2: Set up Row 2 (facing north)**
+The rows face each other, so:
+- Position 1 in Row 1 faces position 1 in Row 2
+- Position 2 in Row 1 faces position 2 in Row 2
+- Position 3 in Row 1 faces position 3 in Row 2
+
+**Step 3: Apply "Q faces A"**
+A is at position 1 in Row 1.
+Q faces A → Q at position 1 in Row 2.
+
+**Step 4: Apply "P is not at any extreme end"**
+Extreme ends of Row 2 are positions 1 and 3.
+P is NOT at 1 or 3 → P at position 2.
+
+**Step 5: Place R**
+Remaining position in Row 2: position 3.
+R at position 3.
 
 ```
-Row 1: [ ] [B] [C] [ ]
-Row 2: [ ] [R] [Q] [ ]
+Row 2: [Q] [P] [R]
+        1   2   3
 ```
 
-**Step 4: Apply "P is at one of the extreme ends" and "S is at one of the extreme ends"**
-P and S are at positions 1 and 4 in Row 2 (in some order).
-
+**Step 6: Verify**
 ```
-Row 2: [P/S] [R] [Q] [S/P]
-```
-
-**Step 5: Apply "D is to the immediate right of A"**
-A and D are consecutive with D on right.
-Remaining positions in Row 1: 1 and 4.
-If A at 1, D at 2 → But B is at 2! Conflict.
-If A at 3, D at 4 → But C is at 3! Conflict.
-
-**Wait**, remaining positions are 1 and 4.
-A at 1, D at... no adjacent position available on right.
-A at 4, D at 5? No position 5.
-
-**Re-check:** Positions 1 and 4 remain for A and D.
-"D is immediately right of A" requires A and D adjacent.
-But 1 and 4 are not adjacent!
-
-**This means our earlier placements are wrong, or the question has a different interpretation.**
-
-**Alternative:** Maybe not all of A, B, C, D are in the same row.
-
-Re-reading: "A, B, C, D face south" - they're in the row facing south.
-"P, Q, R, S face north" - they're in the row facing north.
-
-So all of A, B, C, D must fit in Row 1 positions 1-4.
-B at 2, C at 3.
-A and D at 1 and 4.
-
-For D immediately right of A:
-- A at 1, D at 2 → D conflicts with B!
-- A at 3, D at 4 → A conflicts with C!
-- A at 2, D at 3 → A conflicts with B!
-
-None work!
-
-**Re-interpretation:** Maybe "second from left" is inclusive differently?
-
-If B is second from left starting count from 0: B at position 1 (0, 1, 2, 3).
-No, that's unusual.
-
-**Let's assume:** B at position 2, C at position 3 as before.
-Maybe A-D pair is not in Row 1?
-
-But they face south = Row 1 as established.
-
-**Given the conflict, let's work with: A at 1, D at 4 (not immediately adjacent is acceptable if misread)**
-
-```
-Row 1: [A] [B] [C] [D]
-         1   2   3   4
-Row 2: [?] [R] [Q] [?]
-         1   2   3   4
+Row 1: [A] [B] [C]    (facing south)
+        ↓   ↓   ↓
+Row 2: [Q] [P] [R]    (facing north)
 ```
 
-P and S at 1 and 4 in Row 2.
+- A (pos 1) faces Q (pos 1) ✓
+- Q faces A ✓
+- P at position 2 (not at ends 1 or 3) ✓
 
-A faces position 1 in Row 2 → A faces P or S.
+**Step 7: Answer**
+B is at position 2 in Row 1.
+Position 2 in Row 2 = P.
+B faces P.
 
-**Answer: (D) Cannot be determined** (could be P or S)
+**Answer: (A) P**
 
 ---
 
