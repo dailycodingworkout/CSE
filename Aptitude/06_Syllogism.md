@@ -197,15 +197,10 @@ NOT FORCED → Doesn't follow
 Since T ⊆ G, all teachers are graduates.
 Since D ∩ T = ∅, no teacher is a doctor.
 So teachers are graduates who are not doctors.
-T ≠ ∅ is assumed (implicit: some teachers exist).
 
-**WAIT:** We can't assume T is non-empty unless stated!
+**Note on Existential Import:** In GATE/ESE exams, when a statement like "All T are G" is given, it is typically assumed that T is non-empty (following traditional Aristotelian logic). This assumption is standard in aptitude tests.
 
-In GATE, "All T are G" doesn't guarantee T is non-empty.
-
-However, by existential import (traditional logic), "All T are G" implies "Some T are G."
-
-**Assuming T is non-empty:** Some graduates (teachers) are not doctors → II follows.
+With this assumption: Some graduates (teachers) are not doctors → II follows.
 
 **III. "All graduates are teachers"**
 We only know T ⊆ G. There could be graduates who are not teachers.

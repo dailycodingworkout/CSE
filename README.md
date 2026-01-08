@@ -39,4 +39,4 @@ Comprehensive preparation material for GATE, ESE, and PSU examinations in Comput
 
 ---
 
-*Verified for 2026 GATE/ESE/PSU Standards*
+*Based on previous GATE/ESE/PSU exam patterns and expected 2026 standards*

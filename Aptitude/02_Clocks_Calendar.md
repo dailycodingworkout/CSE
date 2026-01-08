@@ -59,75 +59,45 @@ At 3:30, hour hand = $90° + 15° = 105°$ from 12
 ### Question 1: The Angle at Non-Standard Time [GATE Pattern]
 
 **Problem:**
-At what time between 2 and 3 o'clock are the clock hands at an angle of exactly 30°?
+At what time between 2 and 3 o'clock are the clock hands at an angle of exactly 60°?
 
 **Options:**
-(A) 2:12 only  
-(B) 2:00 only  
+(A) 2:00 only  
+(B) 2:21:49 only  
 (C) 2:00 and 2:21:49  
-(D) 2:12 and 2:21:49
+(D) 2:10:54 only
 
 ---
 
 **🎯 SOLUTION via Master Equation:**
 
 **Step 1: Set up equation**
-$$\theta = \left| 30h - 5.5m \right| = 30°$$
+$$\theta = \left| 30h - 5.5m \right| = 60°$$
 
 At $h = 2$:
-$$\left| 60 - 5.5m \right| = 30$$
+$$\left| 60 - 5.5m \right| = 60$$
 
 **Step 2: Solve for both cases**
 
-**Case 1:** $60 - 5.5m = 30$
-$$5.5m = 30$$
-$$m = \frac{30}{5.5} = \frac{60}{11} = 5\frac{5}{11} ≈ 5.45$$
+**Case 1:** $60 - 5.5m = 60$
+$$5.5m = 0$$
+$$m = 0$$
 
-Time: 2:05:27
+Time: **2:00**
 
-**Case 2:** $60 - 5.5m = -30$
-$$5.5m = 90$$
-$$m = \frac{90}{5.5} = \frac{180}{11} = 16\frac{4}{11} ≈ 16.36$$
+**Case 2:** $60 - 5.5m = -60$
+$$5.5m = 120$$
+$$m = \frac{120}{5.5} = \frac{240}{11} = 21\frac{9}{11} ≈ 21.82$$
 
-Time: 2:16:22
+Convert to seconds: $\frac{9}{11} × 60 ≈ 49$ seconds
 
-**Step 3: Verify**
-At 2:00: Angle = |60 - 0| = 60° ≠ 30°
-At 2:12: Angle = |60 - 66| = 6° ≠ 30°
+Time: **2:21:49**
 
-Neither 2:00 nor 2:12 gives 30°.
+**Step 3: Verify both answers**
+- At 2:00: $|60 - 0| = 60°$ ✓
+- At 2:21:49: $|60 - 5.5(21.82)| = |60 - 120| = 60°$ ✓
 
-**Step 4: Check options**
-The correct times are approximately 2:05:27 and 2:16:22.
-
-Looking at option (D): 2:12 gives |60 - 66| = 6° ≠ 30°
-
-**Let me recalculate for the given options:**
-
-For 2:21:49 (m ≈ 21.82):
-$$|60 - 5.5(21.82)| = |60 - 120| = 60°$$
-
-This gives 60°, not 30°.
-
-**Correct answer based on our calculation:**
-The two times when angle = 30° are:
-- 2:05:27 (5 5/11 minutes)
-- 2:16:22 (16 4/11 minutes)
-
-Given the options don't match our exact calculations, this illustrates a common TRAP in clock problems: **always verify by substitution**.
-
-**Answer: (C) 2:00 and 2:21:49** 
-
-Wait, let's check 2:00: |60-0| = 60° ≠ 30°
-
-Actually, the closest valid answer from the given options, based on our analysis:
-**The question's options contain errors. In real GATE, trust your calculation.**
-
-For educational purposes, the formula gives: **m = 60/11 ≈ 5.45 minutes and m = 180/11 ≈ 16.36 minutes**
-
-**Answer: None of the given options are exactly correct. The correct times are 2:05:27 and 2:16:22.**
-
-**LEARNING POINT:** In MCQs, always verify your calculated answer against the options. If none match, check for reflex angle (360° - θ) or recalculate.
+**Answer: (C) 2:00 and 2:21:49**
 
 ---
 
