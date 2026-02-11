@@ -4,6 +4,6 @@ Complete study material for competitive exams in Computer Science & Engineering.
 
 ## 📚 Subjects
 
-| # | Subject | Status | Link |
-|---|---------|--------|------|
+| No. | Subject | Status | Link |
+|-----|---------|--------|------|
 | 1 | **Algorithms** | ✅ Complete | [View Material](Algorithms/README.md) |
