@@ -2599,3 +2599,1287 @@ Edge (u,v) is a bridge if **low[v] > disc[u]** (strictly greater — no back edg
 
 ---
 
+
+---
+
+# Chapter 9: Backtracking & Branch and Bound
+
+## 9.1 Backtracking — The Paradigm
+
+> **Analogy:** Like navigating a maze — go forward, and when you hit a dead end, **backtrack** to the last decision point and try a different path. You systematically explore all possibilities but **prune** paths that can't lead to a solution.
+
+**When to use:** Problems requiring exploration of all possible configurations (permutations, combinations, subsets) where some paths can be eliminated early.
+
+**General Template:**
+```
+Backtrack(state):
+    if state is a complete solution:
+        process/output the solution
+        return
+    for each possible next choice:
+        if choice is valid (pruning condition):
+            make the choice
+            Backtrack(new state)
+            undo the choice          // BACKTRACK
+```
+
+**Key difference from brute force:** Backtracking **prunes** (skips) branches that are guaranteed not to lead to valid solutions.
+
+---
+
+## 9.2 N-Queens Problem ⭐
+
+**Problem:** Place N queens on an N×N chessboard such that no two queens attack each other (no two in same row, column, or diagonal).
+
+```
+NQueens(board, row):
+    if row == N:
+        print board        // All queens placed
+        return
+    for col = 0 to N-1:
+        if isSafe(board, row, col):
+            board[row] = col
+            NQueens(board, row + 1)
+            board[row] = -1     // Backtrack
+
+isSafe(board, row, col):
+    for i = 0 to row-1:
+        if board[i] == col:                         return false  // Same column
+        if |board[i] - col| == |i - row|:           return false  // Same diagonal
+    return true
+```
+
+**Time Complexity:** O(N!) approximately (with pruning, much less in practice)
+
+**Solutions for small N:**
+| N | # Solutions |
+|---|-------------|
+| 1 | 1 |
+| 2 | 0 |
+| 3 | 0 |
+| 4 | 2 |
+| 5 | 10 |
+| 8 | 92 |
+
+> **GATE Note:** The N-Queens problem has no known polynomial-time algorithm. The decision version (does a solution exist for N ≥ 4?) always returns YES, but finding all solutions requires exponential time.
+
+---
+
+## 9.3 Subset Sum Problem
+
+**Problem:** Given a set S of n integers and a target T, find if there exists a subset whose sum equals T.
+
+```
+SubsetSum(S, n, T, subset):
+    if T == 0:
+        print subset
+        return true
+    if n == 0:
+        return false
+    // Pruning: skip if current element > target
+    if S[n] > T:
+        return SubsetSum(S, n-1, T, subset)
+    // Include S[n] or exclude it
+    return SubsetSum(S, n-1, T-S[n], subset ∪ {S[n]}) OR
+           SubsetSum(S, n-1, T, subset)
+```
+
+**With additional pruning:** Sort the array and use the remaining sum to prune:
+- If `sum of remaining elements < T`, stop (can't reach target)
+- If `current element > T`, stop (overshot)
+
+> **GATE Fact:** Subset Sum is NP-Complete. The backtracking solution with pruning is much faster than 2ⁿ in practice but still exponential in the worst case.
+
+---
+
+## 9.4 Graph Coloring
+
+**Problem:** Assign m colors to vertices such that no two adjacent vertices have the same color. Find if a valid coloring exists (or find all valid colorings).
+
+```
+GraphColoring(graph, colors, vertex):
+    if vertex == V:
+        print colors
+        return true
+    for c = 1 to m:
+        if isSafe(graph, colors, vertex, c):
+            colors[vertex] = c
+            if GraphColoring(graph, colors, vertex + 1):
+                return true
+            colors[vertex] = 0    // Backtrack
+    return false
+
+isSafe(graph, colors, vertex, c):
+    for each neighbor u of vertex:
+        if colors[u] == c:
+            return false
+    return true
+```
+
+> **GATE Facts:**
+> - **Chromatic number** χ(G) = minimum number of colors needed
+> - **Complete graph Kₙ:** χ(Kₙ) = n
+> - **Bipartite graph:** χ(G) = 2 (if non-trivial)
+> - **Tree:** χ(T) = 2 (trees are bipartite)
+> - **Odd cycle:** χ = 3
+> - **Planar graph:** χ ≤ 4 (Four Color Theorem)
+> - Graph coloring is NP-Complete for m ≥ 3 colors
+
+---
+
+## 9.5 Hamiltonian Path/Cycle
+
+**Problem:** Find a path/cycle that visits every vertex exactly once.
+
+```
+HamiltonianCycle(graph, path, pos):
+    if pos == V:
+        if graph[path[pos-1]][path[0]]:    // Last vertex connected to first
+            return true
+        return false
+    for v = 1 to V-1:
+        if isSafe(v, graph, path, pos):
+            path[pos] = v
+            if HamiltonianCycle(graph, path, pos + 1):
+                return true
+            path[pos] = -1    // Backtrack
+    return false
+```
+
+> **GATE Comparison:**
+> | Property | Eulerian Path/Circuit | Hamiltonian Path/Cycle |
+> |----------|----------------------|----------------------|
+> | Visits | Every **edge** once | Every **vertex** once |
+> | Easy check exists? | ✅ Yes (degree conditions) | ❌ No (NP-Complete) |
+> | Euler condition (undirected) | Connected + all even degrees | No simple condition |
+> | Complexity | O(E) — Hierholzer's | NP-Complete |
+
+---
+
+## 9.6 Branch and Bound
+
+> **Analogy:** Like backtracking, but instead of just checking if a path is valid, we also estimate whether this path can lead to a BETTER solution than what we already have. If not, we prune it.
+
+**Key difference from Backtracking:**
+| Backtracking | Branch and Bound |
+|-------------|-----------------|
+| For feasibility problems | For optimization problems |
+| Prunes infeasible paths | Prunes suboptimal paths |
+| No bound computation | Computes bounds to prune |
+
+### Branch and Bound for 0/1 Knapsack
+
+**Strategy:** Use a priority queue (best-first search). At each node:
+- **Bound:** Upper bound on best value achievable from this node (using fractional relaxation)
+- **Prune:** If bound ≤ current best, skip this branch
+
+```
+BB_Knapsack(items, W):
+    Sort items by value/weight ratio (decreasing)
+    Q = priority queue (max-heap by bound)
+    best = 0
+    Q.push(root node with bound = totalValue)
+    
+    while Q is not empty:
+        node = Q.pop()
+        if node.bound <= best: continue      // Prune
+        if node.level == n: continue
+        
+        // Branch: include next item
+        include = node + item[node.level]
+        if include.weight ≤ W and include.value > best:
+            best = include.value
+        include.bound = computeBound(include)
+        if include.bound > best:
+            Q.push(include)
+        
+        // Branch: exclude next item
+        exclude = node (without item[node.level])
+        exclude.bound = computeBound(exclude)
+        if exclude.bound > best:
+            Q.push(exclude)
+    
+    return best
+```
+
+### Branch and Bound for TSP
+
+**Travelling Salesman Problem:** Find minimum cost Hamiltonian cycle.
+
+**Lower bound estimation:** Reduce the cost matrix by subtracting row and column minimums. The sum of reductions gives a lower bound.
+
+**Strategy:**
+1. Start with the reduced cost matrix
+2. For each possible next city, compute the reduced cost
+3. Explore the node with the **minimum lower bound** (best-first)
+4. Prune branches whose lower bound ≥ current best tour cost
+
+> **GATE Fact:** TSP is NP-Hard. Branch and Bound doesn't change the worst-case complexity but dramatically reduces average exploration.
+
+---
+
+## 9.7 Comparison: Backtracking vs Branch and Bound vs DP
+
+| Feature | Backtracking | Branch & Bound | DP |
+|---------|-------------|---------------|-----|
+| Problem type | Feasibility | Optimization | Optimization |
+| Search | DFS | BFS/Best-first | Bottom-up |
+| Pruning | Validity check | Bound-based | Subproblems |
+| State space | Tree | Tree | Table |
+| All solutions | ✅ Can find all | ❌ Usually one | ❌ Usually one |
+| Optimal | ❌ First found | ✅ Guaranteed | ✅ Guaranteed |
+
+---
+
+
+---
+
+# Chapter 10: String Matching Algorithms
+
+## 10.1 The Problem
+
+**Given:** Text T of length n, Pattern P of length m. Find all occurrences of P in T.
+
+> **Analogy:** Like using Ctrl+F to find a word in a document. How efficiently can the computer do this?
+
+---
+
+## 10.2 Naive (Brute Force) String Matching
+
+```
+NaiveMatch(T, P):
+    n = |T|, m = |P|
+    for s = 0 to n-m:
+        match = true
+        for j = 0 to m-1:
+            if T[s+j] ≠ P[j]:
+                match = false
+                break
+        if match:
+            print "Pattern found at shift " + s
+```
+
+| Metric | Value |
+|--------|-------|
+| Best Case | O(n) — first character always mismatches |
+| Worst Case | **O((n-m+1)×m) = O(nm)** |
+| Space | O(1) |
+
+**Worst case example:** T = "AAAAAAAAB", P = "AAAB" — mismatch always at last character.
+
+---
+
+## 10.3 KMP Algorithm (Knuth-Morris-Pratt) ⭐⭐
+
+> **Key Insight:** When a mismatch occurs, we already know some of the characters that match. Don't re-compare them! Use a **prefix function (failure function)** to skip ahead.
+
+### The Prefix Function (LPS Array)
+
+**LPS[i]** = length of the longest **proper prefix** of P[0..i] that is also a **suffix** of P[0..i].
+
+**How to compute:**
+```
+ComputeLPS(P, m):
+    LPS[0] = 0
+    len = 0          // length of previous longest prefix suffix
+    i = 1
+    while i < m:
+        if P[i] == P[len]:
+            len++
+            LPS[i] = len
+            i++
+        else:
+            if len != 0:
+                len = LPS[len-1]    // Key: don't increment i!
+            else:
+                LPS[i] = 0
+                i++
+    return LPS
+```
+
+**Example:** P = "ABCABD"
+```
+i=0: LPS[0] = 0                          → [0, _, _, _, _, _]
+i=1: P[1]='B' ≠ P[0]='A' → LPS[1] = 0   → [0, 0, _, _, _, _]
+i=2: P[2]='C' ≠ P[0]='A' → LPS[2] = 0   → [0, 0, 0, _, _, _]
+i=3: P[3]='A' = P[0]='A' → LPS[3] = 1   → [0, 0, 0, 1, _, _]
+i=4: P[4]='B' = P[1]='B' → LPS[4] = 2   → [0, 0, 0, 1, 2, _]
+i=5: P[5]='D' ≠ P[2]='C', len=LPS[1]=0
+     P[5]='D' ≠ P[0]='A' → LPS[5] = 0   → [0, 0, 0, 1, 2, 0]
+```
+
+### KMP Search
+
+```
+KMP(T, P):
+    n = |T|, m = |P|
+    LPS = ComputeLPS(P, m)
+    i = 0    // index in T
+    j = 0    // index in P
+    while i < n:
+        if T[i] == P[j]:
+            i++; j++
+        if j == m:
+            print "Pattern found at index " + (i-j)
+            j = LPS[j-1]
+        elif i < n and T[i] ≠ P[j]:
+            if j != 0:
+                j = LPS[j-1]    // Use failure function (don't move i!)
+            else:
+                i++
+```
+
+| Metric | Value |
+|--------|-------|
+| Preprocessing | O(m) — building LPS array |
+| Matching | **O(n)** |
+| Total | **O(n + m)** |
+| Space | O(m) — for LPS array |
+
+### Why KMP is O(n)?
+
+**Key observation:** In each step, either:
+- i advances (happens at most n times), OR
+- j decreases (but j can't decrease more than it has increased, which is at most n times)
+
+Total steps ≤ 2n → **O(n)**
+
+> **GATE Favorite Questions:**
+> 1. "Build the LPS/failure function array for pattern P" — Very common!
+> 2. "How many character comparisons does KMP make?"
+> 3. "What is the worst-case number of comparisons?"
+
+---
+
+## 10.4 Rabin-Karp Algorithm ⭐
+
+> **Key Idea:** Use **hashing** to compare pattern with text windows. Only do character-by-character comparison when hashes match.
+
+### Rolling Hash
+
+**Hash function:** Treat string as a number in base d (alphabet size):
+```
+hash("abc") = a × d² + b × d¹ + c × d⁰
+```
+
+**Rolling hash update:** When sliding from T[s..s+m-1] to T[s+1..s+m]:
+```
+h(s+1) = d × (h(s) - T[s] × dᵐ⁻¹) + T[s+m]
+```
+
+**All computations done mod q** (a large prime) to prevent overflow.
+
+```
+RabinKarp(T, P, d, q):
+    n = |T|, m = |P|
+    h = d^(m-1) mod q        // Precompute highest power
+    p = hash(P)              // Pattern hash
+    t = hash(T[0..m-1])      // First window hash
+    
+    for s = 0 to n-m:
+        if t == p:
+            // Verify character by character (avoid spurious hits)
+            if T[s..s+m-1] == P[0..m-1]:
+                print "Pattern found at shift " + s
+        if s < n-m:
+            t = (d × (t - T[s] × h) + T[s+m]) mod q
+```
+
+| Metric | Value |
+|--------|-------|
+| Best/Average | **O(n + m)** |
+| Worst Case | **O(nm)** — many spurious hash matches |
+| Space | O(1) |
+
+**When is worst case?** When hash function has many collisions. Example: all characters same, T = "AAAA...A", P = "AAA".
+
+> **GATE Facts:**
+> - Rabin-Karp is great for **multiple pattern search** (compute hash for each pattern)
+> - Average case is O(n+m) with a good hash function
+> - Used in plagiarism detection (multiple substring matching)
+> - The hash function choice significantly affects performance
+
+---
+
+## 10.5 Finite Automaton Based Matching
+
+**Idea:** Build a DFA (Deterministic Finite Automaton) for the pattern, then process text through it.
+
+**State:** Number of characters matched so far.
+**Transition function:** δ(state, character) = length of longest proper suffix of P[0..state]+character that is a prefix of P.
+
+| Metric | Value |
+|--------|-------|
+| Preprocessing | O(m × |Σ|) — building transition table |
+| Matching | **O(n)** — single pass through text |
+| Space | O(m × |Σ|) |
+
+> **Comparison with KMP:** KMP uses LPS to implicitly handle the same transitions with O(m) space instead of O(m|Σ|).
+
+---
+
+## 10.6 Comparison of String Matching Algorithms
+
+| Algorithm | Preprocessing | Matching | Total | Space |
+|-----------|---------------|----------|-------|-------|
+| Naive | None | O(nm) | O(nm) | O(1) |
+| KMP | O(m) | O(n) | **O(n+m)** | O(m) |
+| Rabin-Karp | O(m) | O(n) avg | O(n+m) avg | O(1) |
+| Finite Automaton | O(m\|Σ\|) | O(n) | O(n+m\|Σ\|) | O(m\|Σ\|) |
+
+---
+
+
+---
+
+# Chapter 11: Complexity Classes & NP-Completeness
+
+## 11.1 Why This Matters
+
+> **The Biggest Open Question in Computer Science:** Is **P = NP**? This $1 million Millennium Prize Problem asks whether every problem whose solution can be verified quickly can also be solved quickly.
+
+Understanding complexity classes helps you:
+1. Know when to stop searching for an efficient algorithm (the problem is hard!)
+2. Recognize NP-Complete problems in exams and in practice
+3. Use approximation or heuristic algorithms instead
+
+---
+
+## 11.2 Decision Problems
+
+A **decision problem** is one with a yes/no answer. Every optimization problem can be converted to a decision version.
+
+| Optimization | Decision Version |
+|-------------|-----------------|
+| Shortest path from s to t | Is there a path from s to t with length ≤ k? |
+| Minimum vertex cover | Is there a vertex cover of size ≤ k? |
+| Maximum clique | Is there a clique of size ≥ k? |
+
+---
+
+## 11.3 Complexity Classes — Definitions
+
+### Class P (Polynomial Time)
+
+**P** = Set of decision problems solvable by a **deterministic** Turing machine in **polynomial time** O(nᵏ) for some constant k.
+
+**Examples in P:**
+- Sorting (O(n log n))
+- Shortest path (O(V² or (V+E)log V))
+- MST (O(E log V))
+- 2-SAT, 2-coloring
+- Matching in bipartite graphs
+- Linear programming
+
+> **Intuition:** "Problems we can SOLVE efficiently."
+
+### Class NP (Nondeterministic Polynomial Time)
+
+**NP** = Set of decision problems where a YES answer can be **verified** by a deterministic Turing machine in polynomial time, given a **certificate** (witness/proof).
+
+**Alternative definition:** Problems solvable by a **nondeterministic** Turing machine in polynomial time.
+
+**Examples in NP:**
+- All problems in P (trivially — if you can solve it, you can verify it)
+- SAT, 3-SAT
+- Hamiltonian cycle (certificate: the cycle itself — verify in O(V))
+- Graph coloring (certificate: the coloring — verify in O(V+E))
+- Subset sum (certificate: the subset — verify in O(n))
+- Travelling Salesman (decision version)
+
+> **Intuition:** "Problems where we can VERIFY a solution efficiently."
+
+> **GATE Critical:** **P ⊆ NP** always holds. The open question is whether **P = NP** or **P ⊂ NP** (strict subset).
+
+### Class co-NP
+
+**co-NP** = Set of decision problems where a NO answer can be verified in polynomial time.
+
+**Example:** "Is this number composite?" is in NP (certificate: a factor). "Is this number prime?" is in co-NP (and also in P — AKS primality test).
+
+---
+
+### Class NP-Hard
+
+**NP-Hard** = A problem H is NP-Hard if every problem in NP can be **polynomial-time reduced** to H.
+
+In other words: H is "at least as hard as" the hardest problems in NP.
+
+> **NP-Hard problems are NOT necessarily in NP!** They could be even harder (undecidable, for example).
+
+**Examples:** Halting problem (undecidable, NP-Hard but not in NP), TSP optimization version.
+
+### Class NP-Complete
+
+**NP-Complete** = NP ∩ NP-Hard
+
+A problem L is NP-Complete if:
+1. L ∈ NP (solutions can be verified in polynomial time)
+2. L is NP-Hard (every NP problem reduces to L)
+
+> **Intuition:** "The hardest problems in NP."
+
+```
+         ┌─────────────────────────┐
+         │           NP-Hard       │
+         │    ┌──────────────┐     │
+         │    │  NP-Complete │     │
+         │    │   ┌──────┐   │     │
+         │    │   │  P   │   │     │
+         │    │   └──────┘   │     │
+         │    └──────────────┘     │
+         │          NP             │
+         └─────────────────────────┘
+```
+
+(Assuming P ≠ NP)
+
+---
+
+## 11.4 Polynomial-Time Reductions
+
+**Definition:** Problem A reduces to problem B (written A ≤ₚ B) if there exists a polynomial-time function f such that:
+- x is a YES instance of A ⟺ f(x) is a YES instance of B
+
+**What this means:** If we can solve B, we can solve A (by transforming A's input to B's format).
+
+**Key implication:** If A ≤ₚ B and A is NP-Hard → B is NP-Hard too!
+
+> **Analogy:** "If I can't climb a 100m wall (A), and a 200m wall (B) is definitely not easier, then I can't climb B either."
+
+**Direction of reduction (GATE TRAP):**
+
+To prove X is NP-Complete:
+1. Show X ∈ NP
+2. Take a **known NP-Complete** problem Y
+3. Show Y ≤ₚ X (reduce FROM the known hard problem TO the new problem)
+
+> **Common mistake:** Students reduce in the wrong direction! Always reduce FROM the known NP-Complete problem TO the one you're trying to prove NP-Complete.
+
+---
+
+## 11.5 Cook's Theorem (SAT is NP-Complete) — The First NP-Complete Problem
+
+**SAT (Boolean Satisfiability):** Given a Boolean formula, is there an assignment of variables that makes it TRUE?
+
+**Cook-Levin Theorem (1971):** SAT is NP-Complete.
+
+**Proof idea:** Any NP problem can be expressed as a polynomial-time verification by a Turing machine. The TM's computation can be encoded as a Boolean formula that is satisfiable iff the TM accepts.
+
+> **Significance:** This was the FIRST problem proved NP-Complete. All subsequent proofs reduce from SAT (or from other known NP-Complete problems).
+
+---
+
+## 11.6 Famous NP-Complete Problems ⭐
+
+| Problem | Description |
+|---------|-------------|
+| **SAT** | Is a Boolean formula satisfiable? |
+| **3-SAT** | SAT with each clause having exactly 3 literals |
+| **Vertex Cover** | Is there a vertex cover of size ≤ k? |
+| **Independent Set** | Is there an independent set of size ≥ k? |
+| **Clique** | Is there a clique of size ≥ k? |
+| **Hamiltonian Cycle** | Does a Hamiltonian cycle exist? |
+| **TSP (decision)** | Is there a tour of cost ≤ k? |
+| **Subset Sum** | Is there a subset summing to T? |
+| **Graph Coloring (≥3)** | Can the graph be colored with ≤ k colors (k≥3)? |
+| **3D Matching** | Does a perfect 3D matching exist? |
+| **Set Cover** | Can the universe be covered with ≤ k sets? |
+| **Partition** | Can a set be split into two equal-sum subsets? |
+| **0/1 Knapsack (decision)** | Is there a subset with weight ≤ W and value ≥ V? |
+
+### Standard Reduction Chain
+
+```
+SAT → 3-SAT → Clique → Vertex Cover → Independent Set
+                  ↓
+            Hamiltonian Cycle → TSP
+                  ↓
+            Subset Sum → Partition → Knapsack
+                  ↓
+            3-Coloring → k-Coloring
+```
+
+---
+
+## 11.7 Key Relationships for GATE
+
+### Problems in P (polynomial time solvable)
+
+| Problem | Time |
+|---------|------|
+| 2-SAT | O(V+E) |
+| 2-Coloring (Bipartite check) | O(V+E) |
+| Shortest Path | O(V² or (V+E)logV) |
+| MST | O(E log V) |
+| Maximum Bipartite Matching | O(V·E) |
+| Euler Circuit | O(E) |
+| Topological Sort | O(V+E) |
+
+### NP-Complete (no known polynomial solution)
+
+| Problem | NP-Complete? |
+|---------|-------------|
+| 3-SAT | ✅ |
+| 2-SAT | ❌ (in P!) |
+| 3-Coloring | ✅ |
+| 2-Coloring | ❌ (in P!) |
+| Hamiltonian Path | ✅ |
+| Euler Path | ❌ (in P!) |
+| 0/1 Knapsack | ✅ |
+| Fractional Knapsack | ❌ (in P!) |
+
+> **GATE Pattern:** Often "2 vs 3" determines complexity:
+> - 2-SAT (P) vs 3-SAT (NPC)
+> - 2-Coloring (P) vs 3-Coloring (NPC)
+> - 2-Partition (P for some variants) vs 3-Partition (NPC)
+
+---
+
+## 11.8 Important Theorems for GATE
+
+1. **If any NP-Complete problem has a polynomial-time algorithm, then P = NP**
+2. **If P ≠ NP, no NP-Complete problem has a polynomial-time algorithm**
+3. **Complement:** If L is NP-Complete and L's complement is in NP, and if P = NP, then NP = co-NP
+4. **Vertex Cover + Independent Set + Clique:** These are related:
+   - S is a vertex cover ⟺ V-S is an independent set
+   - G has a clique of size k ⟺ complement graph G̅ has an independent set of size k
+
+5. **Transitivity of reductions:** If A ≤ₚ B and B ≤ₚ C, then A ≤ₚ C
+
+---
+
+## 11.9 Pseudo-Polynomial and Approximation
+
+### Pseudo-Polynomial Algorithms
+
+Some NP-Complete problems have algorithms that are polynomial in the **numeric value** of input but exponential in the **size (bits)** of input.
+
+**Example:** 0/1 Knapsack O(nW) — polynomial in n and W, but W could need log W bits to represent. If W = 2ⁿ, this is O(n·2ⁿ) = exponential.
+
+> **GATE Fact:** Problems that are NP-Complete but have pseudo-polynomial algorithms are called **weakly NP-Complete** (e.g., Subset Sum, Knapsack, Partition).
+
+> Problems that remain NP-Complete even with unary input are **strongly NP-Complete** (e.g., 3-SAT, 3-Coloring, TSP).
+
+### Approximation Algorithms
+
+When exact solutions are too slow, use approximation:
+
+| Problem | Best Approximation Ratio |
+|---------|-------------------------|
+| Vertex Cover | 2-approximation (always within factor 2 of optimal) |
+| TSP (metric) | 3/2-approximation (Christofides) |
+| Set Cover | O(log n)-approximation |
+| MAX-SAT | 3/4-approximation |
+| General TSP | No constant-factor approximation (unless P=NP) |
+
+---
+
+
+---
+
+# Chapter 12: Amortized Analysis
+
+## 12.1 What is Amortized Analysis?
+
+> **Analogy:** Imagine you put money in a piggy bank every day. Some days you withdraw a large amount. If someone sees only the withdrawal day, they think you're spending a lot. But **amortized** over many days, your average spending is low. Amortized analysis gives a **more accurate average** cost per operation in a sequence.
+
+**Key idea:** Instead of analyzing the worst-case cost of a **single operation**, analyze the **average cost per operation** over a **sequence of operations**.
+
+**Important:** This is NOT average-case analysis (which uses probability). Amortized analysis is a **worst-case guarantee** for the total cost of a sequence.
+
+---
+
+## 12.2 Three Methods of Amortized Analysis
+
+### Method 1: Aggregate Method
+
+**Idea:** Compute the total cost of n operations, then divide by n.
+
+**amortized cost = T(n) / n**
+
+**Example: Stack with Multipop**
+
+Stack supports:
+- PUSH(x) — cost 1
+- POP() — cost 1
+- MULTIPOP(k) — pop min(k, stack_size) elements, cost = min(k, stack_size)
+
+**Worst case of MULTIPOP:** O(n) if stack has n elements.
+
+**But amortized?** In n operations:
+- Each element is pushed at most once → at most n pushes (total cost n)
+- Each element can be popped at most once → total pops ≤ n
+- Total cost of n operations ≤ 2n
+
+**Amortized cost per operation = 2n/n = O(1)** ✓
+
+---
+
+### Method 2: Accounting Method (Banker's Method)
+
+**Idea:** Charge each operation an **amortized cost**. If the amortized cost exceeds the actual cost, the difference is stored as **credit** on the data structure. Later, expensive operations use this credit.
+
+**Rule:** Total amortized cost ≥ Total actual cost (credit never goes negative)
+
+**Example: Stack with Multipop**
+
+| Operation | Actual Cost | Amortized Cost | Credit Change |
+|-----------|------------|----------------|---------------|
+| PUSH | 1 | **2** | +1 per element |
+| POP | 1 | 0 | -1 (use element's credit) |
+| MULTIPOP(k) | k | 0 | -k (use elements' credits) |
+
+Each PUSH pays 1 for itself + 1 as "prepayment" for a future POP/MULTIPOP.
+
+Total amortized cost of n operations = at most 2n → **amortized O(1) per operation**.
+
+> **Why this works:** We're "overcharging" cheap operations to "subsidize" expensive ones.
+
+---
+
+### Method 3: Potential Method (Physicist's Method)
+
+**Idea:** Define a **potential function** Φ that maps the state of the data structure to a number. The amortized cost is:
+
+```
+ĉᵢ = cᵢ + Φ(Dᵢ) - Φ(Dᵢ₋₁)
+```
+
+where cᵢ is the actual cost, Dᵢ is the state after operation i.
+
+**Requirements:**
+- Φ(D₀) = 0 (initial potential)
+- Φ(Dᵢ) ≥ 0 for all i (potential never negative)
+
+**Total amortized cost = Σĉᵢ = Σcᵢ + Φ(Dₙ) - Φ(D₀) ≥ Σcᵢ**
+
+**Example: Stack with Multipop**
+
+Let Φ = number of elements in the stack.
+
+| Operation | Actual Cost cᵢ | ΔΦ | Amortized ĉᵢ |
+|-----------|---------------|-----|---------------|
+| PUSH | 1 | +1 | 1 + 1 = **2** |
+| POP | 1 | -1 | 1 - 1 = **0** |
+| MULTIPOP(k) | k | -k | k - k = **0** |
+
+Amortized cost per operation = **O(1)** ✓
+
+---
+
+## 12.3 Classic Example: Dynamic Array (Amortized Doubling) ⭐
+
+**Scenario:** An array that doubles in size when full.
+
+| Operation | Actual Cost |
+|-----------|------------|
+| INSERT (no resize) | O(1) |
+| INSERT (with resize) | O(n) — copy all n elements |
+
+**Is INSERT O(n) or O(1)?**
+
+### Aggregate Analysis
+
+For n insertions:
+- Resize happens at sizes 1, 2, 4, 8, ..., 2ᵏ where 2ᵏ ≤ n
+- Total resize cost = 1 + 2 + 4 + ... + 2ᵏ < 2n
+
+Total cost = n (for insertions) + 2n (for all resizes) = 3n
+
+**Amortized cost per INSERT = 3n/n = O(1)** ✓
+
+### Accounting Analysis
+
+Charge each INSERT **3 units:**
+- 1 for the insertion itself
+- 1 prepaid for copying THIS element in a future resize
+- 1 prepaid for copying an OLD element that didn't pay for itself
+
+### Potential Analysis
+
+Let Φ = 2 × (number of elements) - (capacity of array)
+
+After resize: array is half full, so Φ = 2(n/2) - n = 0  
+Just before resize: array is full, so Φ = 2n - n = n
+
+INSERT without resize: cᵢ = 1, ΔΦ = 2, ĉᵢ = 3  
+INSERT with resize from capacity n to 2n: cᵢ = n+1, ΔΦ = 2-(2n-n) = 2-n, ĉᵢ = n+1+2-n = **3**
+
+**Amortized cost = O(1)** in all cases ✓
+
+> **GATE Application:** This is why `ArrayList` in Java / `vector` in C++ / `list` in Python have O(1) amortized append, despite occasional O(n) resizing.
+
+---
+
+## 12.4 Amortized Analysis of Union-Find
+
+With **union by rank** and **path compression:**
+
+| Per operation | Actual worst case | Amortized |
+|--------------|-------------------|-----------|
+| FIND | O(log n) | **O(α(n))** |
+| UNION | O(log n) | **O(α(n))** |
+
+where α(n) is the **inverse Ackermann function** — grows so slowly that α(n) ≤ 4 for any practical n (up to ~10⁸⁰).
+
+> **GATE Fact:** For all practical purposes, Union-Find operations are **O(1) amortized**.
+
+---
+
+## 12.5 Amortized Analysis of Splay Trees
+
+A splay tree guarantees that any sequence of m operations on a tree with n nodes takes **O(m log n)** total time.
+
+**Amortized cost per operation: O(log n)**
+
+Even though individual operations can take O(n), the splay operation ensures frequently accessed elements move to the root, amortizing the cost.
+
+> **GATE Fact:** Splay trees have O(log n) amortized time for search, insert, and delete, but O(n) worst case for a single operation.
+
+---
+
+## 12.6 When to Use Which Method
+
+| Method | Best When | Difficulty |
+|--------|-----------|-----------|
+| Aggregate | Total cost is easy to bound directly | Easiest |
+| Accounting | Different operations have clearly different costs | Medium |
+| Potential | Need a precise mathematical proof | Hardest |
+
+> **GATE Tip:** For GATE questions, the aggregate method usually suffices. Potential method is needed for rigorous proofs (rarely asked in detail).
+
+---
+
+
+---
+
+# Chapter 13: Miscellaneous & Advanced Topics
+
+## 13.1 Hashing
+
+### Hash Table Basics
+
+> **Analogy:** A library catalog — instead of searching every shelf, use the catalog (hash function) to go directly to the right shelf.
+
+**Hash function:** h(key) → index in table of size m
+
+**Desired properties:**
+1. **Uniform distribution** — keys spread evenly
+2. **Fast to compute** — O(1)
+3. **Deterministic** — same key always gives same hash
+
+### Common Hash Functions
+
+| Method | Formula | Notes |
+|--------|---------|-------|
+| Division | h(k) = k mod m | m should be prime, not power of 2 |
+| Multiplication | h(k) = ⌊m(kA mod 1)⌋ | A ≈ (√5 - 1)/2 ≈ 0.618 (Knuth) |
+| Universal | h(k) = ((ak+b) mod p) mod m | a,b random, p prime > m |
+
+### Collision Resolution
+
+#### 1. Chaining (Open Hashing)
+
+Each table slot holds a linked list of elements that hash to that slot.
+
+| Metric | Value |
+|--------|-------|
+| Load factor α | n/m (average list length) |
+| Search (avg successful) | 1 + α/2 |
+| Search (avg unsuccessful) | 1 + α |
+| Worst case | O(n) — all keys in one chain |
+
+#### 2. Open Addressing (Closed Hashing)
+
+All elements stored in the table itself. On collision, **probe** for the next empty slot.
+
+**Probe sequences:**
+
+| Method | Probe Sequence h(k,i) | Pros | Cons |
+|--------|----------------------|------|------|
+| **Linear Probing** | (h(k) + i) mod m | Cache friendly | Primary clustering |
+| **Quadratic Probing** | (h(k) + c₁i + c₂i²) mod m | Reduced clustering | Secondary clustering |
+| **Double Hashing** | (h₁(k) + i·h₂(k)) mod m | Best distribution | h₂ must be coprime to m |
+
+**Load factor constraint:** α < 1 for open addressing (table can't be full)
+
+### Expected Number of Probes
+
+| Operation | Chaining | Open Addressing (uniform) |
+|-----------|----------|---------------------------|
+| Unsuccessful search | 1 + α | 1/(1-α) |
+| Successful search | 1 + α/2 | -(1/α)·ln(1-α) |
+
+> **GATE Favorites:**
+> 1. "Average probes for unsuccessful search with load factor 0.5?" → Open addressing: 1/(1-0.5) = 2
+> 2. "What load factor gives average 4 probes for unsuccessful search?" → 1/(1-α)=4 → α=0.75
+> 3. "Primary clustering occurs in which probing?" → **Linear probing**
+> 4. "For double hashing, h₂(k) should never be?" → **0** (causes infinite loop)
+
+---
+
+## 13.2 Randomized Algorithms
+
+### Types
+
+| Type | Definition | Example |
+|------|-----------|---------|
+| **Las Vegas** | Always correct, randomized running time | Randomized Quick Sort |
+| **Monte Carlo** | Randomized correctness, guaranteed running time | Miller-Rabin Primality |
+
+### Randomized Quick Sort
+
+Pick pivot uniformly at random → **expected O(n log n)** for any input.
+
+**Key insight:** No adversarial input can force worst case, because the pivot is random.
+
+### Randomized Selection (Quick Select)
+
+Finding k-th smallest: expected O(n), worst O(n²).
+
+> **GATE Fact:** Randomized algorithms use random choices but provide expected guarantees. Las Vegas = always correct, Monte Carlo = might be wrong.
+
+---
+
+## 13.3 Lower Bounds for Algorithms
+
+### Comparison-Based Lower Bounds
+
+| Problem | Lower Bound | Achieved By |
+|---------|-------------|-------------|
+| Sorting | Ω(n log n) | Merge Sort, Heap Sort |
+| Finding max | Ω(n) — need n-1 comparisons | Single pass |
+| Finding max AND min | ⌈3n/2⌉ - 2 | Tournament method |
+| Finding 2nd largest | n + ⌈log n⌉ - 2 | Tournament + losers of winner |
+| Merging two sorted arrays | m + n - 1 (worst case) | Standard merge |
+| Searching sorted array | Ω(log n) | Binary search |
+
+### How to Derive: Finding Max needs n-1 comparisons
+
+**Lower bound argument:** There are n elements. Each comparison can eliminate at most 1 candidate for the maximum. To narrow down from n candidates to 1, need at least n-1 comparisons.
+
+### Finding Max AND Min simultaneously
+
+**Naive:** 2n - 3 comparisons (find max using n-1, then find min using n-2)
+
+**Better (Tournament):** Process elements in pairs:
+1. Compare pairs: n/2 comparisons (determines potential maxes and mins)
+2. Find max among n/2 candidates: n/2 - 1 comparisons
+3. Find min among n/2 candidates: n/2 - 1 comparisons
+
+Total = n/2 + (n/2-1) + (n/2-1) = **3n/2 - 2** comparisons
+
+> **GATE Fact:** This is optimal — no comparison-based algorithm can find both max and min in fewer than ⌈3n/2⌉ - 2 comparisons.
+
+---
+
+## 13.4 Order Statistics
+
+**k-th order statistic** = k-th smallest element in an unsorted array.
+
+| Method | Time | Space | Guarantee |
+|--------|------|-------|-----------|
+| Sort, then index | O(n log n) | O(1)-O(n) | Deterministic |
+| Quick Select | O(n) expected, O(n²) worst | O(1) | Randomized |
+| Median of Medians | **O(n) worst case** | O(log n) | Deterministic |
+
+> Already covered in Chapter 5 (Section 5.7).
+
+---
+
+## 13.5 Approximation Algorithms (Brief)
+
+For NP-Hard optimization problems, approximation algorithms find solutions within a guaranteed factor of optimal.
+
+**Approximation Ratio:** ρ(n) where max(C/C*, C*/C) ≤ ρ(n)
+
+| Problem | Algorithm | Ratio |
+|---------|-----------|-------|
+| Vertex Cover | Take both endpoints of each edge in a maximal matching | 2 |
+| TSP (triangle inequality) | MST-based tour | 2 |
+| TSP (triangle inequality) | Christofides | 3/2 |
+| Set Cover | Greedy | O(ln n) |
+| Bin Packing (online) | First Fit Decreasing | 11/9 OPT + 6/9 |
+
+### Vertex Cover 2-Approximation
+
+```
+ApproxVertexCover(G):
+    C = ∅
+    E' = E
+    while E' ≠ ∅:
+        Pick any edge (u,v) from E'
+        C = C ∪ {u, v}
+        Remove all edges incident to u or v
+    return C
+```
+
+**Why ratio = 2?** The maximal matching has k edges, so our cover has 2k vertices. But each edge in the matching needs at least one endpoint in any cover → optimal ≥ k. So our solution ≤ 2 × optimal.
+
+---
+
+## 13.6 Important Algorithmic Identities & Results for GATE
+
+### Sum Formulas
+```
+Σ(i=1 to n) 1 = n
+Σ(i=1 to n) i = n(n+1)/2
+Σ(i=1 to n) i² = n(n+1)(2n+1)/6
+Σ(i=1 to n) i³ = [n(n+1)/2]²
+Σ(i=0 to n) xⁱ = (xⁿ⁺¹ - 1)/(x - 1)  for x ≠ 1
+Σ(i=1 to n) 1/i = Θ(ln n) ≈ ln n + 0.577  [Harmonic series]
+Σ(i=0 to ∞) xⁱ = 1/(1-x)  for |x| < 1
+Σ(i=0 to ∞) i·xⁱ = x/(1-x)²  for |x| < 1
+```
+
+### Logarithmic Identities
+```
+log(ab) = log a + log b
+log(a/b) = log a - log b
+log(aⁿ) = n·log a
+log_b(a) = log_c(a) / log_c(b)    [Change of base]
+a^(log_b(c)) = c^(log_b(a))       [GATE favorite!]
+2^(log₂ n) = n
+log₂(n!) = Θ(n log n)             [Stirling's approximation]
+```
+
+### Catalan Numbers
+The n-th Catalan number: C(n) = (2n)! / ((n+1)! × n!) = C(2n, n) / (n+1)
+
+| n | C(n) |
+|---|------|
+| 0 | 1 |
+| 1 | 1 |
+| 2 | 2 |
+| 3 | 5 |
+| 4 | 14 |
+| 5 | 42 |
+
+**Appearances in GATE:**
+- Number of distinct binary trees with n nodes
+- Number of ways to parenthesize n+1 factors
+- Number of valid arrangements of n pairs of parentheses
+- Number of paths in an n×n grid (from corner to corner without crossing diagonal)
+- Number of full binary trees with n+1 leaves
+
+---
+
+
+---
+
+# Chapter 14: GATE Exam Strategy & PYQ Patterns
+
+## 14.1 Topic-wise Weightage in GATE (Approximate)
+
+| Topic | Weightage | Difficulty | Priority |
+|-------|-----------|-----------|----------|
+| **Asymptotic Analysis** | 2-4 marks | Easy-Medium | ⭐⭐⭐ |
+| **Recurrences** | 2-4 marks | Medium | ⭐⭐⭐ |
+| **Sorting** | 2-4 marks | Medium | ⭐⭐⭐ |
+| **Graph Algorithms** | 4-8 marks | Medium-Hard | ⭐⭐⭐⭐⭐ |
+| **Greedy** | 2-4 marks | Medium | ⭐⭐⭐⭐ |
+| **Dynamic Programming** | 4-6 marks | Hard | ⭐⭐⭐⭐⭐ |
+| **NP-Completeness** | 2-4 marks | Medium | ⭐⭐⭐ |
+| **Searching** | 1-2 marks | Easy | ⭐⭐ |
+| **Hashing** | 1-2 marks | Easy-Medium | ⭐⭐ |
+| **String Matching** | 0-2 marks | Medium | ⭐⭐ |
+
+> **Strategy:** Master Graph Algorithms and DP — together they account for ~50% of algorithm questions.
+
+---
+
+## 14.2 Common GATE Question Patterns
+
+### Pattern 1: "Find the time complexity"
+
+**Strategy:**
+1. Identify the loop structure (nested? dependent? multiplicative?)
+2. Write the recurrence if recursive
+3. Apply Master Theorem or summation
+4. Check for common patterns from Chapter 1
+
+**Common traps:**
+- `i = i * 2` → O(log n), not O(n)
+- Nested dependent loops → sum, not multiply
+- `for(i=1; i<=n; i++) for(j=1; j<=n; j+=i)` → O(n log n) (harmonic series)
+
+### Pattern 2: "Apply algorithm X to this input"
+
+**Strategy:** Trace through the algorithm step by step. These are FREE marks if you know the algorithm well.
+
+**Most commonly asked:**
+- Dijkstra's on a weighted graph
+- BFS/DFS traversal order
+- Quick sort partition steps
+- Build heap from array
+- Huffman coding tree
+- KMP failure function computation
+
+### Pattern 3: "Which of the following is true?"
+
+**Strategy:** Know the properties! These are theory questions testing deep understanding.
+
+**Commonly tested properties:**
+- MST uniqueness conditions
+- DFS edge classification (back edge → cycle)
+- Stable vs unstable sorts
+- When greedy works vs when DP is needed
+- NP-Complete relationships
+
+### Pattern 4: "Minimum comparisons to..."
+
+**Strategy:** Know the lower bounds from Chapter 13.
+- Find max: n-1
+- Find max and min: ⌈3n/2⌉ - 2
+- Find 2nd largest: n + ⌈log₂ n⌉ - 2
+- Sort: ⌈log₂(n!)⌉
+- Search sorted: ⌈log₂(n+1)⌉
+
+### Pattern 5: Recurrence solving
+
+**Strategy:** Try Master Theorem first. If it doesn't apply, use recursion tree. Special forms (T(√n), T(n-1)) have memorizable solutions.
+
+---
+
+## 14.3 Time Management Strategy
+
+| Question Type | Recommended Time | Strategy |
+|-------------|-----------------|----------|
+| 1-mark MCQ | 1-2 minutes | Quick recall or elimination |
+| 2-mark MCQ | 3-4 minutes | Work through systematically |
+| 1-mark NAT | 2-3 minutes | Careful calculation |
+| 2-mark NAT | 4-5 minutes | Double-check computation |
+| MSQ | 3-5 minutes | Verify each option independently |
+
+---
+
+## 14.4 Common Mistakes to Avoid
+
+1. **Confusing O and Θ:** O is upper bound, Θ is tight bound. Saying "Merge Sort is O(n³)" is technically true but useless.
+
+2. **Wrong direction of reduction:** To prove X is NP-Complete, reduce FROM a known NPC problem TO X, not the other way.
+
+3. **Forgetting base cases:** In recurrences, the base case T(1) matters for exact solutions.
+
+4. **Dijkstra with negative edges:** Dijkstra FAILS with negative edges. Use Bellman-Ford instead.
+
+5. **Assuming Quick Sort is always O(n log n):** Worst case is O(n²). Only randomized version has expected O(n log n) for all inputs.
+
+6. **Confusing stable vs unstable:** Selection sort is NOT stable. Merge sort IS stable.
+
+7. **MST ≠ Shortest Path Tree:** They are different! MST minimizes total weight, SPT minimizes individual path weights.
+
+8. **Build heap is O(n), not O(n log n):** Bottom-up heap construction is linear.
+
+9. **NP doesn't mean "hard":** NP means verifiable in polynomial time. P ⊆ NP. Everything in P is also in NP.
+
+10. **Amortized ≠ Average case:** Amortized is worst-case guarantee for a sequence. Average case uses probability.
+
+---
+
+## 14.5 Quick Reference — Algorithm Complexities
+
+### Sorting
+| Algorithm | Best | Average | Worst | Space | Stable |
+|-----------|------|---------|-------|-------|--------|
+| Insertion | n | n² | n² | 1 | ✅ |
+| Merge | n log n | n log n | n log n | n | ✅ |
+| Quick | n log n | n log n | n² | log n | ❌ |
+| Heap | n log n | n log n | n log n | 1 | ❌ |
+| Counting | n+k | n+k | n+k | n+k | ✅ |
+| Radix | d(n+b) | d(n+b) | d(n+b) | n+b | ✅ |
+
+### Graph Algorithms
+| Algorithm | Time | Space | Purpose |
+|-----------|------|-------|---------|
+| BFS | O(V+E) | O(V) | SSSP (unweighted), levels |
+| DFS | O(V+E) | O(V) | Cycles, SCC, topo sort |
+| Dijkstra | O((V+E)logV) | O(V) | SSSP (non-neg weights) |
+| Bellman-Ford | O(VE) | O(V) | SSSP (neg weights) |
+| Floyd-Warshall | O(V³) | O(V²) | APSP |
+| Kruskal | O(E log E) | O(V) | MST |
+| Prim | O((V+E)logV) | O(V) | MST |
+| Topological Sort | O(V+E) | O(V) | DAG ordering |
+| Kosaraju/Tarjan | O(V+E) | O(V) | SCC |
+
+### Dynamic Programming
+| Problem | Time | Space |
+|---------|------|-------|
+| LCS | O(mn) | O(mn) |
+| LIS | O(n²) or O(n log n) | O(n) |
+| MCM | O(n³) | O(n²) |
+| 0/1 Knapsack | O(nW) | O(nW) |
+| Edit Distance | O(mn) | O(mn) |
+| Floyd-Warshall | O(V³) | O(V²) |
+| Coin Change | O(nV) | O(V) |
+
+### Searching
+| Algorithm | Best | Average | Worst |
+|-----------|------|---------|-------|
+| Linear | O(1) | O(n) | O(n) |
+| Binary | O(1) | O(log n) | O(log n) |
+| Interpolation | O(1) | O(log log n) | O(n) |
+| Jump | O(1) | O(√n) | O(√n) |
+
+---
+
+## 14.6 ESE & PSU Specific Tips
+
+ESE (Engineering Services Exam) and PSU exams tend to:
+1. **Focus more on basics** — definitions, properties, simple applications
+2. **Ask about real-world applications** of algorithms
+3. **Include more numerical problems** — trace through algorithms, compute exact values
+4. **Test knowledge of tradeoffs** — when to use which algorithm and why
+
+**Extra topics for ESE/PSU:**
+- Algorithm design strategies (comparison of paradigms)
+- Real-world applications (database query optimization, network routing)
+- Parallel algorithms basics
+- Cache-friendly algorithms
+
+---
+
+## 14.7 Banking Exam Tips (IT Officer / Specialist Officer)
+
+Banking technical exams for IT roles may include:
+1. Basic complexity analysis (identify O(n), O(n²), O(log n))
+2. Sorting algorithm properties (stable, in-place)
+3. Basic graph traversals (BFS, DFS)
+4. Simple DP problems (Fibonacci, basic Knapsack)
+5. Hashing concepts (collision resolution)
+
+**Focus on:** Breadth over depth. Know what each algorithm does and its complexity, less focus on proofs.
+
+---
+
+## 14.8 Final Checklist Before the Exam
+
+- [ ] Can you solve any recurrence using Master Theorem in under 30 seconds?
+- [ ] Can you trace BFS, DFS, Dijkstra, Prim, Kruskal on a graph?
+- [ ] Do you know all sorting algorithms' complexities, stability, and space usage by heart?
+- [ ] Can you write the recurrence for LCS, MCM, Knapsack, Edit Distance?
+- [ ] Do you know which problems are in P, which are NP-Complete?
+- [ ] Can you build a KMP failure function from a pattern?
+- [ ] Do you know when Dijkstra fails and what to use instead?
+- [ ] Can you explain why Build Heap is O(n), not O(n log n)?
+- [ ] Do you know the lower bounds for comparisons (max, sort, merge)?
+- [ ] Can you differentiate amortized O(1) from average O(1)?
+
+If you can answer YES to all of these, you're ready to ace the algorithms section! 🎯
+
+---
+
+## References
+
+1. **Introduction to Algorithms** — Cormen, Leiserson, Rivest, Stein (CLRS), 4th Edition
+2. **Algorithm Design Manual** — Steven Skiena, 3rd Edition
+3. **Algorithms** — Dasgupta, Papadimitriou, Vazirani
+4. **GATE Previous Year Papers** (2000-2025) — GateOverflow
+5. **Computer Science: A Modern Approach** — Standard ESE references
+6. **Discrete Mathematics and Its Applications** — Kenneth Rosen
+
+---
+
+> **Final Note:** This material covers the complete GATE/ESE/PSU/BANK syllabus for Algorithms. Master each chapter sequentially, practice PYQs after each topic, and revisit the quick reference tables before the exam. The key to Rank-1 is not just knowing algorithms — it's understanding WHY they work and recognizing WHICH one to apply. Good luck! 🏆
+
