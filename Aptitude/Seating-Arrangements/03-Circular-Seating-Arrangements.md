@@ -98,10 +98,10 @@ If they face **outward** (away from center), left and right swap!
 
 | Facing | Left | Right |
 |--------|------|-------|
-| Inward (towards center) | Anticlockwise | Clockwise |
-| Outward (away from center) | Clockwise | Anticlockwise |
+| Inward (towards center) | Clockwise | Anticlockwise |
+| Outward (away from center) | Anticlockwise | Clockwise |
 
-> **The Aha Moment:** Sit at a round table. Face the center. Your left hand points anticlockwise. Now turn around (face outward). Your left hand points clockwise. *The direction of "left" flips when facing flips.*
+> **The Aha Moment:** Sit at a round table. Face the center. Your left hand points clockwise around the table. Now turn around (face outward). Your left hand points anticlockwise. *The direction of "left" flips when facing flips.*
 
 ---
 
@@ -152,270 +152,13 @@ Negative constraints ("C is not next to D") are best used for elimination after 
 
 ## 3.6 Solved Example 1 — Basic Circular (GATE Style)
 
+> **Important Convention Established Here:** For someone **facing the center** of a round table with positions numbered clockwise:
+> - **Left = Clockwise** (your left hand points clockwise when facing inward)
+> - **Right = Anticlockwise** (your right hand points anticlockwise when facing inward)
+>
+> Derivation: Person at position 1 (top) faces downward toward center. Their left hand points to position 2 (clockwise). Person at position 5 (bottom) faces upward toward center. Their left hand points to position 6 (clockwise). This holds for every position.
+
 ### Problem
-
-> Eight people — A, B, C, D, E, F, G, H — sit around a circular table, all facing the center.
-> 1. A sits opposite to E.
-> 2. B sits immediately to the right of A.
-> 3. C sits second to the left of E.
-> 4. D sits opposite to B.
-> 5. F is not adjacent to C.
-> 6. G sits immediately to the left of D.
->
-> **Question:** Who sits opposite to C?
-
-### Solution
-
-**Step 1: Fix anchor.** Fix A at the top (position 1).
-
-**Step 2: Place using clues.**
-
-Clue 1: A opposite E. With 8 people, opposite = $+4$ seats.
-
-```
-Position:     1(A)
-           8        2
-         7            3
-           6        4
-              5(E)
-```
-
-Clue 2: B immediately to the right of A. Right = clockwise (facing center). B at position 2.
-
-```
-Position:     1(A)
-           8        2(B)
-         7            3
-           6        4
-              5(E)
-```
-
-Clue 4: D opposite B. B at position 2, opposite = position 6. D at position 6.
-
-```
-Position:     1(A)
-           8        2(B)
-         7            3
-           6(D)     4
-              5(E)
-```
-
-Clue 6: G immediately to the left of D. Left = anticlockwise (facing center). One seat anticlockwise from D (position 6) = position 5. But position 5 is E. Contradiction?
-
-No — anticlockwise from position 6 is position 7 (going 6→7→8→1 is anticlockwise when viewed from above looking at our diagram). Wait, let me be careful.
-
-**Anticlockwise direction in our numbering:** 1→8→7→6→5→4→3→2→1.
-
-So "immediately to the left (anticlockwise) of D at position 6" = position 7.
-
-G at position 7.
-
-```
-Position:     1(A)
-           8        2(B)
-         7(G)         3
-           6(D)     4
-              5(E)
-```
-
-Clue 3: C is second to the left of E. E at position 5. Two seats anticlockwise from E: 5→6→7. Position 7 is G. But we need C there — contradiction!
-
-Wait. Let's recheck. Anticlockwise from position 5: 5→6→7. So second to the left = position 7. But G is already there.
-
-Hmm. Let me recheck the anticlockwise direction. In our numbering (1 at top, going clockwise: 1, 2, 3, 4, 5, 6, 7, 8):
-- Clockwise: 1→2→3→4→5→6→7→8→1
-- Anticlockwise: 1→8→7→6→5→4→3→2→1
-
-"To the left" (facing center) = anticlockwise.
-
-E is at position 5. Going anticlockwise from E:
-- 1st to the left: position 4
-- Wait, anticlockwise from 5 is... In our layout: 5→4→3→2→1→8→7→6→5.
-
-So: anticlockwise from position 5 → position 4, then position 3.
-
-No wait — I need to think about this more carefully. When you're at position 5 (bottom), facing the center (facing up/north), your left hand points to... the right side of the diagram, which in our clockwise numbering is position 4.
-
-Actually, let's use the rule: facing center, left = anticlockwise. And anticlockwise in our numbering (where numbers increase clockwise) means **decreasing** numbers.
-
-Anticlockwise from 5: 5→4→3→2→1→8→7→6.
-
-So second to the left of E (position 5) = 2 anticlockwise steps = position 3.
-
-C at position 3.
-
-```
-Position:     1(A)
-           8        2(B)
-         7(G)         3(C)
-           6(D)     4
-              5(E)
-```
-
-Clue 5: F is not adjacent to C. C at position 3. Adjacent to C: positions 2 and 4. Position 2 is B (already placed). So F ≠ position 4.
-
-Remaining: F, H for positions 4 and 8.
-Since F ≠ 4, F at position 8. H at position 4.
-
-```
-Position:     1(A)
-           8(F)     2(B)
-         7(G)         3(C)
-           6(D)     4(H)
-              5(E)
-```
-
-**Answer:** Who sits opposite C (position 3)? Opposite = $3 + 4 = 7$. Person at position 7 = G.
-
-**C sits opposite G.**
-
-**Verification:**
-1. ✅ A (pos 1) opposite E (pos 5): $|1-5| = 4 = n/2$
-2. ✅ B (pos 2) immediately clockwise from A (pos 1)
-3. ✅ C (pos 3) is second anticlockwise from E (pos 5): $5→4→3$ ✓
-4. ✅ D (pos 6) opposite B (pos 2): $|2-6| = 4$
-5. ✅ F (pos 8) not adjacent to C (pos 3): not adjacent ✓
-6. ✅ G (pos 7) immediately anticlockwise from D (pos 6): $6→(ACW)→7$... 
-
-Wait, I need to double-check #6. D is at position 6. "Immediately to the left of D" = one seat anticlockwise from D. Anticlockwise from 6 = position 5 (since anticlockwise = decreasing in our numbering). But position 5 is E!
-
-I think the confusion is whether "to the left of D" means G is placed on D's left side, meaning G is in the anticlockwise direction from D. Let me reconsider.
-
-When D faces the center (from position 6, D faces towards position 2), D's left hand points towards position 7.
-
-**So D's left = position 7.** This is because when facing inward from position 6 (facing roughly "up-right" toward center), left = clockwise in the numbering.
-
-Actually, the correct way: when person at position 6 faces the center, they face the direction from 6 toward the center. Their left hand points to the clockwise next position (position 7), and their right hand points to position 5.
-
-In general, for someone **facing the center**:
-- Left = **clockwise** next position
-- Right = **anticlockwise** next position
-
-Wait, this contradicts what I said earlier! Let me re-derive carefully.
-
-**Definitive derivation:** Consider the standard diagram with positions numbered 1-8 clockwise:
-
-```
-              1
-          8       2
-        7           3
-          6       4
-              5
-```
-
-Person at position 1 faces downward (toward center). Their left hand points to position 2 (clockwise). Their right hand points to position 8 (anticlockwise).
-
-So: **Facing center: Left = Clockwise direction. Right = Anticlockwise direction.**
-
-This is the opposite of what I stated in section 3.3! Let me correct:
-
-For someone **facing the center** of the table:
-- **Left = Clockwise**
-- **Right = Anticlockwise**
-
-This is actually a very common source of confusion. Let me verify:
-
-Person at position 3 faces left (toward center). Their left hand points downward = toward position 4 (clockwise). ✅
-
-Person at position 5 faces upward (toward center). Their left hand points left = toward position 6 (clockwise). ✅
-
-Yes, **Left = Clockwise** when facing the center.
-
-Now let me re-solve with this corrected understanding:
-
-- Clue 2: B immediately to the **right** of A. Right = anticlockwise. A is at position 1. Anticlockwise from 1 = position 8. B at position 8.
-
-Hmm, but "to the right of A" means B is on A's right side. A at position 1 facing center (facing down). A's right hand points to position 8 (anticlockwise direction).
-
-So B at position 8.
-
-Let me redo the whole thing carefully.
-
-**Re-solve:**
-
-Fix A at position 1.
-
-Clue 1: E opposite A → E at position 5.
-
-Clue 2: B immediately to the right of A. A's right = anticlockwise = position 8. B at position 8.
-
-Clue 4: D opposite B (position 8). Opposite = position 4. D at position 4.
-
-Clue 6: G immediately to the left of D. D at position 4. D's left = clockwise = position 5. But position 5 is E! Contradiction.
-
-Hmm. Let me try: G immediately to the left of D means G is seated such that **D is on G's right** or equivalently **G is in the "left-side" direction from D**.
-
-"G sits immediately to the left of D" = G occupies the seat that is on D's left side. D at position 4, facing center. D's left = clockwise direction = position 5. G at position 5? No, E is there.
-
-This still contradicts. The problem might need different position for D. Let me consider that maybe D opposite B means something else, or try an alternative anchor.
-
-**Actually the issue is that my example problem has a conflicting set of constraints. Since this is instructional material, let me provide a corrected, consistent example.**
-
-I'll present a clean, verified example below.
-
----
-
-*Let me present a corrected, fully verified example:*
-
-### Corrected Example
-
-> Eight people — A, B, C, D, E, F, G, H — sit around a circular table, all facing the center.
-> 1. A sits opposite to E.
-> 2. B sits immediately to the left of A.
-> 3. C sits second to the right of E.
-> 4. D is not adjacent to A or E.
-> 5. F sits opposite to B.
-> 6. G sits immediately to the right of H.
->
-> **Question:** Who sits opposite to C?
-
-### Solution (Verified)
-
-**Key Rule (facing center):** Left = Clockwise, Right = Anticlockwise.
-
-**Step 1:** Fix A at position 1. Positions numbered 1–8 clockwise.
-
-**Step 2:** Clue 1 → E at position 5 (opposite, $+4$ seats).
-
-**Step 3:** Clue 2 → B immediately to A's left. Left = clockwise. B at position 2.
-
-**Step 4:** Clue 5 → F opposite B (position 2). F at position 6.
-
-**Step 5:** Clue 3 → C second to the right of E. Right = anticlockwise from E (position 5). Anticlockwise: 5→4→3. C at position 3.
-
-```
-              1(A)
-          8       2(B)
-        7           3(C)
-          6(F)    4
-              5(E)
-```
-
-**Step 6:** Clue 6 → G immediately to the right of H. Right = anticlockwise. So G is one seat anticlockwise from H. Equivalently, H is one seat clockwise from G.
-
-Remaining positions: 4, 7, 8 for D, G, H.
-
-Clue 4: D not adjacent to A (positions 2, 8) or E (positions 4, 6). So D ≠ positions 2, 8, 4, 6. From available {4, 7, 8}: D ≠ 4 and D ≠ 8. So **D at position 7**.
-
-Remaining: G and H for positions 4 and 8.
-
-Clue 6: G is immediately to the right (anticlockwise) of H. If H at position 4, anticlockwise from 4 is position 3 (occupied by C). If H at position 8, anticlockwise from 8 is position 7 (occupied by D).
-
-Hmm, neither works directly. Let me re-check: "G sits immediately to the right of H" means G is on H's right side. H faces center. H's right = anticlockwise direction.
-
-If H is at position 8: H's right = anticlockwise from 8 = position 7. G should be at position 7. But D is there. ✗
-
-If H is at position 4: H's right = anticlockwise from 4 = position 3. G should be at position 3. But C is there. ✗
-
-Both fail! Let me reconsider the placement of D.
-
-Going back: D not adjacent to A (pos 1, adjacent = 2 and 8) or E (pos 5, adjacent = 4 and 6). D ∉ {2, 8, 4, 6}. Available spots: {4, 7, 8}. D can only be at 7. ✓
-
-But then G and H can't satisfy Clue 6 in positions 4 and 8.
-
-The issue is the constraint set. Let me fix the example for a clean solve.
-
-### Final Corrected Example
 
 > Eight people — A, B, C, D, E, F, G, H — sit around a circular table, all facing the center.
 > 1. A sits opposite to E.
@@ -427,7 +170,7 @@ The issue is the constraint set. Let me fix the example for a clean solve.
 >
 > **Question:** Who sits opposite to H?
 
-### Solution (Final)
+### Solution
 
 **Rule:** Facing center → Left = Clockwise, Right = Anticlockwise.
 
@@ -441,15 +184,15 @@ The issue is the constraint set. Let me fix the example for a clean solve.
               5
 ```
 
-**Step 2:** Clue 1 → E opposite A. E at position 5.
+**Step 2:** Clue 1 → E opposite A. E at position 5 ($1 + 4 = 5$).
 
 **Step 3:** Clue 2 → B immediately to A's left. Left = clockwise. B at position 2.
 
-**Step 4:** Clue 4 → D opposite B (pos 2). D at position 6.
+**Step 4:** Clue 4 → D opposite B (position 2). D at position 6 ($2 + 4 = 6$).
 
-**Step 5:** Clue 5 → F immediately to E's right. Right = anticlockwise from pos 5 → position 4. F at position 4.
+**Step 5:** Clue 5 → F immediately to E's right. Right = anticlockwise from position 5 → position 4. F at position 4.
 
-**Step 6:** Clue 3 → H is third to the left of E. Left = clockwise from E (pos 5). Three clockwise steps: 5→6→7→8. H at position 8.
+**Step 6:** Clue 3 → H is third to the left of E. Left = clockwise from E (position 5). Three clockwise steps: 5→6→7→8. H at position 8.
 
 ```
               1(A)
@@ -461,7 +204,7 @@ The issue is the constraint set. Let me fix the example for a clean solve.
 
 **Step 7:** Remaining: C, G for positions 3 and 7.
 
-Clue 6: C not adjacent to D (pos 6). Adjacent to D: positions 5 and 7. Position 5 is E. So C ≠ 7. **C at position 3, G at position 7.**
+Clue 6: C not adjacent to D (position 6). Adjacent to D: positions 5 and 7. Position 5 is E. So C ≠ 7. **C at position 3, G at position 7.**
 
 ```
               1(A)
@@ -479,7 +222,7 @@ Clue 6: C not adjacent to D (pos 6). Adjacent to D: positions 5 and 7. Position 
 5. ✅ F(4) is one anticlockwise step from E(5) → F is to E's right
 6. ✅ C(3) not adjacent to D(6): 3 and 6 are not adjacent ✓
 
-**Answer:** H is at position 8. Opposite = position 4 = **F**.
+**Answer:** H is at position 8. Opposite = position $8 - 4 = 4$ = **F**.
 
 **H sits opposite to F.**
 

@@ -128,174 +128,11 @@ $$\text{Y's position} = p - k \quad \text{(Row 2, facing North, left = paper-lef
 
 ---
 
-## 4.5 Solved Example 1 — Standard Double Row (Banking Style)
+## 4.5 Solved Example — Standard Double Row (Banking Style)
+
+> **Convention Note:** In double-row problems, "left end" and "right end" of a row, as well as "second from the left" etc., refer to directions **from the person's own perspective** in that row. Since Row 1 faces South and Row 2 faces North, "left" points in opposite paper-directions for the two rows. Positions are numbered 1–$n$ from paper-left to paper-right.
 
 ### Problem
-
-> Ten people — A, B, C, D, E, P, Q, R, S, T — sit in two rows of 5 each.
-> - Row 1: A, B, C, D, E sit facing South.
-> - Row 2: P, Q, R, S, T sit facing North.
-> - A person in Row 1 faces exactly one person in Row 2.
->
-> **Clues:**
-> 1. A sits at the left end of Row 1.
-> 2. P faces A.
-> 3. B sits second to the right of A.
-> 4. Q sits immediately to the left of P.
-> 5. D sits at the right end of Row 1.
-> 6. S faces D.
-> 7. R sits at the left end of Row 2.
-> 8. C is not adjacent to D.
-> 9. T does not face B.
->
-> **Question:** Who faces C?
-
-### Solution
-
-**Step 1: Establish the grid.**
-
-```
-Row 1 (South):  __   __   __   __   __     (positions 1-5, left to right on paper)
-                 |    |    |    |    |
-Row 2 (North):  __   __   __   __   __     (positions 1-5, left to right on paper)
-```
-
-**Step 2: Place definite positions.**
-
-Clue 1: A at the left end of Row 1. "Left end" — this is the end on the reader's left = position 1. But wait: A faces South, so A's "left" is paper-right. "Left end of the row" typically refers to the **reader's left** in exam convention (position 1). Let me use this.
-
-But let me check: "left end of Row 1" — in banking exams, this is interpreted as the end that is to the left of people in Row 1. Row 1 faces South, so their left is paper-right. "Left end" from their perspective = position 5.
-
-**Actually, banking exam convention:** "Left end" and "right end" are **from the person's own perspective**. So:
-- Row 1 (facing South): Left end = paper-right (position 5). Right end = paper-left (position 1).
-- Row 2 (facing North): Left end = paper-left (position 1). Right end = paper-right (position 5).
-
-Hmm, this varies by exam. The safest approach: most banking exams define "left end" and "right end" based on the **person's facing direction**. Let me use this.
-
-**Revised:**
-
-Clue 1: A at the left end of Row 1. Row 1 faces South → left = paper-right → **A at position 5**.
-
-Clue 5: D at the right end of Row 1. Row 1 faces South → right = paper-left → **D at position 1**.
-
-Clue 7: R at the left end of Row 2. Row 2 faces North → left = paper-left → **R at position 1**.
-
-```
-Row 1 (South):  [D]  [__]  [__]  [__]  [A]     (positions 1-5)
-                 |     |     |     |     |
-Row 2 (North):  [R]  [__]  [__]  [__]  [__]    (positions 1-5)
-```
-
-Clue 2: P faces A. A is at Row 1 position 5. Person facing A = Row 2 position 5. **P at Row 2, position 5.**
-
-Clue 6: S faces D. D at Row 1 position 1. **S at Row 2, position 1.** But R is at Row 2 position 1!
-
-**Contradiction!** This means my "left end" convention is wrong. Let me try the other convention.
-
-**Alternative Convention:** "Left end" / "right end" are from the **reader's perspective** (absolute), not the person's. This is actually more common in practice.
-
-**Using reader's perspective:**
-
-Clue 1: A at left end of Row 1 → **A at position 1**.
-
-Clue 5: D at right end of Row 1 → **D at position 5**.
-
-Clue 7: R at left end of Row 2 → **R at position 1**.
-
-```
-Row 1 (South):  [A]  [__]  [__]  [__]  [D]     (positions 1-5)
-                 |     |     |     |     |
-Row 2 (North):  [R]  [__]  [__]  [__]  [__]    (positions 1-5)
-```
-
-Clue 2: P faces A. A at Row 1 position 1. **P at Row 2 position 1.** But R is there!
-
-Contradiction again!
-
-Hmm. Let me try: "P faces A" might not mean directly opposite. Let me re-examine.
-
-No — in double-row, "faces" means directly opposite. So P must be at Row 2 position 1, but R is there.
-
-The issue is that my example clues conflict. Let me fix the clues to be consistent.
-
-### Corrected Problem
-
-> **Clues:**
-> 1. A sits at one of the extreme ends of Row 1.
-> 2. P faces A.
-> 3. B sits second to the right of A (from A's perspective).
-> 4. Q sits immediately to the right of P (from P's perspective).
-> 5. D sits at the other extreme end of Row 1.
-> 6. S faces D.
-> 7. C is not adjacent to D.
-> 8. T does not face B or E.
-> 9. R sits exactly in the middle of Row 2.
-
-### Solution (Corrected)
-
-Positions 1–5 left to right on paper. Row 1 faces South, Row 2 faces North.
-
-Clue 1: A at an extreme end of Row 1. A at position 1 or 5.
-
-Clue 3: B second to the right of A. A faces South → A's right = paper-left = decreasing positions. If A at position 5: B at $5 - 2 = 3$. If A at position 1: B at $1 - 2 = -1$ → impossible. So **A at position 5**.
-
-**B at position 3.**
-
-Clue 5: D at the other end → **D at position 1**.
-
-```
-Row 1 (South):  [D]  [__]  [B]  [__]  [A]     (positions 1-5)
-                 |     |     |     |     |
-Row 2 (North):  [__]  [__]  [__]  [__]  [__]  (positions 1-5)
-```
-
-Clue 2: P faces A (position 5). **P at Row 2, position 5.**
-
-Clue 6: S faces D (position 1). **S at Row 2, position 1.**
-
-Clue 9: R in the middle of Row 2. **R at Row 2, position 3.**
-
-```
-Row 1 (South):  [D]  [__]  [B]  [__]  [A]
-                 |     |     |     |     |
-Row 2 (North):  [S]  [__]  [R]  [__]  [P]
-```
-
-Clue 4: Q immediately to the right of P. P faces North → right = paper-right = increasing positions. P at position 5 → Q at position 6. But only 5 positions! So Q at position $5 + 1$ is impossible.
-
-Let me try: P's right (facing North) = paper-right. But position 5 is the rightmost. So Q can't be to P's right.
-
-Maybe I should interpret "to the right" as towards increasing OR we placed A wrong. Let me reconsider: if facing North, right = East = paper-right. Position 5 is rightmost. Can't go further right.
-
-Actually, when facing North, your right hand points East. If we define positions 1-5 from West to East (paper-left to paper-right), then "to the right" of position 5 is impossible. 
-
-So let me change Clue 4 to: Q sits immediately to the **left** of P.
-
-P faces North → left = paper-left = decreasing positions. Q at position 4.
-
-```
-Row 1 (South):  [D]  [__]  [B]  [__]  [A]
-                 |     |     |     |     |
-Row 2 (North):  [S]  [__]  [R]  [Q]   [P]
-```
-
-Remaining: Row 1 positions 2 and 4 for C and E. Row 2 position 2 for T.
-
-**T at Row 2, position 2.**
-
-Clue 7: C not adjacent to D (Row 1, position 1). Adjacent to D = position 2. So C ≠ position 2. **C at position 4, E at position 2.**
-
-Clue 8: T does not face B or E. T at Row 2 position 2 faces Row 1 position 2 = E. T faces E! This contradicts Clue 8.
-
-Hmm. T is the only remaining person for Row 2 position 2, so T must face whoever is at Row 1 position 2. If E is at position 2, T faces E (violated). If C is at position 2, T faces C. But Clue 7 says C not adjacent to D (position 1), and position 2 IS adjacent to position 1.
-
-So: C can't be at position 2 (adjacent to D), and E at position 2 means T faces E (violating Clue 8).
-
-Contradiction! I need to revisit. The issue is my constructed clues. Let me simplify to a clean, minimal example.
-
----
-
-### Clean Example (Fully Verified)
 
 > Eight people — A, B, C, D and P, Q, R, S — sit in two rows.
 > Row 1: A, B, C, D face South. Row 2: P, Q, R, S face North.
@@ -311,8 +148,8 @@ Contradiction! I need to revisit. The issue is my constructed clues. Let me simp
 ### Solution
 
 **Direction Rules:**
-- Row 1 (South): right = paper-left (decreasing position numbers).
-- Row 2 (North): left = paper-left (decreasing position numbers).
+- Row 1 (facing South): right = paper-left (decreasing position numbers), left = paper-right (increasing).
+- Row 2 (facing North): right = paper-right (increasing position numbers), left = paper-left (decreasing).
 
 Clue 1: B at Row 1, position 3.
 

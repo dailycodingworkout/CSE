@@ -193,7 +193,7 @@ Position:   1    2    3    4    5    6
 > 1. D sits fourth from the left end.
 > 2. A sits second to the right of D.
 > 3. H sits at one of the extreme ends.
-> 4. B sits third to the left of A.
+> 4. B sits third to the left of H.
 > 5. C sits immediately to the left of D.
 > 6. G is not adjacent to A.
 > 7. E sits immediately to the right of A.
@@ -210,58 +210,19 @@ Position:   1    2    3    4    5    6    7    8
            [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]  [ ]
 ```
 
-**Step 2 & 3: Place definite clues**
+**Step 2: Place definite clues and chain outward**
 
 - Clue 1: D at position 4.
 - Clue 2: A second to right of D → $4 + 2 = 6$ → A at position 6.
-- Clue 4: B third to left of A → $6 - 3 = 3$ → B at position 3.
-- Clue 5: C immediately left of D → $4 - 1 = 3$ → Position 3.
+- Clue 5: C immediately left of D → $4 - 1 = 3$ → C at position 3.
+- Clue 7: E immediately right of A → $6 + 1 = 7$ → E at position 7.
 
-**Conflict!** B is at position 3 (Clue 4) and C should be at position 3 (Clue 5). Both can't be there.
+**Step 3: Resolve the branching clue**
 
-Wait — let me re-check. Clue 5 says C is immediately to the left of D. D is at position 4. So C is at position 3. But B is also at position 3 from Clue 4.
-
-**Re-read Clue 4:** "B sits third to the left of A." A is at position 6. Third to the left = $6 - 3 = 3$.
-
-This contradicts Clue 5. Let me check if there's flexibility elsewhere...
-
-Actually, Clue 1 says "D sits fourth from the left end" — this means D is at position 4. This is fixed.
-
-Hmm, let me re-examine. With "facing North", "left" is from their perspective = towards position 1. So "third to the left of A" = position $6 - 3 = 3$. And "immediately to the left of D" = position $4 - 1 = 3$. So B = C at position 3? That's impossible.
-
-**The Trap!** Let me re-read more carefully. "B sits third to the left of A" — this could mean there are 3 people between B and A towards the left. Let me consider both interpretations:
-
-**Interpretation 1:** B is at position $6 - 3 = 3$ (third seat to the left). ← Standard interpretation.
-
-This creates a conflict. So the question might use "third to the left" as a different convention. But in standard exam problems, "third to the left" = 3 positions to the left.
-
-Since there's a genuine conflict, let me re-examine Clue 5: "C sits immediately to the left of D." Maybe I should verify — C is at position 3 and B is at position 3 is impossible. Let me re-read the question...
-
-Actually, I made this problem up for illustration. Let me fix it to be consistent.
-
-**Corrected Clue 4:** B sits third to the left of **H** (not A). Let me redo:
-
-### Corrected Problem
-
-> 1. D sits fourth from the left end.
-> 2. A sits second to the right of D.
-> 3. H sits at one of the extreme ends.
-> 4. B sits third to the left of H.
-> 5. C sits immediately to the left of D.
-> 6. G is not adjacent to A.
-> 7. E sits immediately to the right of A.
-> 8. F does not sit at any extreme end.
-
-### Solution (Corrected)
-
-- Clue 1: D at position 4.
-- Clue 2: A at position $4 + 2 = 6$.
-- Clue 5: C at position $4 - 1 = 3$.
-- Clue 7: E at position $6 + 1 = 7$.
-- Clue 3: H at position 1 or 8.
-- Clue 4: B is third to the left of H.
-  - If H at position 8 → B at $8 - 3 = 5$.
-  - If H at position 1 → B at $1 - 3 = -2$ (impossible).
+- Clue 3: H at position 1 or 8 (extreme end).
+- Clue 4: B is third to the left of H → B at $H - 3$.
+  - If H = 8 → B at $8 - 3 = 5$. ✓
+  - If H = 1 → B at $1 - 3 = -2$ (impossible). ✗
   - So **H at position 8, B at position 5**.
 
 ```
@@ -269,16 +230,31 @@ Position:   1    2    3    4    5    6    7    8
            [ ]  [ ]  [C]  [D]  [B]  [A]  [E]  [H]
 ```
 
+**Step 4: Eliminate for remaining people**
+
 Remaining: F, G for positions 1 and 2.
-- Clue 8: F not at any extreme end → F ≠ position 1 → F at position 2, G at position 1.
+
+- Clue 8: F not at any extreme end → F ≠ position 1 → **F at position 2, G at position 1**.
 - Clue 6: G not adjacent to A → G at position 1, A at position 6. Not adjacent. ✅
+
+**Step 5: Final arrangement**
 
 ```
 Position:   1    2    3    4    5    6    7    8
            [G]  [F]  [C]  [D]  [B]  [A]  [E]  [H]
 ```
 
-**People between B (position 5) and H (position 8):** $|8 - 5| - 1 = 2$ (A and E).
+**Verify all clues:**
+1. ✅ D at position 4 (fourth from left)
+2. ✅ A at position 6 (second to right of D)
+3. ✅ H at position 8 (extreme end)
+4. ✅ B at position 5 (third to left of H: $8 - 3 = 5$)
+5. ✅ C at position 3 (immediately left of D)
+6. ✅ G(1) not adjacent to A(6)
+7. ✅ E at position 7 (immediately right of A)
+8. ✅ F at position 2 (not at extreme end)
+
+**People between B (pos 5) and H (pos 8):** $|8 - 5| - 1 = 2$ (A and E).
 
 **Answer:** 2
 
@@ -419,13 +395,13 @@ Before diving into a problem, count:
 
 ## 2.10 Practice Problem (Try Before Reading Solution)
 
-> Seven people — J, K, L, M, N, O, P — sit in a row facing South.
-> 1. M sits at the extreme right end.
+> Seven people — J, K, L, M, N, O, P — sit in a row facing North.
+> 1. M sits at the right end (position 7).
 > 2. K sits third from the left end.
 > 3. J sits immediately to the right of K.
-> 4. N sits second to the right of M.
+> 4. N sits second to the left of M.
 > 5. O and L are adjacent to each other.
-> 6. P does not sit adjacent to M.
+> 6. P does not sit adjacent to J.
 >
 > **Q1:** Who sits at the left end?
 > **Q2:** How many people sit between O and M?
@@ -433,147 +409,49 @@ Before diving into a problem, count:
 <details>
 <summary><strong>Click to reveal solution</strong></summary>
 
-**Setup:** 7 people, facing South. Remember: facing South flips left/right.
+**Setup:** 7 people, facing North. Positions 1–7, left to right on paper.
 
-When facing South:
-- "Right" from person's perspective = towards position 1 (left on paper)
-- "Left" from person's perspective = towards position 7 (right on paper)
+Facing North: right = increasing position numbers, left = decreasing position numbers.
 
-Wait — let's be precise. Standard convention in exam problems:
-
-The positions are numbered 1 to 7 from left to right on paper. When people face South:
-- Their "right" = towards lower position numbers (paper-left)
-- Their "left" = towards higher position numbers (paper-right)
-
-Clue 1: M at the extreme right end. "Right end" from person's perspective (facing South) = position 1 (paper-left). So **M at position 1**.
-
-Clue 2: K third from the left end. "Left end" — this is typically a positional statement, not perspective-based. It usually means 3rd from position 1. So **K at position 3**.
-
-Actually, "from the left end" in exam context typically means from the reader's left = position 1 side. So K at position 3.
-
-But Clue 1 says "extreme right end." If facing South, right from their perspective = position 1. Most exams disambiguate this with "right end of the row" meaning position $n$.
-
-**Standard Banking Exam Convention:** "Left end" = position 1 on paper, "Right end" = position $n$ on paper, **regardless of facing direction**. The facing direction only matters for "to the left/right **of** a person."
-
-Using this convention:
-- Clue 1: M at position 7 (right end of row).
-- Clue 2: K at position 3.
-
-Clue 3: J immediately to the right of K. "Right of K" is from K's perspective (facing South). K faces South, so K's right = towards position 1. J at position $3 - 1 = 2$.
-
-Clue 4: N second to the right of M. M is at position 7, facing South. M's right = towards position 1. N at $7 - 2 = 5$.
-
-```
-Position:   1    2    3    4    5    6    7
-           [ ]  [J]  [K]  [ ]  [N]  [ ]  [M]
-```
-
-Remaining: L, O, P for positions 1, 4, 6.
-
-Clue 6: P not adjacent to M. M is at position 7. Adjacent = position 6. So P ≠ position 6.
-
-Clue 5: O and L are adjacent. Possible pairs from {1, 4, 6}: Only (4, 6) are adjacent — but not (1, 4) since they're not adjacent either... wait: positions 1 and 4 are not adjacent (gap of 2). Positions 4 and 6 are not adjacent (gap of 1). Actually 4 and 6 have position 5 between them — not adjacent.
-
-Hmm. Available: 1, 4, 6. Adjacent pairs: none of these are adjacent to each other!
-
-Let me recheck. 1 and 2 are adjacent (but 2 is taken by J). 4 and 5 are adjacent (but 5 is taken by N). 6 and 7 are adjacent (but 7 is taken by M).
-
-Wait — O and L need to be adjacent to each other, and they're going into positions 1, 4, 6. Positions 1-2 are adjacent but seat 2 is taken. So the only way O and L are adjacent is... this seems contradictory.
-
-Let me re-examine the direction convention. Perhaps "right end" means the right end as seen from the reader, position 7. But "to the right of" uses the person's facing direction.
-
-Alternatively, if "right end" when facing South means position 1:
-- M at position 1.
-- K at position 3 (3rd from left end = position 3).
-- J immediately to the right of K (K's right facing South = towards position 1 side). J at position 2.
-- N second to the right of M (M's right facing South, M at position 1). N at position $1 - 2 = -1$ → impossible.
-
-So M must be at position 7. The issue is with clue 5. Let me reinterpret: perhaps "right" in clues 3 and 4 is paper-right (not perspective-based) since some exam setups use absolute directions when directions are not explicitly stated as "his/her right."
-
-**Re-solving with absolute direction convention:**
+**Step 1: Place definite positions**
 
 - Clue 1: M at position 7.
 - Clue 2: K at position 3.
-- Clue 3: J immediately to the right of K → J at position 4.
-- Clue 4: N second to the right of M → position $7 + 2 = 9$ → impossible.
-
-Clue 4 doesn't work with absolute right. So "to the right" must be from M's perspective (facing South = towards position 1). N at $7 - 2 = 5$.
-
-Let me also reconsider Clue 3 with perspective: J immediately to the right of K. K at position 3, facing South. K's right = towards position 1. J at position 2.
-
-```
-Position:   1    2    3    4    5    6    7
-           [ ]  [J]  [K]  [ ]  [N]  [ ]  [M]
-```
-
-Remaining: L, O, P for positions 1, 4, 6.
-
-O and L must be adjacent. Available pairs: (1,4) no — gap = 3. (4,6) no — gap = 2. (1,6) no — gap = 5.
-
-None are adjacent! This means I must have an error. Let me try the other interpretation where all "left/right" in clue phrasing is from reader's perspective:
-
-- Clue 3: J immediately to the right of K → J at position 4 (paper-right).
-- Clue 4: N second to the right of M → position $7 + 2 = 9$ → impossible.
-
-Since clue 4 fails, let's try: N second to the LEFT of M → position $7 - 2 = 5$. Maybe I misread my own problem. Let me re-read: "N sits second to the right of M." If this uses perspective (M faces South), right = towards position 1 = $7 - 2 = 5$. ✓
-
-Let's use perspective for ALL directional clues:
-- Clue 3 (perspective): J at $3 - 1 = 2$. ← This gives the adjacency problem.
-- Clue 3 (absolute): J at $3 + 1 = 4$. ← Let me try this.
-
-**With Clue 3 as absolute right:**
+- Clue 3: J immediately to K's right → J at position $3 + 1 = 4$.
+- Clue 4: N second to M's left → N at position $7 - 2 = 5$.
 
 ```
 Position:   1    2    3    4    5    6    7
            [ ]  [ ]  [K]  [J]  [N]  [ ]  [M]
 ```
 
+**Step 2: Place remaining people**
+
 Remaining: L, O, P for positions 1, 2, 6.
 
-Clue 5: O and L adjacent. From {1, 2, 6}: positions 1 and 2 are adjacent! ✓
-
-So O and L are at positions 1 and 2 (in some order). P at position 6.
-
-Clue 6: P not adjacent to M. P at 6, M at 7. They ARE adjacent! Contradiction.
-
-So P ≠ position 6 → P can't be the remaining person for position 6.
-
-That means P must be in {1, 2}, and one of {O, L} goes to position 6. But O and L must be adjacent. If one of them is at 6, the other must be at 5 or 7 — but both are taken. So O and L can't be split.
-
-The only adjacent pair from {1, 2, 6} is (1, 2). So O and L are at positions 1 and 2, P at position 6.
-
-But P at position 6 is adjacent to M at position 7, violating Clue 6.
-
-This is contradictory in this interpretation too. The problem as stated has a subtle inconsistency (since I constructed it for illustration). The important lesson is:
-
-> **Always verify the direction convention** used in the problem. Different exams use different conventions. GATE problems typically state explicitly ("all face North, left/right from their perspective"). Banking problems usually specify the convention at the start of the set.
-
-For this practice problem, let's use: "N sits second to the **left** of M" (correcting Clue 4), and "right" = paper-right.
-
-**Corrected solve:**
-- M at position 7. K at position 3. J at position 4 (paper-right of K).
-- N second to the left of M → $7 - 2 = 5$.
-- Remaining: L, O, P for positions 1, 2, 6.
-- O and L adjacent → positions 1 and 2.
-- P at position 6. P adjacent to M (position 7) — if Clue 6 says "P not adjacent to M", we need P ≠ 6.
-
-Correcting Clue 6 to "P does not sit adjacent to J":
-- J at position 4. Adjacent = 3 or 5. P isn't at 3 or 5 anyway (already filled). So P at position 6. ✓
+- Clue 5: O and L are adjacent. From {1, 2, 6}: positions 1 and 2 are adjacent ✓. So **O and L occupy positions 1 and 2** (in some order). **P at position 6.**
+- Clue 6: P not adjacent to J (position 4). P at position 6. Adjacent to J = positions 3 and 5. P(6) is not adjacent to J(4). ✅
 
 ```
 Position:   1      2      3    4    5    6    7
            [O/L]  [L/O]  [K]  [J]  [N]  [P]  [M]
 ```
 
-Since no clue distinguishes O and L's order, both (O at 1, L at 2) and (L at 1, O at 2) are valid.
+O and L can be in either order at positions 1 and 2 (no clue distinguishes them).
 
-**Q1:** O or L sits at the left end. (The question would give options to disambiguate.)
+**Q1:** O or L sits at the left end (position 1). If the exam gives options, one of these will appear.
 
-**Q2:** People between O and M: If O at position 1, between O and M = $|7-1| - 1 = 5$.
+**Q2:** People between O and M:
+- If O at position 1: between O(1) and M(7) = $|7 - 1| - 1 = 5$ people.
+- If O at position 2: between O(2) and M(7) = $|7 - 2| - 1 = 4$ people.
+
+The answer depends on O's position. An exam question would either fix this with additional clues or ask about L and M instead (which gives a definite answer).
+
+**Between L and M:** If L at position 2, $|7-2|-1 = 4$. If L at position 1, $|7-1|-1 = 5$.
 
 </details>
 
-> **The Key Lesson:** Direction conventions are the **#1 source of errors** in linear arrangement problems. Before solving, establish: are left/right from the person's perspective or from the reader's perspective? The problem statement will tell you.
+> **Key Lesson:** Always verify the direction convention before solving. "Left end" / "right end" of a row typically refers to the reader's perspective. "To the left/right of a person" uses that person's facing direction.
 
 ---
 
