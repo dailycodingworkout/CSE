@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 1: Introduction & Fundamentals"
+description: "Types, terminology, classification, mental models for seating arrangements"
+---
+
 # Chapter 1: Introduction & Fundamentals of Seating Arrangements
 
-[← Back to Index](README.md) | [Next: Linear Arrangements →](02-Linear-Seating-Arrangements.md)
+[← Back to Index](./) | [Next: Linear Arrangements →](02-Linear-Seating-Arrangements.html)
 
 ---
 
@@ -214,4 +220,4 @@ Before proceeding, verify you understand:
 
 ---
 
-[← Back to Index](README.md) | [Next: Linear Arrangements →](02-Linear-Seating-Arrangements.md)
+[← Back to Index](./) | [Next: Linear Arrangements →](02-Linear-Seating-Arrangements.html)

@@ -1,3 +1,10 @@
+---
+layout: default
+title: "Seating Arrangements — Complete Study Material"
+description: "Comprehensive guide to seating arrangement problems for GATE, ESE, PSU & Banking exams"
+permalink: /Aptitude/Seating-Arrangements/
+---
+
 # Seating Arrangements — Complete Study Material
 
 > **Target Exams:** GATE · ESE · PSU · BANK (IBPS / SBI / RBI)
@@ -9,13 +16,13 @@
 
 | # | Chapter | Core Focus |
 |---|---------|------------|
-| 1 | [Introduction & Fundamentals](01-Introduction-and-Fundamentals.md) | Types, terminology, classification, mental models |
-| 2 | [Linear Seating Arrangements](02-Linear-Seating-Arrangements.md) | Single row, direction-based reasoning, position fixing |
-| 3 | [Circular Seating Arrangements](03-Circular-Seating-Arrangements.md) | Round table, clockwise/anticlockwise, relative positions |
-| 4 | [Double-Row (Parallel) Seating](04-Double-Row-Seating-Arrangements.md) | Two rows facing each other, North-South orientation |
-| 5 | [Complex & Hybrid Arrangements](05-Complex-and-Hybrid-Arrangements.md) | Rectangular, polygonal, multi-row, floor-based puzzles |
-| 6 | [Advanced Techniques & Shortcuts](06-Advanced-Techniques-and-Shortcuts.md) | Elimination tricks, edge cases, time-saving heuristics |
-| 7 | [Exam Practice & Solved Problems](07-GATE-ESE-PSU-BANK-Practice-Problems.md) | GATE/ESE/PSU/BANK pattern problems with full solutions |
+| 1 | [Introduction & Fundamentals](01-Introduction-and-Fundamentals.html) | Types, terminology, classification, mental models |
+| 2 | [Linear Seating Arrangements](02-Linear-Seating-Arrangements.html) | Single row, direction-based reasoning, position fixing |
+| 3 | [Circular Seating Arrangements](03-Circular-Seating-Arrangements.html) | Round table, clockwise/anticlockwise, relative positions |
+| 4 | [Double-Row (Parallel) Seating](04-Double-Row-Seating-Arrangements.html) | Two rows facing each other, North-South orientation |
+| 5 | [Complex & Hybrid Arrangements](05-Complex-and-Hybrid-Arrangements.html) | Rectangular, polygonal, multi-row, floor-based puzzles |
+| 6 | [Advanced Techniques & Shortcuts](06-Advanced-Techniques-and-Shortcuts.html) | Elimination tricks, edge cases, time-saving heuristics |
+| 7 | [Exam Practice & Solved Problems](07-GATE-ESE-PSU-BANK-Practice-Problems.html) | GATE/ESE/PSU/BANK pattern problems with full solutions |
 
 ---
 

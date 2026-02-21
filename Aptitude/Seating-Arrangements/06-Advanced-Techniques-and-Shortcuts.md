@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 6: Advanced Techniques & Shortcuts"
+description: "Speed tricks, elimination strategies, time management for exams"
+---
+
 # Chapter 6: Advanced Techniques & Shortcuts
 
-[← Previous: Complex Arrangements](05-Complex-and-Hybrid-Arrangements.md) | [Back to Index](README.md) | [Next: Practice Problems →](07-GATE-ESE-PSU-BANK-Practice-Problems.md)
+[← Previous: Complex Arrangements](05-Complex-and-Hybrid-Arrangements.html) | [Back to Index](./) | [Next: Practice Problems →](07-GATE-ESE-PSU-BANK-Practice-Problems.html)
 
 ---
 
@@ -352,4 +358,4 @@ Actually, in most exam problems, "faces" simply means "sits opposite" in circula
 
 ---
 
-[← Previous: Complex Arrangements](05-Complex-and-Hybrid-Arrangements.md) | [Back to Index](README.md) | [Next: Practice Problems →](07-GATE-ESE-PSU-BANK-Practice-Problems.md)
+[← Previous: Complex Arrangements](05-Complex-and-Hybrid-Arrangements.html) | [Back to Index](./) | [Next: Practice Problems →](07-GATE-ESE-PSU-BANK-Practice-Problems.html)

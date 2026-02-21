@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 4: Double-Row Seating Arrangements"
+description: "Two parallel rows facing each other, North-South orientation, direction traps"
+---
+
 # Chapter 4: Double-Row (Parallel) Seating Arrangements
 
-[← Previous: Circular Arrangements](03-Circular-Seating-Arrangements.md) | [Back to Index](README.md) | [Next: Complex & Hybrid Arrangements →](05-Complex-and-Hybrid-Arrangements.md)
+[← Previous: Circular Arrangements](03-Circular-Seating-Arrangements.html) | [Back to Index](./) | [Next: Complex & Hybrid Arrangements →](05-Complex-and-Hybrid-Arrangements.html)
 
 ---
 
@@ -282,4 +288,4 @@ So B faces Q! This is a "cross-row chain" — placing 2 people automatically det
 
 ---
 
-[← Previous: Circular Arrangements](03-Circular-Seating-Arrangements.md) | [Back to Index](README.md) | [Next: Complex & Hybrid Arrangements →](05-Complex-and-Hybrid-Arrangements.md)
+[← Previous: Circular Arrangements](03-Circular-Seating-Arrangements.html) | [Back to Index](./) | [Next: Complex & Hybrid Arrangements →](05-Complex-and-Hybrid-Arrangements.html)

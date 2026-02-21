@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 7: Exam Practice & Solved Problems"
+description: "GATE, ESE, PSU, Banking exam-style solved problems with full solutions"
+---
+
 # Chapter 7: Exam Practice & Solved Problems
 
-[← Previous: Advanced Techniques](06-Advanced-Techniques-and-Shortcuts.md) | [Back to Index](README.md)
+[← Previous: Advanced Techniques](06-Advanced-Techniques-and-Shortcuts.html) | [Back to Index](./)
 
 ---
 
@@ -442,4 +448,4 @@ Immediate left of R (position 6): CW from 6 = position 1 = **P**.
 
 ---
 
-[← Previous: Advanced Techniques](06-Advanced-Techniques-and-Shortcuts.md) | [Back to Index](README.md)
+[← Previous: Advanced Techniques](06-Advanced-Techniques-and-Shortcuts.html) | [Back to Index](./)

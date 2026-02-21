@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 2: Linear Seating Arrangements"
+description: "Single row arrangements, direction conventions, position formulas"
+---
+
 # Chapter 2: Linear Seating Arrangements
 
-[← Previous: Introduction](01-Introduction-and-Fundamentals.md) | [Back to Index](README.md) | [Next: Circular Arrangements →](03-Circular-Seating-Arrangements.md)
+[← Previous: Introduction](01-Introduction-and-Fundamentals.html) | [Back to Index](./) | [Next: Circular Arrangements →](03-Circular-Seating-Arrangements.html)
 
 ---
 
@@ -471,4 +477,4 @@ The answer depends on O's position. An exam question would either fix this with 
 
 ---
 
-[← Previous: Introduction](01-Introduction-and-Fundamentals.md) | [Back to Index](README.md) | [Next: Circular Arrangements →](03-Circular-Seating-Arrangements.md)
+[← Previous: Introduction](01-Introduction-and-Fundamentals.html) | [Back to Index](./) | [Next: Circular Arrangements →](03-Circular-Seating-Arrangements.html)

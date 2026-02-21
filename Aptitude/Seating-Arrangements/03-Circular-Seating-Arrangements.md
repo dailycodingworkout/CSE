@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 3: Circular Seating Arrangements"
+description: "Round table arrangements, clockwise/anticlockwise conventions, opposite positions"
+---
+
 # Chapter 3: Circular Seating Arrangements
 
-[← Previous: Linear Arrangements](02-Linear-Seating-Arrangements.md) | [Back to Index](README.md) | [Next: Double-Row Arrangements →](04-Double-Row-Seating-Arrangements.md)
+[← Previous: Linear Arrangements](02-Linear-Seating-Arrangements.html) | [Back to Index](./) | [Next: Double-Row Arrangements →](04-Double-Row-Seating-Arrangements.html)
 
 ---
 
@@ -397,4 +403,4 @@ This lets you use linear techniques. Just remember that position $n+1$ = positio
 
 ---
 
-[← Previous: Linear Arrangements](02-Linear-Seating-Arrangements.md) | [Back to Index](README.md) | [Next: Double-Row Arrangements →](04-Double-Row-Seating-Arrangements.md)
+[← Previous: Linear Arrangements](02-Linear-Seating-Arrangements.html) | [Back to Index](./) | [Next: Double-Row Arrangements →](04-Double-Row-Seating-Arrangements.html)

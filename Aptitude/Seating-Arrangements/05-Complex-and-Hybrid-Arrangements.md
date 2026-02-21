@@ -1,6 +1,12 @@
+---
+layout: default
+title: "Chapter 5: Complex & Hybrid Arrangements"
+description: "Rectangular tables, floor puzzles, grid seating, hybrid arrangement types"
+---
+
 # Chapter 5: Complex & Hybrid Arrangements
 
-[← Previous: Double-Row Arrangements](04-Double-Row-Seating-Arrangements.md) | [Back to Index](README.md) | [Next: Advanced Techniques →](06-Advanced-Techniques-and-Shortcuts.md)
+[← Previous: Double-Row Arrangements](04-Double-Row-Seating-Arrangements.html) | [Back to Index](./) | [Next: Advanced Techniques →](06-Advanced-Techniques-and-Shortcuts.html)
 
 ---
 
@@ -376,4 +382,4 @@ Solve position first, then overlay direction, then overlay other attributes. Eac
 
 ---
 
-[← Previous: Double-Row Arrangements](04-Double-Row-Seating-Arrangements.md) | [Back to Index](README.md) | [Next: Advanced Techniques →](06-Advanced-Techniques-and-Shortcuts.md)
+[← Previous: Double-Row Arrangements](04-Double-Row-Seating-Arrangements.html) | [Back to Index](./) | [Next: Advanced Techniques →](06-Advanced-Techniques-and-Shortcuts.html)
