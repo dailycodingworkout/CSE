@@ -16,12 +16,91 @@ description: "Two parallel rows facing each other, North-South orientation, dire
 
 Two rows of people sit facing each other. This is the **most common type** in banking exams (IBPS PO, SBI PO, RBI Grade B).
 
-```
-Row 1 (Facing South):  P1   P2   P3   P4   P5
-                        ↓    ↓    ↓    ↓    ↓
-                        ↑    ↑    ↑    ↑    ↑
-Row 2 (Facing North):  Q1   Q2   Q3   Q4   Q5
-```
+<div class="diagram">
+<svg viewBox="0 0 700 210" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- Row 1 label -->
+  <text x="70" y="20" text-anchor="middle" fill="#d94f4f" font-size="12" font-weight="700" font-family="Architects Daughter, cursive">Row 1 (Facing South)</text>
+  <!-- Row 1 seats -->
+  <rect x="20" y="30" width="65" height="45" rx="8" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+  <text x="52" y="58" text-anchor="middle" fill="#d94f4f" font-size="14" font-weight="600">P1</text>
+  <path d="M52,78 L52,90" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#drs)"/>
+
+  <rect x="110" y="30" width="65" height="45" rx="8" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+  <text x="142" y="58" text-anchor="middle" fill="#d94f4f" font-size="14" font-weight="600">P2</text>
+  <path d="M142,78 L142,90" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#drs)"/>
+
+  <rect x="200" y="30" width="65" height="45" rx="8" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+  <text x="232" y="58" text-anchor="middle" fill="#d94f4f" font-size="14" font-weight="600">P3</text>
+  <path d="M232,78 L232,90" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#drs)"/>
+
+  <rect x="290" y="30" width="65" height="45" rx="8" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+  <text x="322" y="58" text-anchor="middle" fill="#d94f4f" font-size="14" font-weight="600">P4</text>
+  <path d="M322,78 L322,90" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#drs)"/>
+
+  <rect x="380" y="30" width="65" height="45" rx="8" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+  <text x="412" y="58" text-anchor="middle" fill="#d94f4f" font-size="14" font-weight="600">P5</text>
+  <path d="M412,78 L412,90" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#drs)"/>
+
+  <!-- Row 1 direction: Left = paper-right, Right = paper-left -->
+  <text x="490" y="43" fill="#d94f4f" font-size="10" font-weight="600">Their Right</text>
+  <path d="M490,47 L465,47" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#dr1l)"/>
+  <text x="490" y="68" fill="#2e8b57" font-size="10" font-weight="600">Their Left</text>
+  <path d="M490,72 L530,72" stroke="#2e8b57" stroke-width="1.5" marker-end="url(#dr1r)"/>
+
+  <!-- Facing arrows (vertical) -->
+  <line x1="52" y1="95" x2="52" y2="115" stroke="#5d6d7e" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="142" y1="95" x2="142" y2="115" stroke="#5d6d7e" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="232" y1="95" x2="232" y2="115" stroke="#5d6d7e" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="322" y1="95" x2="322" y2="115" stroke="#5d6d7e" stroke-width="1" stroke-dasharray="3,2"/>
+  <line x1="412" y1="95" x2="412" y2="115" stroke="#5d6d7e" stroke-width="1" stroke-dasharray="3,2"/>
+  <text x="235" y="109" text-anchor="middle" fill="#e8a317" font-size="10" font-weight="700">FACING EACH OTHER</text>
+
+  <!-- Row 2 label -->
+  <text x="70" y="200" text-anchor="middle" fill="#1a8a8a" font-size="12" font-weight="700" font-family="Architects Daughter, cursive">Row 2 (Facing North)</text>
+  <!-- Row 2 seats -->
+  <rect x="20" y="130" width="65" height="45" rx="8" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+  <text x="52" y="158" text-anchor="middle" fill="#1a8a8a" font-size="14" font-weight="600">Q1</text>
+  <path d="M52,127 L52,115" stroke="#1a8a8a" stroke-width="1.5" marker-end="url(#drn)"/>
+
+  <rect x="110" y="130" width="65" height="45" rx="8" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+  <text x="142" y="158" text-anchor="middle" fill="#1a8a8a" font-size="14" font-weight="600">Q2</text>
+  <path d="M142,127 L142,115" stroke="#1a8a8a" stroke-width="1.5" marker-end="url(#drn)"/>
+
+  <rect x="200" y="130" width="65" height="45" rx="8" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+  <text x="232" y="158" text-anchor="middle" fill="#1a8a8a" font-size="14" font-weight="600">Q3</text>
+  <path d="M232,127 L232,115" stroke="#1a8a8a" stroke-width="1.5" marker-end="url(#drn)"/>
+
+  <rect x="290" y="130" width="65" height="45" rx="8" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+  <text x="322" y="158" text-anchor="middle" fill="#1a8a8a" font-size="14" font-weight="600">Q4</text>
+  <path d="M322,127 L322,115" stroke="#1a8a8a" stroke-width="1.5" marker-end="url(#drn)"/>
+
+  <rect x="380" y="130" width="65" height="45" rx="8" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+  <text x="412" y="158" text-anchor="middle" fill="#1a8a8a" font-size="14" font-weight="600">Q5</text>
+  <path d="M412,127 L412,115" stroke="#1a8a8a" stroke-width="1.5" marker-end="url(#drn)"/>
+
+  <!-- Row 2 direction: Left = paper-left, Right = paper-right (NORMAL) -->
+  <text x="490" y="143" fill="#2e8b57" font-size="10" font-weight="600">Their Left</text>
+  <path d="M490,147 L465,147" stroke="#2e8b57" stroke-width="1.5" marker-end="url(#dr2l)"/>
+  <text x="490" y="168" fill="#d94f4f" font-size="10" font-weight="600">Their Right</text>
+  <path d="M490,172 L530,172" stroke="#d94f4f" stroke-width="1.5" marker-end="url(#dr2r)"/>
+
+  <!-- Warning label -->
+  <rect x="540" y="95" width="150" height="35" rx="6" fill="#fdeaea" stroke="#d94f4f" stroke-width="1.5"/>
+  <text x="615" y="110" text-anchor="middle" fill="#d94f4f" font-size="10" font-weight="700">DIRECTIONS ARE</text>
+  <text x="615" y="123" text-anchor="middle" fill="#d94f4f" font-size="10" font-weight="700">OPPOSITE!</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="drs" markerWidth="6" markerHeight="5" refX="3" refY="0" orient="auto"><path d="M0,0 L3,5 L6,0" fill="none" stroke="#d94f4f" stroke-width="1.5"/></marker>
+    <marker id="drn" markerWidth="6" markerHeight="5" refX="3" refY="5" orient="auto"><path d="M0,5 L3,0 L6,5" fill="none" stroke="#1a8a8a" stroke-width="1.5"/></marker>
+    <marker id="dr1l" markerWidth="6" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M6,0 L0,2.5 L6,5" fill="#d94f4f"/></marker>
+    <marker id="dr1r" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L6,2.5 L0,5" fill="#2e8b57"/></marker>
+    <marker id="dr2l" markerWidth="6" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M6,0 L0,2.5 L6,5" fill="#2e8b57"/></marker>
+    <marker id="dr2r" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L6,2.5 L0,5" fill="#d94f4f"/></marker>
+  </defs>
+</svg>
+<div class="diagram-caption">Double-Row: Left/Right directions are OPPOSITE between the two rows</div>
+</div>
 
 ### Key Properties
 

@@ -19,16 +19,67 @@ People sit around a round table. Unlike linear arrangements:
 - Positions are defined **relative to each other**, not absolute.
 - **Clockwise** and **anticlockwise** replace left/right.
 
-```
-        ┌─────┐
-     8  │     │  2
-       ╲│     │╱
-    7 ──┤  ●  ├── 3       ● = center of table
-       ╱│     │╲
-     6  │     │  4
-        └──5──┘
-           1
-```
+<div class="diagram">
+<svg viewBox="0 0 480 380" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- Table circle -->
+  <circle cx="240" cy="175" r="120" fill="none" stroke="#d5dce4" stroke-width="2"/>
+  <circle cx="240" cy="175" r="6" fill="#5d6d7e"/>
+  <text x="240" y="195" text-anchor="middle" fill="#5d6d7e" font-size="9">center</text>
+
+  <!-- CW arrow arc -->
+  <path d="M 310 75 A 100 100 0 0 1 340 200" fill="none" stroke="#2e8b57" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="365" y="130" fill="#2e8b57" font-size="11" font-weight="600">CW</text>
+
+  <!-- ACW arrow arc -->
+  <path d="M 170 75 A 100 100 0 0 0 140 200" fill="none" stroke="#d94f4f" stroke-width="2" stroke-dasharray="6,3"/>
+  <text x="105" y="130" fill="#d94f4f" font-size="11" font-weight="600">ACW</text>
+
+  <!-- Position 1 (top) -->
+  <circle cx="240" cy="50" r="22" fill="#1a8a8a" stroke="#1a8a8a" stroke-width="2"/>
+  <text x="240" y="55" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">1</text>
+
+  <!-- Position 2 -->
+  <circle cx="328" cy="87" r="22" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="328" y="92" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">2</text>
+
+  <!-- Position 3 -->
+  <circle cx="362" cy="175" r="22" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="362" y="180" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">3</text>
+
+  <!-- Position 4 -->
+  <circle cx="328" cy="263" r="22" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="328" y="268" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">4</text>
+
+  <!-- Position 5 (bottom - opposite of 1) -->
+  <circle cx="240" cy="300" r="22" fill="#e8a317" stroke="#e8a317" stroke-width="2"/>
+  <text x="240" y="305" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">5</text>
+
+  <!-- Position 6 -->
+  <circle cx="152" cy="263" r="22" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="152" y="268" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">6</text>
+
+  <!-- Position 7 -->
+  <circle cx="118" cy="175" r="22" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="118" y="180" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">7</text>
+
+  <!-- Position 8 -->
+  <circle cx="152" cy="87" r="22" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="152" y="92" text-anchor="middle" fill="#fff" font-size="14" font-weight="700">8</text>
+
+  <!-- Opposite line 1-5 -->
+  <line x1="240" y1="72" x2="240" y2="278" stroke="#e8a317" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="270" y="175" fill="#e8a317" font-size="10" font-weight="600">opposite</text>
+
+  <!-- Legend -->
+  <rect x="100" y="340" width="280" height="35" rx="8" fill="#f9fafb" stroke="#d5dce4" stroke-width="1.5"/>
+  <circle cx="130" cy="357" r="6" fill="#1a8a8a"/>
+  <text x="145" y="362" fill="#2c3e50" font-size="10">Fix as anchor</text>
+  <circle cx="240" cy="357" r="6" fill="#e8a317"/>
+  <text x="255" y="362" fill="#2c3e50" font-size="10">Opposite (n/2)</text>
+  <text x="340" y="362" fill="#2e8b57" font-size="10">CW = clockwise</text>
+</svg>
+<div class="diagram-caption">Circular Table (8 seats): positions numbered clockwise, seat 1 opposite seat 5</div>
+</div>
 
 > **Analogy:** A clock has no "start" — 12 o'clock is a convention. Similarly, in circular seating, you **fix one person** as the reference point and describe everyone else relative to them.
 
@@ -95,8 +146,57 @@ $$\text{Position of Y} = (\text{Position of X} + k) \mod n$$
 > "A sits second to the left of B."
 
 In circular arrangements, the convention is:
-- **Left = Anticlockwise** (when viewed from above, the person's left hand points anticlockwise)
-- **Right = Clockwise** (person's right hand points clockwise)
+
+<div class="diagram">
+<svg viewBox="0 0 700 200" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- FACING CENTER box -->
+  <rect x="20" y="10" width="310" height="175" rx="12" fill="#e0f5f5" stroke="#1a8a8a" stroke-width="2"/>
+  <text x="175" y="35" text-anchor="middle" fill="#1a8a8a" font-size="14" font-weight="700" font-family="Architects Daughter, cursive">Facing CENTER (inward)</text>
+  <!-- Person icon facing center -->
+  <circle cx="175" cy="90" r="20" fill="#1a8a8a" opacity="0.2" stroke="#1a8a8a" stroke-width="2"/>
+  <text x="175" y="95" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="700">P</text>
+  <path d="M175,70 L175,55" stroke="#1a8a8a" stroke-width="2" marker-end="url(#afc)"/>
+  <text x="175" y="50" text-anchor="middle" fill="#5d6d7e" font-size="9">faces center</text>
+  <!-- Left arrow = CW -->
+  <path d="M155,90 L80,90" stroke="#2e8b57" stroke-width="2.5" marker-end="url(#afcl)"/>
+  <text x="110" y="80" text-anchor="middle" fill="#2e8b57" font-size="12" font-weight="700">Left = CW</text>
+  <!-- Right arrow = ACW -->
+  <path d="M195,90 L270,90" stroke="#d94f4f" stroke-width="2.5" marker-end="url(#afcr)"/>
+  <text x="240" y="80" text-anchor="middle" fill="#d94f4f" font-size="12" font-weight="700">Right = ACW</text>
+  <!-- Physical test -->
+  <text x="175" y="160" text-anchor="middle" fill="#5d6d7e" font-size="10">Your left hand points CW</text>
+  <text x="175" y="175" text-anchor="middle" fill="#5d6d7e" font-size="10">when you face the center</text>
+
+  <!-- FACING OUTWARD box -->
+  <rect x="370" y="10" width="310" height="175" rx="12" fill="#fdeaea" stroke="#d94f4f" stroke-width="2"/>
+  <text x="525" y="35" text-anchor="middle" fill="#d94f4f" font-size="14" font-weight="700" font-family="Architects Daughter, cursive">Facing OUTWARD</text>
+  <!-- Person icon facing outward -->
+  <circle cx="525" cy="90" r="20" fill="#d94f4f" opacity="0.2" stroke="#d94f4f" stroke-width="2"/>
+  <text x="525" y="95" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="700">P</text>
+  <path d="M525,110 L525,125" stroke="#d94f4f" stroke-width="2" marker-end="url(#afo)"/>
+  <text x="525" y="140" text-anchor="middle" fill="#5d6d7e" font-size="9">faces outward</text>
+  <!-- Left arrow = ACW (FLIPPED!) -->
+  <path d="M505,90 L430,90" stroke="#d94f4f" stroke-width="2.5" marker-end="url(#afol)"/>
+  <text x="460" y="80" text-anchor="middle" fill="#d94f4f" font-size="12" font-weight="700">Left = ACW</text>
+  <!-- Right arrow = CW (FLIPPED!) -->
+  <path d="M545,90 L620,90" stroke="#2e8b57" stroke-width="2.5" marker-end="url(#afor)"/>
+  <text x="590" y="80" text-anchor="middle" fill="#2e8b57" font-size="12" font-weight="700">Right = CW</text>
+  <!-- Physical test -->
+  <text x="525" y="160" text-anchor="middle" fill="#5d6d7e" font-size="10">Your left hand points ACW</text>
+  <text x="525" y="175" text-anchor="middle" fill="#5d6d7e" font-size="10">when you face outward</text>
+
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="afc" markerWidth="6" markerHeight="5" refX="3" refY="5" orient="auto"><path d="M0,5 L3,0 L6,5" fill="none" stroke="#1a8a8a" stroke-width="1.5"/></marker>
+    <marker id="afo" markerWidth="6" markerHeight="5" refX="3" refY="0" orient="auto"><path d="M0,0 L3,5 L6,0" fill="none" stroke="#d94f4f" stroke-width="1.5"/></marker>
+    <marker id="afcl" markerWidth="6" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M6,0 L0,2.5 L6,5" fill="#2e8b57"/></marker>
+    <marker id="afcr" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L6,2.5 L0,5" fill="#d94f4f"/></marker>
+    <marker id="afol" markerWidth="6" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M6,0 L0,2.5 L6,5" fill="#d94f4f"/></marker>
+    <marker id="afor" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L6,2.5 L0,5" fill="#2e8b57"/></marker>
+  </defs>
+</svg>
+<div class="diagram-caption">The Left/Right Flip: Direction reverses based on facing direction</div>
+</div>
 
 But **ONLY if they face the center** (which is the default in round table problems).
 

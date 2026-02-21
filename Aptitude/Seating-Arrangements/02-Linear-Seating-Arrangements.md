@@ -16,14 +16,36 @@ description: "Single row arrangements, direction conventions, position formulas"
 
 People sit in a single straight row. Each person (except those at the ends) has exactly **two neighbours** — one on the left, one on the right. The end positions have only **one neighbour**.
 
-```
-Position:    1     2     3     4     5     6     7
-            ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐ ┌───┐
-            │   │ │   │ │   │ │   │ │   │ │   │ │   │
-            └───┘ └───┘ └───┘ └───┘ └───┘ └───┘ └───┘
-            END                                   END
-            (Left)                              (Right)
-```
+<div class="diagram">
+<svg viewBox="0 0 720 100" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- Seats -->
+  <rect x="30" y="30" width="70" height="45" rx="8" fill="#d94f4f" opacity="0.15" stroke="#d94f4f" stroke-width="2"/>
+  <rect x="130" y="30" width="70" height="45" rx="8" fill="#4a5da8" opacity="0.1" stroke="#4a5da8" stroke-width="1.5"/>
+  <rect x="230" y="30" width="70" height="45" rx="8" fill="#4a5da8" opacity="0.1" stroke="#4a5da8" stroke-width="1.5"/>
+  <rect x="330" y="30" width="70" height="45" rx="8" fill="#e8a317" opacity="0.15" stroke="#e8a317" stroke-width="2"/>
+  <rect x="430" y="30" width="70" height="45" rx="8" fill="#4a5da8" opacity="0.1" stroke="#4a5da8" stroke-width="1.5"/>
+  <rect x="530" y="30" width="70" height="45" rx="8" fill="#4a5da8" opacity="0.1" stroke="#4a5da8" stroke-width="1.5"/>
+  <rect x="630" y="30" width="70" height="45" rx="8" fill="#d94f4f" opacity="0.15" stroke="#d94f4f" stroke-width="2"/>
+  <!-- Position numbers -->
+  <text x="65" y="58" text-anchor="middle" fill="#d94f4f" font-size="16" font-weight="700">1</text>
+  <text x="165" y="58" text-anchor="middle" fill="#4a5da8" font-size="16" font-weight="700">2</text>
+  <text x="265" y="58" text-anchor="middle" fill="#4a5da8" font-size="16" font-weight="700">3</text>
+  <text x="365" y="58" text-anchor="middle" fill="#e8a317" font-size="16" font-weight="700">4</text>
+  <text x="465" y="58" text-anchor="middle" fill="#4a5da8" font-size="16" font-weight="700">5</text>
+  <text x="565" y="58" text-anchor="middle" fill="#4a5da8" font-size="16" font-weight="700">6</text>
+  <text x="665" y="58" text-anchor="middle" fill="#d94f4f" font-size="16" font-weight="700">7</text>
+  <!-- Labels -->
+  <text x="65" y="93" text-anchor="middle" fill="#d94f4f" font-size="10" font-weight="600">END</text>
+  <text x="365" y="93" text-anchor="middle" fill="#e8a317" font-size="10" font-weight="600">MIDDLE</text>
+  <text x="665" y="93" text-anchor="middle" fill="#d94f4f" font-size="10" font-weight="600">END</text>
+  <!-- Direction arrow -->
+  <text x="65" y="22" text-anchor="middle" fill="#5d6d7e" font-size="10">Left End</text>
+  <text x="665" y="22" text-anchor="middle" fill="#5d6d7e" font-size="10">Right End</text>
+  <line x1="150" y1="17" x2="580" y2="17" stroke="#5d6d7e" stroke-width="1" stroke-dasharray="4,3"/>
+  <path d="M580,17 L572,13 M580,17 L572,21" stroke="#5d6d7e" stroke-width="1.5" fill="none"/>
+</svg>
+<div class="diagram-caption">Linear arrangement: 7 positions with END and MIDDLE markers</div>
+</div>
 
 ### Key Properties
 
@@ -44,33 +66,98 @@ Position:    1     2     3     4     5     6     7
 
 When all people face the **same direction** (e.g., all face North):
 
-```
-All facing North (↑):
+<div class="diagram">
+<svg viewBox="0 0 720 190" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- FACING NORTH section -->
+  <text x="180" y="18" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="700" font-family="Architects Daughter, cursive">Facing North</text>
+  <!-- Row of people facing North -->
+  <g transform="translate(30,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="600">A</text>
+    <path d="M25,5 L25,-5" stroke="#1a8a8a" stroke-width="2" marker-end="url(#arn)"/>
+  </g>
+  <g transform="translate(90,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="600">B</text>
+    <path d="M25,5 L25,-5" stroke="#1a8a8a" stroke-width="2" marker-end="url(#arn)"/>
+  </g>
+  <g transform="translate(150,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="600">C</text>
+    <path d="M25,5 L25,-5" stroke="#1a8a8a" stroke-width="2" marker-end="url(#arn)"/>
+  </g>
+  <g transform="translate(210,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="600">D</text>
+    <path d="M25,5 L25,-5" stroke="#1a8a8a" stroke-width="2" marker-end="url(#arn)"/>
+  </g>
+  <g transform="translate(270,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#1a8a8a" opacity="0.12" stroke="#1a8a8a" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#1a8a8a" font-size="13" font-weight="600">E</text>
+    <path d="M25,5 L25,-5" stroke="#1a8a8a" stroke-width="2" marker-end="url(#arn)"/>
+  </g>
+  <!-- Direction labels for North -->
+  <text x="35" y="90" text-anchor="start" fill="#d94f4f" font-size="11" font-weight="700">Left</text>
+  <path d="M65,87 L35,87" stroke="#d94f4f" stroke-width="2" marker-end="url(#arl)"/>
+  <text x="300" y="90" text-anchor="end" fill="#2e8b57" font-size="11" font-weight="700">Right</text>
+  <path d="M270,87 L300,87" stroke="#2e8b57" stroke-width="2" marker-end="url(#arg)"/>
+  <text x="180" y="87" text-anchor="middle" fill="#5d6d7e" font-size="9">(from their perspective)</text>
 
-            1     2     3     4     5
-            ↑     ↑     ↑     ↑     ↑
-           (A)   (B)   (C)   (D)   (E)
+  <!-- DIVIDER -->
+  <line x1="365" y1="10" x2="365" y2="90" stroke="#d5dce4" stroke-width="1.5" stroke-dasharray="4,3"/>
+  <text x="365" y="105" text-anchor="middle" fill="#5d6d7e" font-size="10" font-style="italic">turn around</text>
 
-From THEIR perspective (facing North):
-  ← Left                        Right →
-```
+  <!-- FACING SOUTH section -->
+  <text x="560" y="18" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="700" font-family="Architects Daughter, cursive">Facing South</text>
+  <g transform="translate(410,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="600">A</text>
+    <path d="M25,55 L25,65" stroke="#d94f4f" stroke-width="2" marker-end="url(#ars)"/>
+  </g>
+  <g transform="translate(470,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="600">B</text>
+    <path d="M25,55 L25,65" stroke="#d94f4f" stroke-width="2" marker-end="url(#ars)"/>
+  </g>
+  <g transform="translate(530,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="600">C</text>
+    <path d="M25,55 L25,65" stroke="#d94f4f" stroke-width="2" marker-end="url(#ars)"/>
+  </g>
+  <g transform="translate(590,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="600">D</text>
+    <path d="M25,55 L25,65" stroke="#d94f4f" stroke-width="2" marker-end="url(#ars)"/>
+  </g>
+  <g transform="translate(650,25)">
+    <rect x="0" y="10" width="50" height="40" rx="6" fill="#d94f4f" opacity="0.12" stroke="#d94f4f" stroke-width="1.5"/>
+    <text x="25" y="35" text-anchor="middle" fill="#d94f4f" font-size="13" font-weight="600">E</text>
+    <path d="M25,55 L25,65" stroke="#d94f4f" stroke-width="2" marker-end="url(#ars)"/>
+  </g>
+  <!-- Direction labels for South (FLIPPED) -->
+  <text x="420" y="120" text-anchor="start" fill="#2e8b57" font-size="11" font-weight="700">Right</text>
+  <path d="M450,117 L420,117" stroke="#2e8b57" stroke-width="2" marker-end="url(#arl2)"/>
+  <text x="690" y="120" text-anchor="end" fill="#d94f4f" font-size="11" font-weight="700">Left</text>
+  <path d="M660,117 L690,117" stroke="#d94f4f" stroke-width="2" marker-end="url(#arr)"/>
+  <text x="560" y="117" text-anchor="middle" fill="#5d6d7e" font-size="9">(directions FLIP!)</text>
 
-**Rule:** When facing North, left = West, right = East.
+  <!-- Aha box -->
+  <rect x="130" y="140" width="460" height="40" rx="8" fill="#fef5e0" stroke="#e8a317" stroke-width="2"/>
+  <text x="360" y="160" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="600">Stand up. Face North. Your left hand points West.</text>
+  <text x="360" y="175" text-anchor="middle" fill="#2c3e50" font-size="12" font-weight="600">Turn around (South). Your left hand now points East.</text>
 
-When they **face South**:
-
-```
-All facing South (↓):
-
-            1     2     3     4     5
-            ↓     ↓     ↓     ↓     ↓
-           (A)   (B)   (C)   (D)   (E)
-
-From THEIR perspective (facing South):
-  Right →                        ← Left
-```
-
-**Rule:** When facing South, left = East, right = West. The direction **flips**.
+  <!-- Arrow markers -->
+  <defs>
+    <marker id="arn" markerWidth="6" markerHeight="5" refX="3" refY="5" orient="auto"><path d="M0,5 L3,0 L6,5" fill="none" stroke="#1a8a8a" stroke-width="1.5"/></marker>
+    <marker id="ars" markerWidth="6" markerHeight="5" refX="3" refY="0" orient="auto"><path d="M0,0 L3,5 L6,0" fill="none" stroke="#d94f4f" stroke-width="1.5"/></marker>
+    <marker id="arl" markerWidth="6" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M6,0 L0,2.5 L6,5" fill="#d94f4f"/></marker>
+    <marker id="arg" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L6,2.5 L0,5" fill="#2e8b57"/></marker>
+    <marker id="arl2" markerWidth="6" markerHeight="5" refX="0" refY="2.5" orient="auto"><path d="M6,0 L0,2.5 L6,5" fill="#2e8b57"/></marker>
+    <marker id="arr" markerWidth="6" markerHeight="5" refX="6" refY="2.5" orient="auto"><path d="M0,0 L6,2.5 L0,5" fill="#d94f4f"/></marker>
+  </defs>
+</svg>
+<div class="diagram-caption">Direction Convention: Left/Right flips when facing direction changes</div>
+</div>
 
 > **The Aha Moment:** Stand up. Face North. Your left hand points West. Now turn around (face South). Your left hand points East. *That's it.* The physical reality doesn't change — your orientation does.
 
