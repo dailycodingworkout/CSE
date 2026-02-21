@@ -5,3 +5,6 @@ tmp/
 _site/
 .jekyll-cache/
 .sass-cache/
+media/
+__pycache__/
+*.pyc
