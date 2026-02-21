@@ -33,15 +33,67 @@ These appear in:
 
 A rectangular table has **sides** and **corners**:
 
-```
-         ┌──────────────────┐
-         │   2       3      │
-     1   │                  │   4
-         │                  │
-     8   │                  │   5
-         │   7       6      │
-         └──────────────────┘
-```
+<div class="diagram">
+<svg viewBox="0 0 620 320" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- Table rectangle -->
+  <rect x="130" y="60" width="360" height="180" rx="12" fill="none" stroke="#2c3e50" stroke-width="3"/>
+  <text x="310" y="158" text-anchor="middle" fill="#d5dce4" font-size="14" font-style="italic">TABLE</text>
+
+  <!-- Position 1 (West short side) -->
+  <circle cx="100" cy="120" r="20" fill="#d94f4f" stroke="#d94f4f" stroke-width="2"/>
+  <text x="100" y="125" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P1</text>
+  <text x="50" y="125" text-anchor="middle" fill="#5d6d7e" font-size="10">West</text>
+
+  <!-- Position 2 (North side) -->
+  <circle cx="230" cy="30" r="20" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="230" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P2</text>
+
+  <!-- Position 3 (North side) -->
+  <circle cx="390" cy="30" r="20" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="390" y="35" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P3</text>
+
+  <!-- North label -->
+  <text x="310" y="18" text-anchor="middle" fill="#4a5da8" font-size="11" font-weight="600">North Side</text>
+
+  <!-- Position 4 (East short side) -->
+  <circle cx="520" cy="120" r="20" fill="#d94f4f" stroke="#d94f4f" stroke-width="2"/>
+  <text x="520" y="125" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P4</text>
+  <text x="570" y="125" text-anchor="middle" fill="#5d6d7e" font-size="10">East</text>
+
+  <!-- Position 5 (East bottom) -->
+  <circle cx="520" cy="200" r="20" fill="#d94f4f" stroke="#d94f4f" stroke-width="2"/>
+  <text x="520" y="205" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P5</text>
+
+  <!-- Position 6 (South side) -->
+  <circle cx="390" cy="270" r="20" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="390" y="275" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P6</text>
+
+  <!-- Position 7 (South side) -->
+  <circle cx="230" cy="270" r="20" fill="#4a5da8" stroke="#4a5da8" stroke-width="2"/>
+  <text x="230" y="275" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P7</text>
+
+  <!-- South label -->
+  <text x="310" y="302" text-anchor="middle" fill="#4a5da8" font-size="11" font-weight="600">South Side</text>
+
+  <!-- Position 8 (West bottom) -->
+  <circle cx="100" cy="200" r="20" fill="#d94f4f" stroke="#d94f4f" stroke-width="2"/>
+  <text x="100" y="205" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">P8</text>
+
+  <!-- Opposite lines (dashed) -->
+  <line x1="230" y1="50" x2="230" y2="250" stroke="#e8a317" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <line x1="390" y1="50" x2="390" y2="250" stroke="#e8a317" stroke-width="1.5" stroke-dasharray="5,4"/>
+  <text x="310" y="190" text-anchor="middle" fill="#e8a317" font-size="9">P2 opposite P7</text>
+  <text x="310" y="205" text-anchor="middle" fill="#e8a317" font-size="9">P3 opposite P6</text>
+
+  <!-- Legend -->
+  <rect x="160" y="310" width="300" height="10" rx="5" fill="none"/>
+  <circle cx="190" cy="315" r="5" fill="#d94f4f"/>
+  <text x="205" y="319" fill="#2c3e50" font-size="10">Short side / Corner</text>
+  <circle cx="340" cy="315" r="5" fill="#4a5da8"/>
+  <text x="355" y="319" fill="#2c3e50" font-size="10">Long side</text>
+</svg>
+<div class="diagram-caption">Rectangular Table (8 seats): corners (red) vs sides (blue), with opposite pairs</div>
+</div>
 
 For a typical 8-person rectangular table:
 

@@ -22,12 +22,40 @@ This chapter collects **speed techniques, elimination heuristics, and edge-case 
 
 Identify the clue that fixes an **absolute position** first. This creates a cascade:
 
-```
-Fixed clue → Fixes person X at position P
-Relative clue → Fixes person Y relative to X
-Relative clue → Fixes person Z relative to Y
-...
-```
+<div class="diagram">
+<svg viewBox="0 0 700 100" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Nunito', sans-serif;">
+  <!-- Fixed clue -->
+  <rect x="10" y="20" width="120" height="55" rx="10" fill="#1a8a8a"/>
+  <text x="70" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">FIXED CLUE</text>
+  <text x="70" y="58" text-anchor="middle" fill="#e0f5f5" font-size="9">"A at left end"</text>
+  <!-- Arrow -->
+  <path d="M135 47 L155 47" stroke="#2c3e50" stroke-width="2" marker-end="url(#cah)"/>
+  <!-- Chain 1 -->
+  <rect x="160" y="20" width="120" height="55" rx="10" fill="#d94f4f"/>
+  <text x="220" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">RELATIVE</text>
+  <text x="220" y="58" text-anchor="middle" fill="#fdeaea" font-size="9">"B 3rd right of A"</text>
+  <!-- Arrow -->
+  <path d="M285 47 L305 47" stroke="#2c3e50" stroke-width="2" marker-end="url(#cah)"/>
+  <!-- Chain 2 -->
+  <rect x="310" y="20" width="120" height="55" rx="10" fill="#e8a317"/>
+  <text x="370" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">RELATIVE</text>
+  <text x="370" y="58" text-anchor="middle" fill="#fef5e0" font-size="9">"C next to B"</text>
+  <!-- Arrow -->
+  <path d="M435 47 L455 47" stroke="#2c3e50" stroke-width="2" marker-end="url(#cah)"/>
+  <!-- Eliminate -->
+  <rect x="460" y="20" width="120" height="55" rx="10" fill="#2e8b57"/>
+  <text x="520" y="42" text-anchor="middle" fill="#fff" font-size="10" font-weight="700">ELIMINATE</text>
+  <text x="520" y="58" text-anchor="middle" fill="#e6f5ed" font-size="9">remaining slots</text>
+  <!-- Arrow -->
+  <path d="M585 47 L605 47" stroke="#2c3e50" stroke-width="2" marker-end="url(#cah)"/>
+  <!-- Done -->
+  <rect x="610" y="25" width="75" height="44" rx="22" fill="#4a5da8"/>
+  <text x="648" y="52" text-anchor="middle" fill="#fff" font-size="11" font-weight="700">DONE</text>
+  <!-- Arrow marker -->
+  <defs><marker id="cah" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto"><path d="M0,0 L7,2.5 L0,5 Z" fill="#2c3e50"/></marker></defs>
+</svg>
+<div class="diagram-caption">Fixed Point Cascade: each placement triggers the next</div>
+</div>
 
 The more people you fix through chaining, the fewer remain for elimination.
 
