@@ -545,7 +545,7 @@
       <nav>
         <a href="{{ '/' | relative_url }}">Home</a>
         <a href="{{ '/Aptitude/Seating-Arrangements/' | relative_url }}">Seating Arrangements</a>
-        <a href="https://github.com/dailycodingworkout/CSE" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://github.com/dailycodingworkout/CSE" target="_blank" rel="noopener noreferrer">GitHub</a>
       </nav>
     </div>
   </header>
@@ -573,6 +573,7 @@
         targets.forEach(function(el) { el.classList.add('visible'); });
         return;
       }
+      // Trigger reveal when 8% of element is visible, with 40px bottom margin buffer
       var io = new IntersectionObserver(function(entries) {
         entries.forEach(function(e) {
           if (e.isIntersecting) {

@@ -51,8 +51,8 @@ title: "GATE CSE Study Material -- Visual Notes"
 
 ## Quick Links -- Seating Arrangements
 
-| Ch | Title | What You Will Learn |
-|:--:|-------|---------------------|
+| Chapter | Title | What You Will Learn |
+|:-------:|-------|---------------------|
 | 1 | [Introduction & Fundamentals](Aptitude/Seating-Arrangements/01-Introduction-and-Fundamentals.html) | Types, terminology, the 5-step solving framework |
 | 2 | [Linear Seating](Aptitude/Seating-Arrangements/02-Linear-Seating-Arrangements.html) | Row arrangements, direction conventions, position formulas |
 | 3 | [Circular Seating](Aptitude/Seating-Arrangements/03-Circular-Seating-Arrangements.html) | Round table, CW/ACW rules, opposite positions |
