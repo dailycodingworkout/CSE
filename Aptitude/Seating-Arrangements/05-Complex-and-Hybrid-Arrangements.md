@@ -38,9 +38,6 @@ A rectangular table has **sides** and **corners**:
 ```
 
 For a typical 8-person rectangular table:
-- **4 corner seats:** 1, 4, 5 (wait — let me define properly)
-
-Actually, the standard convention:
 
 ```
               North Side

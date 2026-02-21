@@ -116,135 +116,70 @@ Q at position 2. Opposite = position $2 + 3 = 5$ = **S**.
 
 ## 7.3 Banking Exam Style Problems (IBPS / SBI)
 
-### Problem B1: Double-Row (Set of 5 Questions)
+### Problem B1: Double-Row (Set of 4 Questions)
 
-> Eight people — A, B, C, D and P, Q, R, S — sit in two parallel rows of 4 each.
-> Row 1: A, B, C, D sit facing South.
-> Row 2: P, Q, R, S sit facing North.
-> Each person in Row 1 faces exactly one person in Row 2.
+> Eight people — A, B, C, D and P, Q, R, S — sit in two parallel rows of 4.
+> Row 1: A, B, C, D face South. Row 2: P, Q, R, S face North.
+> Positions 1–4 from left to right on paper.
 >
 > **Clues:**
-> 1. B sits second from the right end of Row 1.
-> 2. Q faces B.
-> 3. A sits at the right end of Row 1.
-> 4. R sits immediately to the right of Q.
+> 1. B sits at position 3 in Row 1.
+> 2. R faces B.
+> 3. A sits immediately to B's right (B faces South, right = paper-left).
+> 4. S sits immediately to R's left (R faces North, left = paper-left).
 > 5. D is not adjacent to B.
-> 6. P does not face A.
+> 6. P does not face C.
 >
 > **Questions:**
-> Q1. Who sits at the left end of Row 2?
-> Q2. Who faces D?
-> Q3. How many people sit between C and A in Row 1?
-> Q4. Who sits to the immediate right of P?
-> Q5. Which of the following pairs face each other?
+> Q1. Who faces D?
+> Q2. How many people sit between C and A in Row 1?
+> Q3. Who sits to the immediate right of P (from P's perspective)?
+> Q4. Which pairs face each other?
 
 **Solution:**
 
-Positions 1–4, left to right on paper. Row 1 faces South, Row 2 faces North.
-
-**Direction convention:**
-- Row 1 (South): their right = paper-left (decreasing positions), their left = paper-right (increasing positions).
-- Row 2 (North): their right = paper-right (increasing positions), their left = paper-left (decreasing positions).
-
-Wait — "right end of Row 1" — in banking exams, "right end" and "left end" typically refer to the **reader's perspective** (or equivalently, from the perspective of the people in that row). Let me go with the person's perspective:
-
-Row 1 faces South → their right = paper-left → "right end" = position 1 (paper-left end).
-
-Hmm, this is ambiguous. Let me use the standard banking exam convention where positions are numbered from the perspective of the row's inhabitants:
-
-**Simplified convention:** 
-
-For Row 1 (facing South): Seat numbers 1-4 from THEIR left to THEIR right.
-- Their left = paper-right → Seat 1 = paper-right position.
-- Their right = paper-left → Seat 4 = paper-left position.
-
-This gets confusing. Let me use the most common convention: **positions 1-4 from left to right on paper, and "left/right end" refers to paper-left/right regardless of facing.**
-
-**Using paper-based convention:**
-
-Clue 3: A at the right end of Row 1 → A at position 4.
-
-Clue 1: B second from the right end of Row 1 → B at position 3 (counting from the right: 4, 3, 2, 1 → second from right = position 3).
-
-Clue 2: Q faces B → Q at Row 2, position 3.
+Clue 1: B at Row 1, position 3.
+Clue 2: R at Row 2, position 3 (faces B).
+Clue 3: A at position $3 - 1 = 2$ (B's right facing South = paper-left).
+Clue 4: S at position $3 - 1 = 2$ in Row 2 (R's left facing North = paper-left).
 
 ```
-Row 1 (South):  [__]  [__]  [B]   [A]     (positions 1-4)
+Row 1 (South):  [__]  [A]   [B]   [__]   (positions 1-4)
                   |     |     |      |
-Row 2 (North):  [__]  [__]  [Q]   [__]    (positions 1-4)
+Row 2 (North):  [__]  [S]   [R]   [__]   (positions 1-4)
 ```
 
-Clue 4: R immediately to the right of Q. "Right of Q" — Q is in Row 2, facing North. Q's right = paper-right = position 4. **R at Row 2, position 4.**
+Remaining Row 1: C, D for positions 1 and 4.
 
-Clue 6: P does not face A. A at Row 1 position 4. P ≠ Row 2 position 4. R is at position 4, so this is automatically satisfied (P isn't there anyway). But we still need to place P.
+Clue 5: D not adjacent to B (position 3). Adjacent to B = positions 2 and 4. A is at 2. So D ≠ 4. **D at position 1, C at position 4.**
 
-Remaining Row 2: P, S for positions 1 and 2.
+Remaining Row 2: P, Q for positions 1 and 4.
 
-Actually, does Clue 6 give us more? P not at Row 2 position 4 (already occupied by R). No additional constraint from Clue 6 since R is already there.
-
-Remaining Row 1: C, D for positions 1 and 2.
-
-Clue 5: D not adjacent to B (position 3). Adjacent to B: positions 2 and 4. Position 4 is A. So D ≠ position 2. **D at position 1, C at position 2.**
+Clue 6: P does not face C. C at Row 1 position 4. So P ≠ Row 2 position 4. **P at position 1, Q at position 4.**
 
 ```
-Row 1 (South):  [D]   [C]   [B]   [A]     (positions 1-4)
+Row 1 (South):  [D]   [A]   [B]   [C]
                   |     |     |      |
-Row 2 (North):  [__]  [__]  [Q]   [R]     (positions 1-4)
+Row 2 (North):  [P]   [S]   [R]   [Q]
 ```
 
-Now, Clue 6 again: P does not face A. A at position 4, facing position = Row 2 position 4 = R. P doesn't face A → P ≠ position 4 (already satisfied).
-
-Remaining Row 2: P, S for positions 1 and 2. No further constraints distinguish them from the given clues.
-
-Wait — let me re-check if there are implicit constraints. We have P and S for positions 1 and 2 in Row 2. Clue 6 says P doesn't face A (position 4). P is going to position 1 or 2, neither of which faces position 4. So Clue 6 is satisfied regardless.
-
-Both arrangements (P at 1, S at 2) and (P at 2, S at 1) are valid. Let me check if any question needs disambiguation:
-
-Actually, in banking exams, usually the clues uniquely determine the arrangement. Let me see if I missed something.
-
-Re-reading clues... I've used all 6 clues. With P and S both possible at positions 1 and 2, we have two valid arrangements:
-
-```
-Arrangement I:
-Row 1 (South):  [D]   [C]   [B]   [A]
-                  |     |     |      |
-Row 2 (North):  [P]   [S]   [Q]   [R]
-
-Arrangement II:
-Row 1 (South):  [D]   [C]   [B]   [A]
-                  |     |     |      |
-Row 2 (North):  [S]   [P]   [Q]   [R]
-```
-
-**Answering Questions:**
-
-**Q1: Who sits at the left end of Row 2?**
-- Arrangement I: P. Arrangement II: S.
-- Answer depends on arrangement. In an exam, the options would include only one of these, or the question would ask "Who COULD sit at the left end?" with both as options.
-
-Since the problem has ambiguity, let me add a clue to resolve it:
-
-**Additional Clue 7:** S is adjacent to Q.
-
-Q at position 3. Adjacent = positions 2 and 4. Position 4 = R. So S at position 2. P at position 1.
-
-```
-Row 1 (South):  [D]   [C]   [B]   [A]
-                  |     |     |      |
-Row 2 (North):  [P]   [S]   [Q]   [R]
-```
+**Verification:**
+1. ✅ B at position 3
+2. ✅ R(Row 2, pos 3) faces B(Row 1, pos 3)
+3. ✅ A(pos 2) is to B's right (facing South: right = paper-left = pos 2)
+4. ✅ S(pos 2) is to R's left (facing North: left = paper-left = pos 2)
+5. ✅ D(pos 1) not adjacent to B(pos 3): gap = 1 position, not adjacent ✓
+6. ✅ P(pos 1) does not face C(pos 4): P faces D ✓
 
 **Answers:**
 
-**Q1:** Left end of Row 2 = position 1 = **P**.
+**Q1:** D at Row 1 position 1. Faces Row 2 position 1 = **P**.
 
-**Q2:** D at Row 1 position 1. Faces Row 2 position 1 = **P**.
+**Q2:** C at position 4, A at position 2. People between = $|4-2| - 1 = 1$ (B at position 3). **One person.**
 
-**Q3:** C at position 2, A at position 4. People between = $|4-2| - 1 = 1$ (B at position 3). **One person.**
+**Q3:** P at Row 2 position 1, facing North. P's right = paper-right = position 2 = **S**.
 
-**Q4:** P at Row 2 position 1, facing North. P's right = paper-right = position 2 = **S**.
-
-**Q5:** Facing pairs: D↔P, C↔S, B↔Q, A↔R. Answer from options would match one of these.
+**Q4:** Facing pairs: D↔P, A↔S, B↔R, C↔Q.
 
 ---
 
@@ -347,69 +282,6 @@ Other options: F=7, G=6 (taken ✗); F=2, G=1 (taken ✗).
 ## 7.4 ESE-Style Problem
 
 ### Problem E1: Multi-Attribute Arrangement
-
-> Six people — A, B, C, D, E, F — sit in a row facing North. Each person likes a different color: Red, Blue, Green, White, Black, Orange.
->
-> **Clues:**
-> 1. A sits at position 3 and likes Blue.
-> 2. The person who likes Red sits at position 1.
-> 3. B sits immediately to the right of A.
-> 4. C likes Green and sits to the left of B (not immediately adjacent to B).
-> 5. D likes White.
-> 6. E does not sit at position 2.
-> 7. F sits at position 6.
-> 8. The person at position 5 likes Black.
->
-> **Q1:** Who likes Red?
-> **Q2:** What color does the person at position 2 like?
-
-**Solution:**
-
-**Step 1: Place people using position clues**
-
-Clue 1: A at position 3 (Blue).
-
-Clue 3: B immediately to A's right (facing North, right = increasing). B at position 4.
-
-Clue 7: F at position 6.
-
-```
-Pos:    1      2      3      4      5      6
-       [__]   [__]   [A]    [B]    [__]   [F]
-Color:  Red    __    Blue    __    Black    __
-```
-
-**Step 2: Place C**
-
-Clue 4: C likes Green, sits to the left of B (position 4), not immediately adjacent to B. Positions to B's left (facing North, left = decreasing): {1, 2, 3}. Not immediately adjacent means C ≠ position 3 (already A). Position 1 has color Red, but C likes Green → C ≠ position 1.
-
-**C at position 2 (Green).**
-
-**Step 3: Place D and E**
-
-Remaining: D, E for positions 1 and 5. Placed: A(3), B(4), C(2), F(6).
-
-Clue 5: D likes White. Position 1 has Red, position 5 has Black. D's color is White, which doesn't match either fixed color. But a person can sit at a position — the color constraint is on what they "like," and the position's color is what the person AT that position likes.
-
-So: position 1's person likes Red. If D is at position 1, D likes Red — but Clue 5 says D likes White. Contradiction. So **D ≠ position 1**.
-
-Position 5's person likes Black. If D is at position 5, D likes Black — but D likes White. Contradiction. So **D ≠ position 5**.
-
-Wait — D must go to position 1 or 5, but neither works! Let me reconsider: actually, Clue 8 says the person at position 5 likes Black. If D is at position 5, D must like Black. But D likes White. So D can't be at 5. And position 1 person likes Red, so D can't be there either.
-
-This means I need to reconsider the color assignments. Actually, the constraint is simpler: each person already has a fixed color preference (clue 5: D likes White). The position's color is determined by who sits there. So position 5's color = the color liked by whoever sits at position 5.
-
-Re-reading Clue 8: "The person at position 5 likes Black." This means whoever is at position 5 likes Black. Clue 5: D likes White. So D ≠ position 5 (since the person there likes Black, not White).
-
-Similarly, Clue 2: person at position 1 likes Red. D likes White ≠ Red, so D ≠ position 1.
-
-But D must be at 1 or 5 — both are ruled out!
-
-Hmm, I missed that Clue 6 says E ≠ position 2. Since C is already at position 2, this is automatically satisfied. So E can be at position 1 or 5.
-
-But D also needs one of {1, 5}. With both ruled out for D... Actually, I made the constraint set inconsistent. Let me fix by adjusting colors.
-
-**Let me present the corrected, fully consistent version:**
 
 > Six people — A, B, C, D, E, F — sit in a row facing North. Each person likes a different color: Red, Blue, Green, Yellow, White, Black.
 >

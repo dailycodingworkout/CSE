@@ -42,8 +42,6 @@ Row 1:     P1   P2   P3   P4   P5
 From P's perspective: Right ←──── ────→ Left
 ```
 
-Wait — when facing South, the person's left hand points to their left (which is to the East, i.e., toward higher position numbers on paper). Let me be precise:
-
 **Convention:** Positions are numbered 1–5 from the **reader's left to right** on paper.
 
 When someone **faces South** (downward on paper):
