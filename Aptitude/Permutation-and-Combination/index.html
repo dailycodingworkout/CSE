@@ -1,0 +1,1875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Permutation &amp; Combination — A-Z GATE / ESE / PSU / BANK Tutorial</title>
+
+<!-- Three.js & GSAP via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+<style>
+/* ───── Reset & Base ───── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:16px;scroll-behavior:smooth}
+body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0b0e17;color:#e2e8f0;overflow:hidden;height:100vh;width:100vw}
+
+/* ───── Three.js Canvas ───── */
+#bg-canvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none}
+
+/* ───── Presentation Container ───── */
+#presentation{position:relative;z-index:1;width:100%;height:100%;display:flex;flex-direction:column}
+
+/* ───── Top Bar ───── */
+#topbar{display:flex;align-items:center;justify-content:space-between;padding:10px 24px;background:rgba(15,20,40,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(100,140,255,0.15);flex-shrink:0}
+#topbar h1{font-size:1.05rem;font-weight:700;background:linear-gradient(135deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+#slide-counter{font-size:.85rem;color:#94a3b8;font-variant-numeric:tabular-nums}
+
+/* ───── Slide Area ───── */
+#slide-viewport{flex:1;overflow:hidden;position:relative}
+.slide{position:absolute;top:0;left:0;width:100%;height:100%;padding:32px 5vw 100px;overflow-y:auto;opacity:0;visibility:hidden;transition:none}
+.slide.active{opacity:1;visibility:visible}
+.slide::-webkit-scrollbar{width:6px}
+.slide::-webkit-scrollbar-thumb{background:rgba(100,140,255,0.3);border-radius:3px}
+
+/* ───── Slide Content Styling ───── */
+.slide h2{font-size:1.7rem;font-weight:800;margin-bottom:8px;background:linear-gradient(135deg,#60a5fa,#c084fc);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.slide h3{font-size:1.2rem;font-weight:700;color:#93c5fd;margin:20px 0 8px;border-left:3px solid #60a5fa;padding-left:12px}
+.slide h4{font-size:1.05rem;color:#a5b4fc;margin:16px 0 6px}
+.slide p,.slide li{font-size:.97rem;line-height:1.75;color:#cbd5e1}
+.slide ul,.slide ol{padding-left:22px;margin:8px 0}
+.slide li{margin-bottom:4px}
+.slide strong{color:#f1f5f9}
+.slide em{color:#93c5fd;font-style:normal}
+
+/* Formula Blocks */
+.formula-box{background:rgba(30,40,80,0.7);border:1px solid rgba(96,165,250,0.25);border-radius:10px;padding:18px 22px;margin:14px 0;font-size:1.05rem;line-height:1.9;color:#e0e7ff;position:relative;overflow:hidden}
+.formula-box::before{content:'';position:absolute;top:0;left:0;width:4px;height:100%;background:linear-gradient(180deg,#60a5fa,#a78bfa);border-radius:2px}
+.formula-box .label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#64748b;margin-bottom:6px}
+
+/* Example Blocks */
+.example-box{background:rgba(16,40,30,0.6);border:1px solid rgba(52,211,153,0.2);border-radius:10px;padding:16px 20px;margin:14px 0}
+.example-box .label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#34d399;margin-bottom:6px}
+
+/* Trick / Tip Blocks */
+.trick-box{background:rgba(60,30,10,0.5);border:1px solid rgba(251,191,36,0.25);border-radius:10px;padding:16px 20px;margin:14px 0}
+.trick-box .label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#fbbf24;margin-bottom:6px}
+
+/* Edge-case / Warning */
+.warn-box{background:rgba(60,15,15,0.5);border:1px solid rgba(248,113,113,0.25);border-radius:10px;padding:16px 20px;margin:14px 0}
+.warn-box .label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#f87171;margin-bottom:6px}
+
+/* Analogy */
+.analogy-box{background:rgba(50,20,60,0.5);border:1px solid rgba(192,132,252,0.25);border-radius:10px;padding:16px 20px;margin:14px 0}
+.analogy-box .label{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:1.5px;color:#c084fc;margin-bottom:6px}
+
+/* Table */
+.slide table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.92rem}
+.slide th{background:rgba(30,40,80,0.8);color:#93c5fd;padding:10px 14px;text-align:left;border-bottom:2px solid rgba(96,165,250,0.3)}
+.slide td{padding:9px 14px;border-bottom:1px solid rgba(100,140,255,0.1);color:#cbd5e1}
+.slide tr:hover td{background:rgba(30,40,80,0.4)}
+
+/* ───── Navigation Bar ───── */
+#navbar{display:flex;align-items:center;justify-content:center;gap:16px;padding:14px 24px;background:rgba(15,20,40,0.9);backdrop-filter:blur(12px);border-top:1px solid rgba(100,140,255,0.15);flex-shrink:0}
+.nav-btn{padding:10px 28px;border:1px solid rgba(96,165,250,0.3);border-radius:8px;background:rgba(30,40,80,0.6);color:#93c5fd;font-size:.92rem;font-weight:600;cursor:pointer;transition:all .2s}
+.nav-btn:hover:not(:disabled){background:rgba(96,165,250,0.15);border-color:#60a5fa;color:#e0e7ff}
+.nav-btn:disabled{opacity:.35;cursor:not-allowed}
+#progress-bar{flex:1;max-width:400px;height:4px;background:rgba(100,140,255,0.12);border-radius:2px;overflow:hidden}
+#progress-fill{height:100%;background:linear-gradient(90deg,#60a5fa,#a78bfa);border-radius:2px;transition:width .4s ease}
+
+/* ───── Keyboard Hint ───── */
+.key-hint{position:fixed;bottom:70px;right:20px;font-size:.72rem;color:#475569;z-index:2}
+
+/* ───── Animation Containers ───── */
+.anim-container{position:relative;width:100%;margin:18px 0;border-radius:12px;overflow:hidden;background:rgba(15,20,40,0.6);border:1px solid rgba(96,165,250,0.15)}
+.anim-container canvas{display:block;width:100%;height:100%}
+.anim-container .anim-label{position:absolute;top:8px;left:12px;font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(148,163,184,0.6);pointer-events:none;z-index:1}
+.anim-container .anim-badge-2d{position:absolute;top:8px;right:12px;font-size:.6rem;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.2);pointer-events:none}
+.anim-container .anim-badge-3d{position:absolute;top:8px;right:12px;font-size:.6rem;padding:2px 8px;border-radius:4px;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.2);pointer-events:none}
+.anim-replay{position:absolute;bottom:8px;right:12px;font-size:.7rem;padding:4px 12px;border-radius:6px;background:rgba(30,40,80,0.8);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);cursor:pointer;z-index:2;transition:all .2s}
+.anim-replay:hover{background:rgba(96,165,250,0.2);color:#e0e7ff}
+
+/* ───── Responsive ───── */
+@media(max-width:700px){
+  .slide{padding:20px 4vw 90px}
+  .slide h2{font-size:1.35rem}
+  #topbar h1{font-size:.9rem}
+  .nav-btn{padding:8px 18px;font-size:.82rem}
+}
+</style>
+</head>
+<body>
+
+<!-- Three.js background canvas -->
+<canvas id="bg-canvas"></canvas>
+
+<!-- Presentation -->
+<div id="presentation">
+
+<!-- Top Bar -->
+<header id="topbar">
+  <h1>Permutation &amp; Combination &mdash; Complete GATE / ESE / PSU / BANK Guide</h1>
+  <span id="slide-counter">1 / 20</span>
+</header>
+
+<!-- Slide Viewport -->
+<div id="slide-viewport">
+
+<!-- ==================== SLIDE 1 ==================== -->
+<section class="slide active" data-slide="1">
+<h2>1. Introduction &amp; Why This Topic Matters</h2>
+
+<p>Permutation &amp; Combination (P&amp;C) is a foundational topic that appears in <strong>every</strong> competitive exam &mdash; GATE (Discrete Maths / Aptitude), ESE, PSU recruitment tests, and Bank exams (Quantitative Aptitude). Mastering it unlocks Probability, Counting, and Combinatorics questions, which together can contribute 3&ndash;8 marks.</p>
+
+<div class="analogy-box">
+<span class="label">Analogy &mdash; The Two Core Questions</span>
+Think of P&amp;C as answering exactly two flavors of question:<br>
+<strong>Permutation</strong> = &ldquo;In how many ways can I <em>arrange</em> things?&rdquo; (Order matters &mdash; like seats in a row.)<br>
+<strong>Combination</strong> = &ldquo;In how many ways can I <em>select</em> things?&rdquo; (Order does NOT matter &mdash; like picking a team.)
+</div>
+
+<h3>Road-Map of This Tutorial (20 Slides)</h3>
+<ol>
+  <li>Introduction (this slide)</li>
+  <li>Fundamental Counting Principle (Addition &amp; Multiplication Rules)</li>
+  <li>Factorial &mdash; Concept, Properties &amp; Derivation</li>
+  <li>Permutation Formula &mdash; Derivation &amp; Intuition</li>
+  <li>Permutation &mdash; Worked Examples</li>
+  <li>Combination Formula &mdash; Derivation &amp; Intuition</li>
+  <li>Combination &mdash; Worked Examples</li>
+  <li>Permutation vs Combination &mdash; Decision Framework</li>
+  <li>Permutations with Repetition</li>
+  <li>Identical Objects &amp; Grouping (Multinomial)</li>
+  <li>Combinations with Repetition (Stars &amp; Bars)</li>
+  <li>Circular Permutations</li>
+  <li>Necklace / Bracelet Problems</li>
+  <li>Derangements (Subfactorials)</li>
+  <li>Inclusion&ndash;Exclusion Principle in Counting</li>
+  <li>Distribution of Objects into Boxes</li>
+  <li>Partitions, Committee &amp; Group Formation</li>
+  <li>Exam-Specific Tricks &amp; Shortcuts</li>
+  <li>GATE / ESE PYQ Pattern Analysis &amp; Edge Cases</li>
+  <li>Grand Summary &amp; Quick-Revision Cheat Sheet</li>
+</ol>
+</section>
+
+<!-- ==================== SLIDE 2 ==================== -->
+<section class="slide" data-slide="2">
+<h2>2. Fundamental Counting Principle</h2>
+
+<h3>Multiplication Rule (AND)</h3>
+<p>If task A can be done in <em>m</em> ways <strong>and then</strong> task B can be done in <em>n</em> ways, the total ways to do A <strong>and</strong> B = <strong>m &times; n</strong>.</p>
+
+<div class="analogy-box">
+<span class="label">Analogy</span>
+You have 3 shirts and 4 pants. Total outfits = 3 &times; 4 = <strong>12</strong>. Each shirt pairs with every pant &mdash; an independent sequential choice.
+</div>
+
+<div class="formula-box">
+<span class="label">Generalized Multiplication Rule</span>
+If a task consists of <em>k</em> sequential stages with n₁, n₂, &hellip;, nₖ options respectively, total ways = n₁ &times; n₂ &times; &hellip; &times; nₖ
+</div>
+
+<h3>Addition Rule (OR)</h3>
+<p>If task A can be done in <em>m</em> ways <strong>or</strong> task B in <em>n</em> ways, and they are <strong>mutually exclusive</strong> (cannot happen simultaneously), the total ways = <strong>m + n</strong>.</p>
+
+<div class="example-box">
+<span class="label">Example</span>
+<strong>Q:</strong> A student can travel to college by bus (5 routes) or by train (3 routes). Total ways?<br>
+<strong>A:</strong> 5 + 3 = <strong>8</strong> (the student takes one or the other, not both simultaneously).
+</div>
+
+<div class="trick-box">
+<span class="label">Trick &mdash; AND vs OR Detector</span>
+&bull; See &ldquo;and&rdquo; / &ldquo;then&rdquo; / sequential stages &rarr; <strong>Multiply</strong><br>
+&bull; See &ldquo;or&rdquo; / &ldquo;either&rdquo; / mutually exclusive choices &rarr; <strong>Add</strong>
+</div>
+
+<div class="warn-box">
+<span class="label">Edge Case</span>
+If choices are <strong>not</strong> mutually exclusive, use Inclusion&ndash;Exclusion: |A &cup; B| = |A| + |B| &minus; |A &cap; B|. Forgetting this is a classic exam trap.
+</div>
+
+<div class="example-box">
+<span class="label">GATE-Style Example</span>
+<strong>Q:</strong> How many 3-digit numbers can be formed from digits {1, 2, 3, 4, 5} with no repetition?<br>
+<strong>A:</strong> Hundreds place: 5 choices &rarr; Tens: 4 remaining &rarr; Units: 3 remaining.<br>
+Total = 5 &times; 4 &times; 3 = <strong>60</strong>.
+</div>
+
+<div class="anim-container" style="height:220px">
+<span class="anim-label">Multiplication Rule &mdash; Shirts &times; Pants</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-multiply" width="800" height="220"></canvas>
+<button class="anim-replay" data-target="anim-multiply">&#8635; Replay</button>
+</div>
+</section>
+
+<!-- ==================== SLIDE 3 ==================== -->
+<section class="slide" data-slide="3">
+<h2>3. Factorial &mdash; Concept, Properties &amp; Derivation</h2>
+
+<h3>What Is a Factorial?</h3>
+<p><strong>n!</strong> (read &ldquo;n factorial&rdquo;) = the product of all positive integers from 1 to n.</p>
+
+<div class="formula-box">
+<span class="label">Definition</span>
+n! = n &times; (n&minus;1) &times; (n&minus;2) &times; &hellip; &times; 2 &times; 1<br>
+Special cases: <strong>0! = 1</strong> (by convention / empty product), &nbsp; <strong>1! = 1</strong>
+</div>
+
+<h3>Why Does n! Exist?</h3>
+
+<div class="analogy-box">
+<span class="label">Analogy &mdash; Arranging Books</span>
+Place 4 distinct books on a shelf.<br>
+&bull; 1st slot: 4 choices &bull; 2nd: 3 &bull; 3rd: 2 &bull; 4th: 1<br>
+Total = 4 &times; 3 &times; 2 &times; 1 = 4! = <strong>24</strong>.<br>
+The factorial naturally emerges when you arrange <em>all</em> n distinct objects in a line.
+</div>
+
+<h3>Why 0! = 1?</h3>
+<p>The recurrence n! = n &times; (n&minus;1)! gives 1! = 1 &times; 0!, so 0! must be 1. Alternatively, there is exactly <strong>one</strong> way to arrange zero objects: do nothing.</p>
+
+<h3>Key Properties</h3>
+<ul>
+  <li>n! = n &times; (n&minus;1)! &nbsp;&mdash;&nbsp; recursive definition</li>
+  <li>n! / (n&minus;r)! = n &times; (n&minus;1) &times; &hellip; &times; (n&minus;r+1) &nbsp;&mdash;&nbsp; exactly <em>r</em> falling terms</li>
+  <li>n! grows super-exponentially: 10! = 3,628,800; &nbsp; 20! &asymp; 2.43 &times; 10<sup>18</sup></li>
+</ul>
+
+<h3>Quick Factorials Table (Know by Heart)</h3>
+<table>
+  <tr><th>n</th><th>n!</th></tr>
+  <tr><td>0</td><td>1</td></tr>
+  <tr><td>1</td><td>1</td></tr>
+  <tr><td>2</td><td>2</td></tr>
+  <tr><td>3</td><td>6</td></tr>
+  <tr><td>4</td><td>24</td></tr>
+  <tr><td>5</td><td>120</td></tr>
+  <tr><td>6</td><td>720</td></tr>
+  <tr><td>7</td><td>5,040</td></tr>
+  <tr><td>8</td><td>40,320</td></tr>
+  <tr><td>9</td><td>362,880</td></tr>
+  <tr><td>10</td><td>3,628,800</td></tr>
+</table>
+
+<div class="trick-box">
+<span class="label">Exam Trick &mdash; Trailing Zeros in n!</span>
+Number of trailing zeros = &lfloor;n/5&rfloor; + &lfloor;n/25&rfloor; + &lfloor;n/125&rfloor; + &hellip;<br>
+This counts powers of 5 in the prime factorization (2s are always abundant).<br>
+Example: 100! has &lfloor;100/5&rfloor; + &lfloor;100/25&rfloor; = 20 + 4 = <strong>24</strong> trailing zeros.
+</div>
+</section>
+
+<!-- ==================== SLIDE 4 ==================== -->
+<section class="slide" data-slide="4">
+<h2>4. Permutation Formula &mdash; Derivation &amp; Intuition</h2>
+
+<h3>The Core Question</h3>
+<p>&ldquo;In how many ways can we <em>arrange</em> <strong>r</strong> objects out of <strong>n</strong> distinct objects?&rdquo;</p>
+
+<h3>Step-by-Step Derivation</h3>
+<p>Imagine filling <em>r</em> slots from <em>n</em> distinct items (no repetition):</p>
+<ul>
+  <li>Slot 1: <em>n</em> choices</li>
+  <li>Slot 2: <em>n&minus;1</em> choices</li>
+  <li>Slot 3: <em>n&minus;2</em> choices</li>
+  <li>&hellip;</li>
+  <li>Slot r: <em>n&minus;r+1</em> choices</li>
+</ul>
+<p>By the Multiplication Rule:</p>
+
+<div class="formula-box">
+<span class="label">Permutation Formula</span>
+P(n, r) = ⁿPᵣ = n &times; (n&minus;1) &times; &hellip; &times; (n&minus;r+1) = <strong>n! / (n&minus;r)!</strong><br><br>
+<em>Why divide by (n&minus;r)!?</em><br>
+The product n &times; (n&minus;1) &times; &hellip; &times; 1 = n! goes all the way down to 1, but we only need <em>r</em> terms. Dividing by (n&minus;r)! chops off the unwanted tail: (n&minus;r) &times; (n&minus;r&minus;1) &times; &hellip; &times; 1.
+</div>
+
+<h3>Special Cases</h3>
+<ul>
+  <li><strong>P(n, n)</strong> = n! / 0! = n! &mdash; arrange all n objects</li>
+  <li><strong>P(n, 0)</strong> = n! / n! = 1 &mdash; select &amp; arrange nothing (one way: do nothing)</li>
+  <li><strong>P(n, 1)</strong> = n &mdash; just picking one item</li>
+</ul>
+
+<div class="example-box">
+<span class="label">Example &mdash; Filling Positions</span>
+<strong>Q:</strong> 10 athletes compete. How many ways to award Gold, Silver, Bronze?<br>
+<strong>A:</strong> P(10, 3) = 10 &times; 9 &times; 8 = <strong>720</strong>.<br>
+Order matters: (A=Gold, B=Silver) &ne; (B=Gold, A=Silver).
+</div>
+
+<div class="analogy-box">
+<span class="label">Aha Moment</span>
+Permutation = Selection + Arrangement. First <em>pick</em> r items, then <em>order</em> them. That ordering step is what distinguishes permutation from combination.
+</div>
+
+<div class="anim-container" style="height:200px">
+<span class="anim-label">Permutation &mdash; Filling r Slots from n Items</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-perm-slots" width="800" height="200"></canvas>
+<button class="anim-replay" data-target="anim-perm-slots">&#8635; Replay</button>
+</div>
+</section>
+
+<!-- ==================== SLIDE 5 ==================== -->
+<section class="slide" data-slide="5">
+<h2>5. Permutation &mdash; Worked Examples</h2>
+
+<div class="example-box">
+<span class="label">Example 1 &mdash; Word Arrangements</span>
+<strong>Q:</strong> How many 4-letter words (meaningful or not) from the letters of &ldquo;GATE&rdquo;?<br>
+<strong>A:</strong> All 4 letters are distinct. Arrange all 4: P(4, 4) = 4! = <strong>24</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 2 &mdash; Digit Constraints</span>
+<strong>Q:</strong> How many 4-digit even numbers can be formed from {1, 2, 3, 4, 5} without repetition?<br>
+<strong>A:</strong> The units digit must be even: {2, 4} &rarr; 2 choices.<br>
+Remaining 3 digits from 4 left: P(4, 3) = 24.<br>
+Total = 2 &times; 24 = <strong>48</strong>.<br>
+<em>Trick: Always fix the constrained position first.</em>
+</div>
+
+<div class="example-box">
+<span class="label">Example 3 &mdash; Keeping Together</span>
+<strong>Q:</strong> Arrange A, B, C, D, E such that A and B are always together.<br>
+<strong>A:</strong> Treat {AB} as a single block &rarr; 4 entities: {AB}, C, D, E &rarr; 4! arrangements.<br>
+Within the block, A &amp; B can swap: 2!.<br>
+Total = 4! &times; 2! = 24 &times; 2 = <strong>48</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 4 &mdash; Never Together</span>
+<strong>Q:</strong> Arrange A, B, C, D, E such that A and B are <strong>never</strong> adjacent.<br>
+<strong>A:</strong> Total arrangements = 5! = 120.<br>
+Together = 48 (from above).<br>
+Never together = 120 &minus; 48 = <strong>72</strong>.<br>
+<em>Trick: &ldquo;Never together&rdquo; = Total &minus; Together. Always use the complement.</em>
+</div>
+
+<div class="trick-box">
+<span class="label">Trick &mdash; Constrained Permutation Strategy</span>
+1. Fix the most restricted position first (even digit, specific person, etc.).<br>
+2. Use block/bundle method for &ldquo;together&rdquo; constraints.<br>
+3. Use complement (Total &minus; unwanted) for &ldquo;never&rdquo; constraints.<br>
+4. Use gap method for &ldquo;no two X adjacent&rdquo; problems: arrange others first, then place X in gaps.
+</div>
+</section>
+
+<!-- ==================== SLIDE 6 ==================== -->
+<section class="slide" data-slide="6">
+<h2>6. Combination Formula &mdash; Derivation &amp; Intuition</h2>
+
+<h3>The Core Question</h3>
+<p>&ldquo;In how many ways can we <em>select</em> <strong>r</strong> objects from <strong>n</strong> distinct objects, <strong>without</strong> caring about order?&rdquo;</p>
+
+<h3>Derivation from Permutation</h3>
+
+<div class="formula-box">
+<span class="label">The Key Insight</span>
+Every combination of r items can be <strong>internally rearranged</strong> in r! ways to produce permutations.<br>
+So: P(n, r) = C(n, r) &times; r!<br><br>
+Solving: <strong>C(n, r) = P(n, r) / r! = n! / [r! &times; (n&minus;r)!]</strong>
+</div>
+
+<div class="analogy-box">
+<span class="label">Aha Moment &mdash; Why Divide by r!?</span>
+Suppose you picked 3 people {A, B, C} for a committee. Permutation counts ABC, ACB, BAC, BCA, CAB, CBA as <strong>6 different</strong> outcomes. But as a committee, all 6 are the <strong>same</strong> group. Dividing by 3! = 6 collapses them into one.
+</div>
+
+<div class="anim-container" style="height:220px">
+<span class="anim-label">Combination &mdash; Permutations Collapse into Groups</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-comb-collapse" width="800" height="220"></canvas>
+<button class="anim-replay" data-target="anim-comb-collapse">&#8635; Replay</button>
+</div>
+
+<h3>Properties of C(n, r)</h3>
+<ul>
+  <li><strong>Symmetry:</strong> C(n, r) = C(n, n&minus;r) &mdash; choosing r to include = choosing (n&minus;r) to exclude</li>
+  <li><strong>Pascal&rsquo;s Identity:</strong> C(n, r) = C(n&minus;1, r&minus;1) + C(n&minus;1, r)</li>
+  <li>C(n, 0) = C(n, n) = 1</li>
+  <li>C(n, 1) = n</li>
+  <li>Sum of row: C(n,0) + C(n,1) + &hellip; + C(n,n) = 2ⁿ (total subsets)</li>
+</ul>
+
+<h3>Pascal&rsquo;s Triangle (Visualize C(n,r))</h3>
+<pre style="color:#93c5fd;font-size:.85rem;line-height:1.6;text-align:center">
+          1
+        1   1
+      1   2   1
+    1   3   3   1
+  1   4   6   4   1
+1   5  10  10   5   1
+</pre>
+<p>Each entry = sum of the two directly above it. Row <em>n</em> gives C(n, 0), C(n, 1), &hellip;, C(n, n).</p>
+</section>
+
+<!-- ==================== SLIDE 7 ==================== -->
+<section class="slide" data-slide="7">
+<h2>7. Combination &mdash; Worked Examples</h2>
+
+<div class="example-box">
+<span class="label">Example 1 &mdash; Committee Selection</span>
+<strong>Q:</strong> From 8 people, choose a committee of 3. How many ways?<br>
+<strong>A:</strong> C(8, 3) = 8! / (3! &times; 5!) = (8 &times; 7 &times; 6) / (3 &times; 2 &times; 1) = <strong>56</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 2 &mdash; Handshake Problem</span>
+<strong>Q:</strong> 12 people in a room. Each shakes hands with every other exactly once. Total handshakes?<br>
+<strong>A:</strong> A handshake = choosing 2 people (order irrelevant). C(12, 2) = (12 &times; 11) / 2 = <strong>66</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 3 &mdash; With Constraints</span>
+<strong>Q:</strong> A committee of 5 from 6 men and 4 women, with at least 2 women.<br>
+<strong>A:</strong> Cases: (2W, 3M), (3W, 2M), (4W, 1M).<br>
+= C(4,2)&times;C(6,3) + C(4,3)&times;C(6,2) + C(4,4)&times;C(6,1)<br>
+= 6&times;20 + 4&times;15 + 1&times;6 = 120 + 60 + 6 = <strong>186</strong>.<br>
+<em>Alternative (complement):</em> Total &minus; (0W + 1W) = C(10,5) &minus; C(6,5) &minus; C(4,1)&times;C(6,4) = 252 &minus; 6 &minus; 60 = 186. &#10003;
+</div>
+
+<div class="trick-box">
+<span class="label">Trick &mdash; Quick C(n,r) Calculation</span>
+For small r, use the &ldquo;falling product&rdquo; shortcut:<br>
+C(n, r) = [n &times; (n&minus;1) &times; &hellip; &times; (n&minus;r+1)] / r!<br>
+Example: C(20, 3) = (20 &times; 19 &times; 18) / (3 &times; 2 &times; 1) = 6840 / 6 = <strong>1140</strong>.<br>
+<em>Never expand full factorials in exams &mdash; cancel early!</em>
+</div>
+</section>
+
+<!-- ==================== SLIDE 8 ==================== -->
+<section class="slide" data-slide="8">
+<h2>8. Permutation vs Combination &mdash; Decision Framework</h2>
+
+<h3>The One Question That Decides Everything</h3>
+<p><strong>&ldquo;Does rearranging the selected items give a DIFFERENT outcome?&rdquo;</strong></p>
+<ul>
+  <li><strong>Yes</strong> &rarr; Permutation (order matters)</li>
+  <li><strong>No</strong> &rarr; Combination (order doesn&rsquo;t matter)</li>
+</ul>
+
+<h3>Comparison Table</h3>
+<table>
+  <tr><th>Aspect</th><th>Permutation</th><th>Combination</th></tr>
+  <tr><td>Keyword</td><td>Arrange, Order, Rank, Position, Sequence</td><td>Select, Choose, Pick, Group, Committee, Team</td></tr>
+  <tr><td>Formula</td><td>n! / (n&minus;r)!</td><td>n! / [r!(n&minus;r)!]</td></tr>
+  <tr><td>Relationship</td><td>P = C &times; r!</td><td>C = P / r!</td></tr>
+  <tr><td>Always</td><td>P(n,r) &ge; C(n,r)</td><td>C(n,r) &le; P(n,r)</td></tr>
+  <tr><td>Example</td><td>PIN code 1234 &ne; 4321</td><td>Lottery draw {1,2,3} = {3,1,2}</td></tr>
+</table>
+
+<div class="example-box">
+<span class="label">Quick Classifier Examples</span>
+<strong>1.</strong> &ldquo;Forming a password of 4 digits&rdquo; &rarr; <strong>Permutation</strong> (1234 &ne; 4321).<br>
+<strong>2.</strong> &ldquo;Choosing 3 toppings for pizza&rdquo; &rarr; <strong>Combination</strong> (toppings have no order).<br>
+<strong>3.</strong> &ldquo;Electing president, VP, secretary from 10&rdquo; &rarr; <strong>Permutation</strong> (positions are distinct).<br>
+<strong>4.</strong> &ldquo;Selecting 4 cards from 52&rdquo; &rarr; <strong>Combination</strong> (just selection, no arrangement).<br>
+<strong>5.</strong> &ldquo;Seating 5 guests in 5 chairs&rdquo; &rarr; <strong>Permutation</strong> (each chair is a distinct slot).
+</div>
+
+<div class="warn-box">
+<span class="label">Common Exam Trap</span>
+&ldquo;How many ways to choose 3 books from 10 and <strong>arrange them on a shelf</strong>?&rdquo;<br>
+This is <strong>NOT</strong> a pure combination! It&rsquo;s selection + arrangement = P(10, 3) = 720.<br>
+Read the complete question &mdash; the last phrase decides the answer.
+</div>
+
+<div class="anim-container" style="height:250px">
+<span class="anim-label">Permutation vs Combination &mdash; 3D Visual</span>
+<span class="anim-badge-3d">3D Interactive</span>
+<canvas id="anim-pvc-3d" width="800" height="250"></canvas>
+</div>
+</section>
+
+<!-- ==================== SLIDE 9 ==================== -->
+<section class="slide" data-slide="9">
+<h2>9. Permutations with Repetition Allowed</h2>
+
+<h3>When Each Choice Is Independent</h3>
+<p>If repetition is <strong>allowed</strong> and you fill <em>r</em> positions from <em>n</em> choices, each slot has <em>n</em> options independently.</p>
+
+<div class="formula-box">
+<span class="label">Formula &mdash; Permutation with Repetition</span>
+Total ways = n<sup>r</sup><br>
+(Each of the r positions has n independent choices.)
+</div>
+
+<div class="example-box">
+<span class="label">Example 1 &mdash; License Plates</span>
+<strong>Q:</strong> A license plate has 3 letters (A&ndash;Z) followed by 3 digits (0&ndash;9). How many plates?<br>
+<strong>A:</strong> Letters: 26<sup>3</sup>. Digits: 10<sup>3</sup>. Total = 26<sup>3</sup> &times; 10<sup>3</sup> = 17,576 &times; 1,000 = <strong>17,576,000</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 2 &mdash; Binary Strings</span>
+<strong>Q:</strong> How many binary strings of length n?<br>
+<strong>A:</strong> Each bit has 2 choices &rarr; 2<sup>n</sup>. For n = 8: <strong>256</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 3 &mdash; GATE Style</span>
+<strong>Q:</strong> How many 4-digit numbers can be formed using {0,1,2,3,4,5} with repetition?<br>
+<strong>A:</strong> Thousands place: 5 choices (1&ndash;5, cannot be 0).<br>
+Remaining 3 places: 6 choices each.<br>
+Total = 5 &times; 6<sup>3</sup> = 5 &times; 216 = <strong>1080</strong>.<br>
+<em>Trap: Don&rsquo;t write 6<sup>4</sup> = 1296. The leading digit cannot be 0!</em>
+</div>
+
+<div class="trick-box">
+<span class="label">Trick &mdash; Quick Decision: With or Without Repetition?</span>
+&bull; &ldquo;Repetition allowed&rdquo; / &ldquo;digits can repeat&rdquo; &rarr; n<sup>r</sup><br>
+&bull; &ldquo;Distinct&rdquo; / &ldquo;no repetition&rdquo; / &ldquo;without replacement&rdquo; &rarr; P(n, r) = n! / (n&minus;r)!<br>
+If the problem says nothing, <strong>default to without repetition</strong> in most exam contexts.
+</div>
+</section>
+
+<!-- ==================== SLIDE 10 ==================== -->
+<section class="slide" data-slide="10">
+<h2>10. Arrangements of Objects with Identical Items (Multinomial)</h2>
+
+<h3>The Problem</h3>
+<p>How many distinct arrangements of n objects where some are identical?</p>
+
+<div class="formula-box">
+<span class="label">Multinomial Permutation Formula</span>
+If there are n objects with p₁ identical of type 1, p₂ identical of type 2, &hellip;, pₖ identical of type k (where p₁ + p₂ + &hellip; + pₖ = n):<br><br>
+Distinct arrangements = <strong>n! / (p₁! &times; p₂! &times; &hellip; &times; pₖ!)</strong><br><br>
+This is called the <em>multinomial coefficient</em> because it generalizes the binomial coefficient C(n, r) = n!/(r!(n&minus;r)!) from 2 groups to k groups.
+</div>
+
+<h3>Why Divide?</h3>
+<div class="analogy-box">
+<span class="label">Aha Moment</span>
+Consider &ldquo;AAB&rdquo;. If you label the As as A₁, A₂, you get 3! = 6 arrangements. But A₁A₂B and A₂A₁B look the <strong>same</strong>. Each arrangement has been over-counted by 2! (ways to swap As). So divide: 3! / 2! = <strong>3</strong> (AAB, ABA, BAA).
+</div>
+
+<div class="example-box">
+<span class="label">Example 1 &mdash; Classic Word Problem</span>
+<strong>Q:</strong> Arrangements of &ldquo;MISSISSIPPI&rdquo;?<br>
+<strong>A:</strong> 11 letters: M(1), I(4), S(4), P(2).<br>
+= 11! / (1! &times; 4! &times; 4! &times; 2!) = 39916800 / (1 &times; 24 &times; 24 &times; 2) = 39916800 / 1152 = <strong>34,650</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 2 &mdash; Grid Paths</span>
+<strong>Q:</strong> Shortest paths in a grid from (0,0) to (m,n) moving only right (R) or up (U)?<br>
+<strong>A:</strong> Total steps = m + n (m Rights and n Ups). We arrange m R&rsquo;s and n U&rsquo;s:<br>
+= (m+n)! / (m! &times; n!) = <strong>C(m+n, m)</strong>.<br>
+<em>This beautifully connects grid paths to combinations!</em>
+</div>
+
+<div class="trick-box">
+<span class="label">Exam Shortcut</span>
+For any word/string problem, just list letter frequencies, write n! on top, and divide by each frequency factorial. No need to think deeper.
+</div>
+</section>
+
+<!-- ==================== SLIDE 11 ==================== -->
+<section class="slide" data-slide="11">
+<h2>11. Combinations with Repetition (Stars &amp; Bars)</h2>
+
+<h3>The Problem</h3>
+<p>&ldquo;Choose r items from n <strong>types</strong> when repetition is allowed and order doesn&rsquo;t matter.&rdquo;</p>
+
+<div class="analogy-box">
+<span class="label">Analogy &mdash; Ice Cream Scoops</span>
+You get 4 scoops from 3 flavors (Vanilla, Chocolate, Strawberry). You can repeat flavors. How many distinct combos?<br>
+This is NOT C(3,4) or 3<sup>4</sup>. It&rsquo;s a &ldquo;stars and bars&rdquo; problem!
+</div>
+
+<h3>Stars &amp; Bars Technique</h3>
+<p>Represent the r items as <strong>stars (*)</strong> and use <strong>(n&minus;1) bars (|)</strong> to divide them into n groups (one per type).</p>
+
+<div class="example-box">
+<span class="label">Visual Example</span>
+4 scoops, 3 flavors: arrange 4 stars and 2 bars.<br>
+**|*|* &rarr; 2V, 1C, 1S &nbsp; | &nbsp; ****|| &rarr; 4V, 0C, 0S &nbsp; | &nbsp; |**|** &rarr; 0V, 2C, 2S<br>
+Total arrangements = choosing positions for bars (or stars) from (r + n &minus; 1) slots.
+</div>
+
+<div class="formula-box">
+<span class="label">Stars &amp; Bars Formula</span>
+Ways to choose r items from n types with repetition = <strong>C(n + r &minus; 1, r)</strong> = C(n + r &minus; 1, n &minus; 1)<br><br>
+For the ice cream example: C(3 + 4 &minus; 1, 4) = C(6, 4) = <strong>15</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">GATE-Style &mdash; Non-Negative Integer Solutions</span>
+<strong>Q:</strong> Number of non-negative integer solutions of x₁ + x₂ + x₃ = 10?<br>
+<strong>A:</strong> Distributing 10 identical units into 3 variables = stars &amp; bars.<br>
+= C(10 + 3 &minus; 1, 10) = C(12, 10) = C(12, 2) = <strong>66</strong>.
+</div>
+
+<div class="warn-box">
+<span class="label">Edge Case &mdash; Positive Integer Solutions</span>
+If x₁ + x₂ + x₃ = 10 with each xᵢ &ge; 1 (positive), substitute yᵢ = xᵢ &minus; 1:<br>
+y₁ + y₂ + y₃ = 7, yᵢ &ge; 0 &rarr; C(7 + 2, 2) = C(9, 2) = <strong>36</strong>.
+</div>
+
+<div class="anim-container" style="height:180px">
+<span class="anim-label">Stars &amp; Bars &mdash; Distributing Objects</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-stars-bars" width="800" height="180"></canvas>
+<button class="anim-replay" data-target="anim-stars-bars">&#8635; Replay</button>
+</div>
+</section>
+
+<!-- ==================== SLIDE 12 ==================== -->
+<section class="slide" data-slide="12">
+<h2>12. Circular Permutations</h2>
+
+<h3>Why Is It Different?</h3>
+<p>In a circle, there is <strong>no fixed starting point</strong>. Rotating all persons by one seat gives the same relative arrangement.</p>
+
+<div class="analogy-box">
+<span class="label">Aha Moment</span>
+Seating {A, B, C, D} in a line: ABCD, BCDA, CDAB, DABC are 4 different arrangements.<br>
+In a circle: they are all the <strong>same</strong> (same neighbors). So circular arrangements = linear / n.
+</div>
+
+<div class="formula-box">
+<span class="label">Circular Permutation Formula</span>
+Arrange n distinct objects in a circle = <strong>(n &minus; 1)!</strong><br><br>
+Derivation: Linear arrangements = n!. Each circular arrangement maps to n linear ones (n rotations). So circular = n! / n = (n&minus;1)!.
+</div>
+
+<div class="example-box">
+<span class="label">Example 1</span>
+<strong>Q:</strong> 6 people sit around a round table. How many ways?<br>
+<strong>A:</strong> (6 &minus; 1)! = 5! = <strong>120</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example 2 &mdash; Fixed Reference</span>
+<strong>Q:</strong> 6 people around a table, but the <strong>host sits in a specific chair</strong>. How many ways?<br>
+<strong>A:</strong> Fixing the host breaks circular symmetry &rarr; remaining 5 people: 5! = <strong>120</strong>.<br>
+<em>Note: Same answer! Fixing one person in circular = (n&minus;1)! by definition.</em>
+</div>
+
+<div class="example-box">
+<span class="label">Example 3 &mdash; Relative Constraints</span>
+<strong>Q:</strong> 8 people around a table, 2 specific people must sit together.<br>
+<strong>A:</strong> Treat pair as a block &rarr; 7 entities in a circle: (7&minus;1)! = 6! = 720.<br>
+Internal arrangement of the pair: 2!.<br>
+Total = 720 &times; 2 = <strong>1440</strong>.
+</div>
+
+<div class="warn-box">
+<span class="label">Edge Case &mdash; Numbered Chairs</span>
+If the circular table has <strong>numbered/labeled seats</strong>, it becomes a <strong>linear</strong> problem! Use n!, not (n&minus;1)!.<br>
+Exam trap: Read whether seats are distinguishable.
+</div>
+
+<div class="anim-container" style="height:250px">
+<span class="anim-label">Circular Permutation &mdash; Rotational Equivalence</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-circular" width="800" height="250"></canvas>
+<button class="anim-replay" data-target="anim-circular">&#8635; Replay</button>
+</div>
+</section>
+
+<!-- ==================== SLIDE 13 ==================== -->
+<section class="slide" data-slide="13">
+<h2>13. Necklace &amp; Bracelet Problems</h2>
+
+<h3>Necklace (Clockwise-Only)</h3>
+<p>Same as circular permutation: <strong>(n &minus; 1)!</strong><br>
+(Rotations are identical, but flipping gives a different arrangement.)</p>
+
+<h3>Bracelet / Keychain (Flipping Allowed)</h3>
+<p>A bracelet can be <strong>flipped over</strong>, so clockwise and anticlockwise views are the same.</p>
+
+<div class="formula-box">
+<span class="label">Bracelet Formula</span>
+Distinct arrangements = <strong>(n &minus; 1)! / 2</strong><br><br>
+Derivation: Each bracelet arrangement corresponds to 2 necklace arrangements (one is the mirror). So divide by 2.
+</div>
+
+<div class="example-box">
+<span class="label">Example &mdash; Bead Problem</span>
+<strong>Q:</strong> 7 distinct beads on a bracelet. How many arrangements?<br>
+<strong>A:</strong> (7 &minus; 1)! / 2 = 720 / 2 = <strong>360</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example &mdash; Selecting &amp; Arranging on Bracelet</span>
+<strong>Q:</strong> Choose 5 beads from 10 distinct beads and arrange on a bracelet.<br>
+<strong>A:</strong> Select: C(10, 5) = 252.<br>
+Arrange on bracelet: (5&minus;1)! / 2 = 12.<br>
+Total = 252 &times; 12 = <strong>3024</strong>.
+</div>
+
+<div class="trick-box">
+<span class="label">Decision Guide</span>
+&bull; &ldquo;Round table&rdquo; / &ldquo;circular&rdquo; / &ldquo;necklace&rdquo; (one-sided) &rarr; (n&minus;1)!<br>
+&bull; &ldquo;Bracelet&rdquo; / &ldquo;keychain&rdquo; / &ldquo;garland&rdquo; (can flip) &rarr; (n&minus;1)! / 2<br>
+&bull; &ldquo;Numbered seats around table&rdquo; &rarr; n! (linear!)
+</div>
+
+<div class="anim-container" style="height:250px">
+<span class="anim-label">3D Necklace &mdash; Rotation &amp; Flip Symmetry</span>
+<span class="anim-badge-3d">3D Interactive</span>
+<canvas id="anim-necklace-3d" width="800" height="250"></canvas>
+</div>
+</section>
+
+<!-- ==================== SLIDE 14 ==================== -->
+<section class="slide" data-slide="14">
+<h2>14. Derangements (Subfactorials)</h2>
+
+<h3>What Is a Derangement?</h3>
+<p>A <strong>derangement</strong> is a permutation where <em>no element appears in its original position</em>.</p>
+
+<div class="analogy-box">
+<span class="label">Analogy &mdash; Hat Problem</span>
+n people put hats in a pile. They randomly pick hats. A derangement = <strong>nobody gets their own hat</strong>.
+</div>
+
+<div class="formula-box">
+<span class="label">Derangement Formula</span>
+D(n) = n! &times; [1 &minus; 1/1! + 1/2! &minus; 1/3! + &hellip; + (&minus;1)ⁿ/n!]<br><br>
+Equivalently: D(n) = n! &times; &sum;ₖ₌₀ⁿ (&minus;1)ᵏ / k!<br><br>
+Recurrence: D(n) = (n&minus;1) &times; [D(n&minus;1) + D(n&minus;2)], with D(1) = 0, D(2) = 1.
+</div>
+
+<h3>Small Values (Memorize!)</h3>
+<table>
+  <tr><th>n</th><th>D(n)</th><th>D(n)/n!</th></tr>
+  <tr><td>1</td><td>0</td><td>0</td></tr>
+  <tr><td>2</td><td>1</td><td>0.5</td></tr>
+  <tr><td>3</td><td>2</td><td>0.333</td></tr>
+  <tr><td>4</td><td>9</td><td>0.375</td></tr>
+  <tr><td>5</td><td>44</td><td>0.367</td></tr>
+  <tr><td>6</td><td>265</td><td>0.368</td></tr>
+</table>
+<p>As n &rarr; &infin;, D(n)/n! &rarr; 1/e &approx; 0.3679.</p>
+
+<div class="example-box">
+<span class="label">GATE Example</span>
+<strong>Q:</strong> 4 letters and 4 envelopes. How many ways so that NO letter goes into the correct envelope?<br>
+<strong>A:</strong> D(4) = 4! &times; (1 &minus; 1 + 1/2 &minus; 1/6 + 1/24) = 24 &times; (1/2 &minus; 1/6 + 1/24) = 24 &times; (12/24 &minus; 4/24 + 1/24) = 24 &times; 9/24 = <strong>9</strong>.
+</div>
+
+<div class="trick-box">
+<span class="label">Quick Computation Trick</span>
+D(n) = nearest integer to n!/e. Works for n &ge; 1!<br>
+Example: D(5) = round(120 / 2.718) = round(44.14) = <strong>44</strong>. &#10003;
+</div>
+
+<div class="anim-container" style="height:200px">
+<span class="anim-label">Derangement &mdash; No Letter in Correct Envelope</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-derange" width="800" height="200"></canvas>
+<button class="anim-replay" data-target="anim-derange">&#8635; Replay</button>
+</div>
+</section>
+
+<!-- ==================== SLIDE 15 ==================== -->
+<section class="slide" data-slide="15">
+<h2>15. Inclusion&ndash;Exclusion Principle in Counting</h2>
+
+<h3>The Core Idea</h3>
+<p>To count elements in the union of sets, add individual sets, subtract pairwise intersections, add triple intersections, and so on.</p>
+
+<div class="formula-box">
+<span class="label">Inclusion&ndash;Exclusion Formula</span>
+|A₁ &cup; A₂ &cup; &hellip; &cup; Aₙ| = &sum;|Aᵢ| &minus; &sum;|Aᵢ &cap; Aⱼ| + &sum;|Aᵢ &cap; Aⱼ &cap; Aₖ| &minus; &hellip; + (&minus;1)ⁿ⁺¹|A₁ &cap; &hellip; &cap; Aₙ|
+</div>
+
+<div class="example-box">
+<span class="label">Example &mdash; Divisibility Count</span>
+<strong>Q:</strong> How many integers from 1 to 100 are divisible by 2, 3, or 5?<br>
+<strong>A:</strong> Let A = div by 2, B = div by 3, C = div by 5.<br>
+|A| = 50, |B| = 33, |C| = 20.<br>
+|A&cap;B| = div by 6 = 16, |A&cap;C| = div by 10 = 10, |B&cap;C| = div by 15 = 6.<br>
+|A&cap;B&cap;C| = div by 30 = 3.<br>
+|A&cup;B&cup;C| = 50+33+20 &minus; 16&minus;10&minus;6 + 3 = <strong>74</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Application &mdash; Surjective Functions</span>
+<strong>Q:</strong> Number of onto functions from set A (m elements) to set B (n elements)?<br>
+<strong>A:</strong> Using inclusion&ndash;exclusion:<br>
+Onto(m,n) = &sum;ₖ₌₀ⁿ (&minus;1)ᵏ C(n,k) (n&minus;k)ᵐ<br>
+This is a <strong>GATE favorite</strong>. For m=4, n=3: 3<sup>4</sup> &minus; C(3,1)&times;2<sup>4</sup> + C(3,2)&times;1<sup>4</sup> = 81 &minus; 48 + 3 = <strong>36</strong>.
+</div>
+
+<div class="trick-box">
+<span class="label">When to Use Inclusion&ndash;Exclusion</span>
+&bull; &ldquo;At least one&rdquo; / &ldquo;none of&rdquo; problems &mdash; use complement + IE.<br>
+&bull; Derangement formula itself is derived from IE!<br>
+&bull; Counting surjections, Euler&rsquo;s totient &mdash; all IE applications.
+</div>
+</section>
+
+<!-- ==================== SLIDE 16 ==================== -->
+<section class="slide" data-slide="16">
+<h2>16. Distribution of Objects into Boxes</h2>
+
+<h3>The Master Table</h3>
+<p>There are 4 fundamental distribution types based on whether objects and boxes are distinguishable:</p>
+
+<table>
+  <tr><th>Objects</th><th>Boxes</th><th>Empty Allowed?</th><th>Formula / Method</th></tr>
+  <tr><td>Distinct</td><td>Distinct</td><td>Yes</td><td>n<sup>r</sup> (r objects, n boxes &mdash; each object chooses a box)</td></tr>
+  <tr><td>Distinct</td><td>Distinct</td><td>No</td><td>Surjection: &sum;(&minus;1)ᵏ C(n,k)(n&minus;k)<sup>r</sup></td></tr>
+  <tr><td>Distinct</td><td>Identical</td><td>Yes</td><td>Bell number B(r)</td></tr>
+  <tr><td>Distinct</td><td>Identical</td><td>No</td><td>Stirling number S(r, n)</td></tr>
+  <tr><td>Identical</td><td>Distinct</td><td>Yes</td><td>Stars &amp; Bars: C(r+n&minus;1, r)</td></tr>
+  <tr><td>Identical</td><td>Distinct</td><td>No</td><td>C(r&minus;1, n&minus;1) [each box &ge; 1]</td></tr>
+  <tr><td>Identical</td><td>Identical</td><td>Yes</td><td>Partition function p(r, n)</td></tr>
+  <tr><td>Identical</td><td>Identical</td><td>No</td><td>Partition of r into exactly n parts</td></tr>
+</table>
+
+<div class="example-box">
+<span class="label">Example &mdash; Distinct Objects, Distinct Boxes (Most Common)</span>
+<strong>Q:</strong> Distribute 5 different books into 3 labeled shelves (empty shelves OK).<br>
+<strong>A:</strong> Each book has 3 choices &rarr; 3<sup>5</sup> = <strong>243</strong>.
+</div>
+
+<div class="example-box">
+<span class="label">Example &mdash; Identical Objects, Distinct Boxes</span>
+<strong>Q:</strong> Distribute 10 identical balls into 4 distinct boxes (each box &ge; 1 ball).<br>
+<strong>A:</strong> C(10&minus;1, 4&minus;1) = C(9, 3) = <strong>84</strong>.
+</div>
+
+<div class="trick-box">
+<span class="label">Exam Strategy</span>
+1. Identify: Are objects distinct or identical?<br>
+2. Identify: Are boxes distinct or identical?<br>
+3. Check: Empty boxes allowed or not?<br>
+These 3 questions map to exactly one row of the table above.
+</div>
+</section>
+
+<!-- ==================== SLIDE 17 ==================== -->
+<section class="slide" data-slide="17">
+<h2>17. Partitions, Committees &amp; Group Formation</h2>
+
+<h3>Dividing Into Groups of Equal Size</h3>
+<div class="formula-box">
+<span class="label">Formula</span>
+Divide n people into k groups of size m (where n = k &times; m):<br>
+&bull; If groups are <strong>labeled</strong> (Group A, B, &hellip;): n! / (m!)<sup>k</sup><br>
+&bull; If groups are <strong>unlabeled</strong> (just &ldquo;groups&rdquo;): n! / [(m!)<sup>k</sup> &times; k!]<br>
+(Divide by k! because swapping entire groups doesn&rsquo;t create a new partition.)
+</div>
+
+<div class="example-box">
+<span class="label">Example 1</span>
+<strong>Q:</strong> Divide 12 people into 3 groups of 4 for projects (groups unnamed).<br>
+<strong>A:</strong> 12! / [(4!)<sup>3</sup> &times; 3!] = 479001600 / [13824 &times; 6] = 479001600 / 82944 = <strong>5775</strong>.
+</div>
+
+<h3>Committee With a Chair</h3>
+<div class="example-box">
+<span class="label">Example 2</span>
+<strong>Q:</strong> Form a committee of 5 from 12 people and select a chairperson.<br>
+<strong>A:</strong> Method 1: Choose committee C(12,5), then chair C(5,1) = 792 &times; 5 = <strong>3960</strong>.<br>
+Method 2: Choose chair C(12,1), then remaining 4 from 11: C(11,4) = 12 &times; 330 = <strong>3960</strong>. &#10003;
+</div>
+
+<h3>Groups of Unequal Size</h3>
+<div class="example-box">
+<span class="label">Example 3</span>
+<strong>Q:</strong> Divide 10 people into groups of 3, 3, and 4.<br>
+<strong>A:</strong> Groups of 3 are same size (unlabeled): 10! / (3! &times; 3! &times; 4! &times; 2!) = 3628800 / (6 &times; 6 &times; 24 &times; 2) = 3628800 / 1728 = <strong>2100</strong>.<br>
+Note: divide by 2! only for the two groups of equal size, not for the group of 4.
+</div>
+
+<div class="warn-box">
+<span class="label">Common Mistake</span>
+Students forget to divide by k! for identical groups. If the problem says &ldquo;distribute to teams A, B, C&rdquo; (labeled), do NOT divide by k!. If it says &ldquo;divide into groups,&rdquo; you must.
+</div>
+</section>
+
+<!-- ==================== SLIDE 18 ==================== -->
+<section class="slide" data-slide="18">
+<h2>18. Exam-Specific Tricks &amp; Speed Techniques</h2>
+
+<h3>Trick 1: Complement Method</h3>
+<p>For &ldquo;at least one,&rdquo; &ldquo;never,&rdquo; or &ldquo;no two adjacent&rdquo; &mdash; compute Total &minus; Unwanted. Usually faster.</p>
+
+<h3>Trick 2: Gap Method (No Two Adjacent)</h3>
+<div class="example-box">
+<span class="label">Example</span>
+<strong>Q:</strong> Arrange 5 boys and 3 girls such that no two girls are adjacent.<br>
+<strong>A:</strong> Arrange boys: 5!. Gaps = 6 (_B_B_B_B_B_). Choose 3 gaps for girls: C(6,3). Arrange girls: 3!.<br>
+= 5! &times; C(6,3) &times; 3! = 120 &times; 20 &times; 6 = <strong>14,400</strong>.
+</div>
+
+<h3>Trick 3: Fix &amp; Count</h3>
+<p>For relative-position constraints (A must be left of B), total valid = total arrangements / (number of relative orderings).<br>
+If A must be left of B: Valid = n! / 2 (exactly half have A left of B).</p>
+
+<h3>Trick 4: Rank of a Word</h3>
+<div class="example-box">
+<span class="label">Example</span>
+<strong>Q:</strong> Find the rank of &ldquo;GATE&rdquo; in dictionary order of its letters {A, E, G, T}.<br>
+<strong>A:</strong> Words starting with A: 3! = 6. Words starting with E: 3! = 6.<br>
+Words starting with G: first is GA&hellip;<br>
+GAE T = &ldquo;GAET&rdquo; is before GATE. Count: GAE_ &rarr; 1 word (GAET).<br>
+GAT E = &ldquo;GATE&rdquo; itself. Rank = 6 + 6 + 1 + 1 = <strong>14</strong>.
+</div>
+
+<h3>Trick 5: Use Symmetry in C(n,r)</h3>
+<p>C(n, r) = C(n, n&minus;r). Always compute the smaller side.<br>
+C(100, 98) = C(100, 2) = 4950 &mdash; instant vs. impossible by expansion.</p>
+
+<h3>Trick 6: Selection with &ldquo;At Least&rdquo;</h3>
+<p>Ways to select at least 1 from n items = 2ⁿ &minus; 1 (total subsets minus empty set).</p>
+
+<div class="trick-box">
+<span class="label">Speed Formula Sheet</span>
+&bull; Words from n distinct letters = n!<br>
+&bull; Words from n letters with repeats = n! / (freq factorials)<br>
+&bull; Choosing r from n = C(n,r)<br>
+&bull; At least 1 selection = 2ⁿ &minus; 1<br>
+&bull; Diagonal of n-gon = C(n,2) &minus; n = n(n&minus;3)/2<br>
+&bull; Onto functions = &sum;(&minus;1)ᵏ C(n,k)(n&minus;k)ᵐ
+</div>
+</section>
+
+<!-- ==================== SLIDE 19 ==================== -->
+<section class="slide" data-slide="19">
+<h2>19. GATE / ESE PYQ Patterns &amp; Edge Cases</h2>
+
+<h3>Most Frequently Tested Topics (GATE CS)</h3>
+<table>
+  <tr><th>Topic</th><th>Frequency</th><th>Typical Marks</th></tr>
+  <tr><td>Counting Functions (onto, one-to-one)</td><td>Very High</td><td>2</td></tr>
+  <tr><td>Arrangements with constraints</td><td>High</td><td>1&ndash;2</td></tr>
+  <tr><td>Stars &amp; Bars (integer solutions)</td><td>High</td><td>1&ndash;2</td></tr>
+  <tr><td>Derangements</td><td>Medium</td><td>1&ndash;2</td></tr>
+  <tr><td>Permutations with identical objects</td><td>Medium</td><td>1</td></tr>
+  <tr><td>Circular arrangements</td><td>Medium</td><td>1</td></tr>
+  <tr><td>Inclusion&ndash;Exclusion</td><td>Medium</td><td>2</td></tr>
+  <tr><td>Distribution into boxes</td><td>Low&ndash;Medium</td><td>2</td></tr>
+</table>
+
+<h3>Critical Edge Cases (Exam Traps)</h3>
+<div class="warn-box">
+<span class="label">Trap 1 &mdash; 0 in Number Formation</span>
+When forming n-digit numbers, the leading digit <strong>cannot be 0</strong>. Always handle the first position separately.
+</div>
+
+<div class="warn-box">
+<span class="label">Trap 2 &mdash; &ldquo;At Least&rdquo; vs &ldquo;Exactly&rdquo;</span>
+&ldquo;At least 2 women&rdquo; &ne; &ldquo;Exactly 2 women.&rdquo; Use complement or case-by-case.
+</div>
+
+<div class="warn-box">
+<span class="label">Trap 3 &mdash; Labeled vs Unlabeled</span>
+&ldquo;Divide into groups&rdquo; (unlabeled) vs &ldquo;distribute to persons/boxes&rdquo; (labeled) changes the answer by k!.
+</div>
+
+<div class="warn-box">
+<span class="label">Trap 4 &mdash; Circular vs Linear</span>
+Always check if the arrangement is circular. Using n! instead of (n&minus;1)! is a guaranteed wrong answer.
+</div>
+
+<div class="warn-box">
+<span class="label">Trap 5 &mdash; With vs Without Repetition</span>
+Default assumption in most exams: <strong>without repetition</strong>. But read carefully!
+</div>
+
+<div class="trick-box">
+<span class="label">NAT Answer Precision</span>
+For GATE NAT questions, P&amp;C answers are always <strong>exact integers</strong>. If you get a decimal, you have made an error. Recheck!
+</div>
+</section>
+
+<!-- ==================== SLIDE 20 ==================== -->
+<section class="slide" data-slide="20">
+<h2>20. Grand Summary &amp; Quick-Revision Cheat Sheet</h2>
+
+<h3>Master Formula Card</h3>
+<table>
+  <tr><th>Concept</th><th>Formula</th><th>When to Use</th></tr>
+  <tr><td>Permutation (no rep)</td><td>P(n,r) = n!/(n&minus;r)!</td><td>Arrange r from n, order matters</td></tr>
+  <tr><td>Permutation (with rep)</td><td>n<sup>r</sup></td><td>r slots, n choices each, repetition OK</td></tr>
+  <tr><td>Multiset Permutation</td><td>n!/(p₁!p₂!&hellip;pₖ!)</td><td>Arrange all n with identical items</td></tr>
+  <tr><td>Combination</td><td>C(n,r) = n!/[r!(n&minus;r)!]</td><td>Select r from n, order irrelevant</td></tr>
+  <tr><td>Combination (with rep)</td><td>C(n+r&minus;1, r)</td><td>Stars &amp; Bars, non-neg int solutions</td></tr>
+  <tr><td>Circular Perm</td><td>(n&minus;1)!</td><td>Arrange n in a circle</td></tr>
+  <tr><td>Bracelet</td><td>(n&minus;1)!/2</td><td>Circle + flipping symmetry</td></tr>
+  <tr><td>Derangement</td><td>n!&sum;(&minus;1)ᵏ/k!</td><td>No element in original position</td></tr>
+  <tr><td>Inclusion&ndash;Exclusion</td><td>&sum;|Aᵢ|&minus;&sum;|Aᵢ&cap;Aⱼ|+&hellip;</td><td>Union counting, surjections</td></tr>
+  <tr><td>Grid Paths</td><td>C(m+n, m)</td><td>Shortest path in m&times;n grid</td></tr>
+</table>
+
+<h3>5-Second Decision Flowchart</h3>
+<ol>
+  <li><strong>Ordered?</strong> Yes &rarr; Permutation. No &rarr; Combination.</li>
+  <li><strong>Repetition?</strong> Allowed &rarr; n<sup>r</sup> or Stars &amp; Bars. Not allowed &rarr; Standard P/C.</li>
+  <li><strong>Circular?</strong> Yes &rarr; (n&minus;1)!. Flippable? &rarr; /2.</li>
+  <li><strong>Identical items?</strong> Yes &rarr; Multinomial. Check grouping.</li>
+  <li><strong>Constraints?</strong> Use complement, gap, or block method.</li>
+</ol>
+
+<h3>Exam Day Checklist</h3>
+<ul>
+  <li>Read the question <strong>twice</strong>. Identify order, repetition, and constraints.</li>
+  <li>Use complement for &ldquo;at least&rdquo; and &ldquo;never&rdquo; problems.</li>
+  <li>Fix constrained positions first.</li>
+  <li>Cancel factorials early &mdash; never expand large ones.</li>
+  <li>Your answer must be a <strong>positive integer</strong>. If not, recheck.</li>
+  <li>For NAT: double-check arithmetic. For MCQ: plug small values to verify.</li>
+</ul>
+
+<div class="analogy-box">
+<span class="label">Final Thought</span>
+Permutation &amp; Combination is not about memorizing formulas &mdash; it&rsquo;s about recognizing <strong>patterns</strong>. Every problem maps to one of the templates above. Practice mapping, and you&rsquo;ll never get stuck.
+</div>
+
+<p style="text-align:center;margin-top:30px;font-size:1.1rem;color:#60a5fa;font-weight:700">
+&#127942; You&rsquo;ve completed the full A&ndash;Z tutorial. Go ace that exam! &#127942;
+</p>
+</section>
+
+</div><!-- /slide-viewport -->
+
+<!-- Navigation Bar -->
+<nav id="navbar">
+  <button class="nav-btn" id="prevBtn" disabled>&#9664; Previous</button>
+  <div id="progress-bar"><div id="progress-fill" style="width:5%"></div></div>
+  <button class="nav-btn" id="nextBtn">Next &#9654;</button>
+</nav>
+
+</div><!-- /presentation -->
+
+<div class="key-hint">Use &larr; &rarr; arrow keys or buttons to navigate</div>
+
+<!-- ===================== JavaScript ===================== -->
+<script>
+/* ---------- Three.js 3D Background ---------- */
+(function(){
+  const canvas = document.getElementById('bg-canvas');
+  const renderer = new THREE.WebGLRenderer({canvas, antialias:true, alpha:true});
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(window.innerWidth, window.innerHeight);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(60, window.innerWidth/window.innerHeight, 0.1, 1000);
+  camera.position.z = 30;
+
+  /* Particle system */
+  const COUNT = 600;
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(COUNT * 3);
+  const cols = new Float32Array(COUNT * 3);
+  const palette = [
+    [0.376, 0.647, 0.980],  /* #60a5fa */
+    [0.659, 0.545, 0.988],  /* #a88bfc */
+    [0.204, 0.827, 0.600],  /* #34d399 */
+    [0.984, 0.749, 0.141],  /* #fbbf24 */
+  ];
+  for(let i=0;i<COUNT;i++){
+    pos[i*3]   = (Math.random()-0.5)*60;
+    pos[i*3+1] = (Math.random()-0.5)*40;
+    pos[i*3+2] = (Math.random()-0.5)*40;
+    const c = palette[Math.floor(Math.random()*palette.length)];
+    cols[i*3]=c[0]; cols[i*3+1]=c[1]; cols[i*3+2]=c[2];
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(cols, 3));
+  const mat = new THREE.PointsMaterial({size:0.15, vertexColors:true, transparent:true, opacity:0.6, sizeAttenuation:true});
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
+
+  /* Floating geometric shapes */
+  const shapes = [];
+  const shapeMat = new THREE.MeshBasicMaterial({color:0x60a5fa, wireframe:true, transparent:true, opacity:0.12});
+  for(let i=0;i<8;i++){
+    const geos = [new THREE.IcosahedronGeometry(1.5,0), new THREE.OctahedronGeometry(1.5,0), new THREE.TetrahedronGeometry(1.5,0)];
+    const mesh = new THREE.Mesh(geos[i%3], shapeMat.clone());
+    mesh.position.set((Math.random()-0.5)*50, (Math.random()-0.5)*30, (Math.random()-0.5)*20 - 10);
+    mesh.material.opacity = 0.06 + Math.random()*0.08;
+    scene.add(mesh);
+    shapes.push({mesh, rx:Math.random()*0.005, ry:Math.random()*0.005});
+  }
+
+  function animate(){
+    requestAnimationFrame(animate);
+    points.rotation.y += 0.0004;
+    points.rotation.x += 0.0001;
+    shapes.forEach(s=>{s.mesh.rotation.x+=s.rx; s.mesh.rotation.y+=s.ry;});
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', ()=>{
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+  });
+})();
+
+/* ---------- Presentation Logic ---------- */
+(function(){
+  const slides = document.querySelectorAll('.slide');
+  const totalSlides = slides.length;
+  let current = 0;
+
+  const counter = document.getElementById('slide-counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  const progressFill = document.getElementById('progress-fill');
+
+  function goTo(index){
+    if(index < 0 || index >= totalSlides) return;
+    const outSlide = slides[current];
+    const inSlide  = slides[index];
+    const direction = index > current ? 1 : -1;
+
+    /* Animate out */
+    gsap.to(outSlide, {opacity:0, x: -60 * direction, duration:0.35, ease:'power2.in', onComplete(){
+      outSlide.classList.remove('active');
+      outSlide.style.transform = '';
+      outSlide.scrollTop = 0;
+    }});
+
+    /* Animate in */
+    inSlide.classList.add('active');
+    gsap.fromTo(inSlide, {opacity:0, x: 60 * direction}, {opacity:1, x:0, duration:0.4, ease:'power2.out', delay:0.1});
+
+    current = index;
+    counter.textContent = (current+1) + ' / ' + totalSlides;
+    prevBtn.disabled = current === 0;
+    nextBtn.disabled = current === totalSlides - 1;
+    progressFill.style.width = ((current+1)/totalSlides*100) + '%';
+  }
+
+  prevBtn.addEventListener('click', ()=> goTo(current - 1));
+  nextBtn.addEventListener('click', ()=> goTo(current + 1));
+
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'ArrowRight' || e.key === 'ArrowDown') goTo(current + 1);
+    if(e.key === 'ArrowLeft'  || e.key === 'ArrowUp')   goTo(current - 1);
+  });
+
+  /* Touch/swipe support */
+  let touchStartX = 0;
+  document.addEventListener('touchstart', e=>{ touchStartX = e.changedTouches[0].clientX; }, {passive:true});
+  document.addEventListener('touchend', e=>{
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if(Math.abs(dx) > 50){
+      if(dx < 0) goTo(current + 1);
+      else goTo(current - 1);
+    }
+  }, {passive:true});
+})();
+
+/* ================================================================
+   2D & 3D SLIDE ANIMATIONS
+   ================================================================ */
+(function(){
+
+  const COLORS = {
+    blue:'#60a5fa', purple:'#a78bfa', green:'#34d399', amber:'#fbbf24',
+    coral:'#f87171', white:'#e2e8f0', dim:'#475569', bg:'#0f1428'
+  };
+
+  /* --- Helper: fit canvas to container --- */
+  function fitCanvas(canvas){
+    const r = canvas.parentElement.getBoundingClientRect();
+    canvas.width  = r.width  * (window.devicePixelRatio||1);
+    canvas.height = r.height * (window.devicePixelRatio||1);
+    canvas.style.width  = r.width+'px';
+    canvas.style.height = r.height+'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+    return {ctx, w:r.width, h:r.height};
+  }
+
+  /* --- Helper: draw rounded rect --- */
+  function roundRect(ctx,x,y,w,h,r,fill,stroke){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill();}
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();}
+  }
+
+  /* =========================================================
+     ANIM 1: Multiplication Principle (Slide 2)
+     3 shirts × 4 pants = 12 outfits — animated tree
+     ========================================================= */
+  function animMultiply(){
+    const canvas = document.getElementById('anim-multiply');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const shirts = [{c:'#ef4444',l:'S1'},{c:'#3b82f6',l:'S2'},{c:'#22c55e',l:'S3'}];
+    const pants  = [{c:'#a855f7',l:'P1'},{c:'#f59e0b',l:'P2'},{c:'#06b6d4',l:'P3'},{c:'#ec4899',l:'P4'}];
+    let step=0, maxStep=shirts.length*pants.length+shirts.length+2;
+    let frame=0;
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2, sy=30;
+      /* Root node */
+      ctx.fillStyle=COLORS.white; ctx.font='bold 13px Segoe UI,sans-serif'; ctx.textAlign='center';
+      roundRect(ctx,cx-40,sy-12,80,24,6,'rgba(96,165,250,0.15)','rgba(96,165,250,0.4)');
+      ctx.fillText('Outfits',cx,sy+5);
+
+      const shirtY=sy+55, pairY=sy+120;
+      const shirtSpacing=w/(shirts.length+1);
+      let pairsDone=Math.max(0,step-1);
+
+      /* Shirt nodes */
+      for(let i=0;i<shirts.length;i++){
+        const sx2=shirtSpacing*(i+1);
+        const reveal=step>=1? Math.min(1,(step-1+i*0.3)) : 0;
+        if(reveal<=0) continue;
+        ctx.globalAlpha=Math.min(1,reveal);
+        /* Line from root */
+        ctx.beginPath();ctx.moveTo(cx,sy+12);ctx.lineTo(sx2,shirtY-12);
+        ctx.strokeStyle='rgba(96,165,250,0.3)';ctx.lineWidth=1;ctx.stroke();
+        /* Shirt box */
+        roundRect(ctx,sx2-22,shirtY-12,44,24,5,shirts[i].c+'33',shirts[i].c+'88');
+        ctx.fillStyle='#fff';ctx.font='bold 11px Segoe UI,sans-serif';
+        ctx.fillText(shirts[i].l,sx2,shirtY+5);
+        ctx.globalAlpha=1;
+
+        /* Pant leaves for this shirt */
+        const pSpacing=44;
+        const startX=sx2 - (pants.length-1)*pSpacing/2;
+        for(let j=0;j<pants.length;j++){
+          const pi=i*pants.length+j;
+          if(pi>=pairsDone) continue;
+          const px=startX+j*pSpacing;
+          const reveal2=Math.min(1,(pairsDone-pi));
+          ctx.globalAlpha=Math.min(1,reveal2);
+          ctx.beginPath();ctx.moveTo(sx2,shirtY+12);ctx.lineTo(px,pairY-10);
+          ctx.strokeStyle='rgba(167,139,250,0.25)';ctx.lineWidth=1;ctx.stroke();
+          roundRect(ctx,px-18,pairY-10,36,20,4,pants[j].c+'22',pants[j].c+'66');
+          ctx.fillStyle='#cbd5e1';ctx.font='9px Segoe UI,sans-serif';
+          ctx.fillText(pants[j].l,px,pairY+4);
+          ctx.globalAlpha=1;
+        }
+      }
+
+      /* Counter */
+      const shown=Math.min(pairsDone,12);
+      if(shown>0){
+        ctx.fillStyle=COLORS.amber;ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='right';
+        ctx.fillText('Combos: '+shown+(shown>=12?' = 3×4 ✓':''),w-16,h-12);
+      }
+
+      frame++;
+      if(frame%4===0 && step<maxStep) step++;
+      if(step<maxStep) requestAnimationFrame(draw);
+    }
+    /* expose reset */
+    canvas._reset=()=>{step=0;frame=0;draw();};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 2: Permutation Slot Filling (Slide 4)
+     5 items filling 3 slots: 5 → 4 → 3 = 60
+     ========================================================= */
+  function animPermSlots(){
+    const canvas = document.getElementById('anim-perm-slots');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const items=['A','B','C','D','E'];
+    const itemColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber,COLORS.coral];
+    const slots=3;
+    let phase=0, t=0; // phase 0-2: filling each slot
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const slotW=70, slotH=50, slotGap=20, startX=(w-(slots*(slotW+slotGap)-slotGap))/2;
+      const slotY=h/2-slotH/2+15;
+
+      /* Title */
+      ctx.fillStyle=COLORS.dim; ctx.font='11px Segoe UI,sans-serif'; ctx.textAlign='center';
+      ctx.fillText('P(5, 3) = 5 × 4 × 3 = 60',w/2,20);
+
+      /* Draw slots */
+      for(let i=0;i<slots;i++){
+        const sx=startX+i*(slotW+slotGap);
+        const filled=i<phase||(i===phase&&t>30);
+        roundRect(ctx,sx,slotY,slotW,slotH,8,filled?'rgba(96,165,250,0.12)':'rgba(30,40,80,0.5)',filled?COLORS.blue:'rgba(100,140,255,0.2)');
+        ctx.fillStyle=COLORS.dim;ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('Slot '+(i+1),sx+slotW/2,slotY-6);
+
+        if(filled){
+          /* Show the picked item */
+          const picked=i===0?'A':i===1?'C':'E';
+          const pickedColor=i===0?itemColors[0]:i===1?itemColors[2]:itemColors[4];
+          ctx.fillStyle=pickedColor;ctx.font='bold 22px Segoe UI,sans-serif';
+          ctx.fillText(picked,sx+slotW/2,slotY+slotH/2+8);
+        }
+
+        /* Choices count */
+        if(i<=phase){
+          const choices=items.length-i;
+          const show=i<phase||(i===phase&&t>10);
+          if(show){
+            ctx.fillStyle=COLORS.amber;ctx.font='bold 12px Segoe UI,sans-serif';
+            ctx.fillText(choices+' choices',sx+slotW/2,slotY+slotH+18);
+          }
+        }
+      }
+
+      /* Available pool */
+      const poolY=slotY-42;
+      ctx.fillStyle=COLORS.white;ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('Available:',w/2,poolY-6);
+      const remaining=items.filter((_,idx)=>phase===0?true:phase===1?idx!==0:phase>=2?idx!==0&&idx!==2:true);
+      const poolStartX=w/2-(remaining.length*30)/2;
+      remaining.forEach((item,i)=>{
+        const ix=items.indexOf(item);
+        const px=poolStartX+i*30+15;
+        ctx.beginPath();ctx.arc(px,poolY+12,12,0,Math.PI*2);
+        ctx.fillStyle=itemColors[ix]+'44';ctx.fill();
+        ctx.strokeStyle=itemColors[ix];ctx.lineWidth=1.5;ctx.stroke();
+        ctx.fillStyle=itemColors[ix];ctx.font='bold 12px Segoe UI,sans-serif';
+        ctx.fillText(item,px,poolY+16);
+      });
+
+      /* Multiply bar */
+      if(phase>=2&&t>40){
+        ctx.fillStyle=COLORS.green;ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('5 × 4 × 3 = 60 arrangements',w/2,h-10);
+      }
+
+      t++;
+      if(t===50&&phase<2){phase++;t=0;}
+      if(!(phase>=2&&t>80)) requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{phase=0;t=0;draw();};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 3: Combination Collapse (Slide 6)
+     6 permutations of {A,B,C} collapse into 1 combination
+     ========================================================= */
+  function animCombCollapse(){
+    const canvas = document.getElementById('anim-comb-collapse');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const perms=['ABC','ACB','BAC','BCA','CAB','CBA'];
+    let progress=0; // 0 to 1
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2;
+
+      /* Phase label */
+      ctx.textAlign='center';ctx.font='11px Segoe UI,sans-serif';
+      if(progress<0.4){
+        ctx.fillStyle=COLORS.blue;
+        ctx.fillText('6 Permutations of {A, B, C}  —  Order Matters',cx,22);
+      } else {
+        ctx.fillStyle=COLORS.green;
+        ctx.fillText('÷ 3! = 1 Combination  —  Order Ignored',cx,22);
+      }
+
+      const boxW=70, boxH=36;
+      const spread=Math.max(0,1-progress*2.5);
+      const positions=[];
+
+      for(let i=0;i<6;i++){
+        const angle=(i/6)*Math.PI*2 - Math.PI/2;
+        const radius=70*spread;
+        const tx=cx+Math.cos(angle)*radius - boxW/2;
+        const ty=h/2+Math.sin(angle)*radius - boxH/2 + 10;
+        positions.push({x:tx,y:ty});
+      }
+
+      for(let i=0;i<6;i++){
+        const {x,y}=positions[i];
+        const alpha=progress<0.5?1:Math.max(0.15,1-(progress-0.5)*1.5*(i>0?1:0));
+        ctx.globalAlpha=alpha;
+        const highlight=progress>=0.8&&i===0;
+        roundRect(ctx,x,y,boxW,boxH,6,
+          highlight?'rgba(52,211,153,0.2)':'rgba(30,40,80,0.6)',
+          highlight?COLORS.green:'rgba(96,165,250,0.3)');
+        ctx.fillStyle=progress>=0.8&&i===0?COLORS.green:COLORS.white;
+        ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText(progress>=0.8&&i===0?'{A,B,C}':perms[i],x+boxW/2,y+boxH/2+5);
+        ctx.globalAlpha=1;
+      }
+
+      /* Divider symbol */
+      if(progress>0.3&&progress<0.9){
+        ctx.fillStyle=COLORS.amber;ctx.font='bold 18px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('÷ 3! = ÷ 6',cx,h-18);
+      }
+      if(progress>=0.9){
+        ctx.fillStyle=COLORS.green;ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('C(n,r) = P(n,r) / r!',cx,h-14);
+      }
+
+      if(progress<1){
+        progress+=0.008;
+        requestAnimationFrame(draw);
+      }
+    }
+    canvas._reset=()=>{progress=0;draw();};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 4: P vs C 3D Comparison (Slide 8)
+     Two groups of 3D cubes: ordered vs unordered
+     ========================================================= */
+  function animPvC3D(){
+    const canvas = document.getElementById('anim-pvc-3d');
+    if(!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const cw = rect.width, ch = rect.height;
+
+    const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(cw,ch);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50,cw/ch,0.1,100);
+    camera.position.set(0,2,8);
+    camera.lookAt(0,0,0);
+
+    const cubeColors=[0x60a5fa,0xa78bfa,0x34d399];
+    const labels=['A','B','C'];
+
+    /* Permutation side: 3 cubes in a line, spaced */
+    const permGroup = new THREE.Group();
+    labels.forEach((l,i)=>{
+      const geo = new THREE.BoxGeometry(0.8,0.8,0.8);
+      const mat = new THREE.MeshBasicMaterial({color:cubeColors[i],wireframe:false,transparent:true,opacity:0.7});
+      const cube = new THREE.Mesh(geo,mat);
+      cube.position.x = (i-1)*1.2;
+      cube.position.y = 0;
+      const edges = new THREE.EdgesGeometry(geo);
+      const line = new THREE.LineSegments(edges,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.3}));
+      cube.add(line);
+      permGroup.add(cube);
+    });
+    permGroup.position.x = -2.5;
+    scene.add(permGroup);
+
+    /* Combination side: 3 cubes clustered together */
+    const combGroup = new THREE.Group();
+    labels.forEach((l,i)=>{
+      const geo = new THREE.BoxGeometry(0.8,0.8,0.8);
+      const mat = new THREE.MeshBasicMaterial({color:cubeColors[i],wireframe:false,transparent:true,opacity:0.7});
+      const cube = new THREE.Mesh(geo,mat);
+      const angle = (i/3)*Math.PI*2;
+      cube.position.x = Math.cos(angle)*0.5;
+      cube.position.z = Math.sin(angle)*0.5;
+      const edges = new THREE.EdgesGeometry(geo);
+      const line = new THREE.LineSegments(edges,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.3}));
+      cube.add(line);
+      combGroup.add(cube);
+    });
+    combGroup.position.x = 2.5;
+    scene.add(combGroup);
+
+    /* Labels as sprites */
+    function makeLabel(text,x,y,z,color){
+      const c=document.createElement('canvas');c.width=256;c.height=64;
+      const cx2=c.getContext('2d');
+      cx2.fillStyle=color||'#e2e8f0';cx2.font='bold 28px Segoe UI,sans-serif';cx2.textAlign='center';
+      cx2.fillText(text,128,44);
+      const tex=new THREE.CanvasTexture(c);
+      const sp=new THREE.SpriteMaterial({map:tex,transparent:true});
+      const sprite=new THREE.Sprite(sp);
+      sprite.position.set(x,y,z);sprite.scale.set(2.5,0.6,1);
+      scene.add(sprite);
+    }
+    makeLabel('Permutation',-2.5,1.8,0,'#60a5fa');
+    makeLabel('(Order Matters)',-2.5,1.3,0,'#94a3b8');
+    makeLabel('Combination',2.5,1.8,0,'#34d399');
+    makeLabel('(Order Ignored)',2.5,1.3,0,'#94a3b8');
+
+    let running=true;
+    function anim(){
+      if(!running) return;
+      requestAnimationFrame(anim);
+      /* Permutation: cubes shuffle positions */
+      permGroup.children.forEach((c,i)=>{
+        c.rotation.y += 0.02;
+        c.position.y = Math.sin(Date.now()*0.002+i*2)*0.15;
+      });
+      /* Combination: group rotates as one */
+      combGroup.rotation.y += 0.008;
+      renderer.render(scene,camera);
+    }
+    canvas._stop=()=>{running=false;};
+    canvas._reset=()=>{running=true;anim();};
+    anim();
+  }
+
+  /* =========================================================
+     ANIM 5: Stars & Bars (Slide 11)
+     4 stars, 2 bars → different distributions
+     ========================================================= */
+  function animStarsBars(){
+    const canvas = document.getElementById('anim-stars-bars');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const configs=[
+      /* Each array = [group1, group2, group3] distributing 4 stars into 3 groups */
+      [2,1,1],[1,2,1],[1,1,2],[3,1,0],[0,2,2],[4,0,0],[0,0,4],[2,2,0],[0,3,1],[1,0,3]
+    ];
+    let configIdx=0, t=0;
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const conf=configs[configIdx];
+      const cx=w/2;
+
+      ctx.fillStyle=COLORS.dim;ctx.font='11px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('4 stars (★) and 2 bars (|)  →  3 groups  —  Config '+(configIdx+1)+'/'+configs.length,cx,20);
+
+      /* Draw the stars-and-bars representation */
+      const totalSymbols=6; // 4 stars + 2 bars
+      const symW=32, symGap=6;
+      const startX=cx-(totalSymbols*(symW+symGap)-symGap)/2;
+      let pos=0;
+      const symbols=[];
+      for(let g=0;g<3;g++){
+        for(let s=0;s<conf[g];s++){symbols.push({type:'star',group:g});pos++;}
+        if(g<2){symbols.push({type:'bar',group:g});pos++;}
+      }
+
+      const barY=h/2-10;
+      symbols.forEach((sym,i)=>{
+        const sx=startX+i*(symW+symGap);
+        const entryProgress=Math.min(1,Math.max(0,(t-i*5)/15));
+        ctx.globalAlpha=entryProgress;
+        if(sym.type==='star'){
+          ctx.fillStyle=COLORS.amber;ctx.font='24px Segoe UI,sans-serif';ctx.textAlign='center';
+          ctx.fillText('★',sx+symW/2,barY+8);
+        } else {
+          ctx.fillStyle=COLORS.blue;
+          ctx.fillRect(sx+symW/2-2,barY-16,4,36);
+        }
+        ctx.globalAlpha=1;
+      });
+
+      /* Group labels */
+      const groupColors=[COLORS.green,COLORS.purple,COLORS.coral];
+      const groupNames=['Vanilla','Choco','Straw'];
+      if(t>40){
+        const groupStartX=cx-150;
+        for(let g=0;g<3;g++){
+          ctx.fillStyle=groupColors[g];ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='center';
+          ctx.fillText(groupNames[g]+': '+conf[g],groupStartX+g*110,h-16);
+        }
+      }
+
+      /* Result */
+      if(t>50){
+        ctx.fillStyle=COLORS.white;ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='right';
+        ctx.fillText('C(6,4) = 15 total configs',w-16,h-16);
+      }
+
+      t++;
+      if(t===80){t=0;configIdx=(configIdx+1)%configs.length;}
+      requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{configIdx=0;t=0;};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 6: Circular Permutation (Slide 12)
+     4 people around a circle — show rotational equivalence
+     ========================================================= */
+  function animCircular(){
+    const canvas = document.getElementById('anim-circular');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const people=['A','B','C','D'];
+    const pColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber];
+    let rotation=0, phase=0, t=0;
+    // phase 0: show arrangement, phase 1: rotate (same arrangement), phase 2: count
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2, cy=h/2+5, radius=65;
+
+      /* Table circle */
+      ctx.beginPath();ctx.arc(cx,cy,radius+20,0,Math.PI*2);
+      ctx.fillStyle='rgba(30,40,80,0.3)';ctx.fill();
+      ctx.strokeStyle='rgba(96,165,250,0.2)';ctx.lineWidth=1;ctx.stroke();
+
+      ctx.fillStyle=COLORS.dim;ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('Round Table',cx,cy);
+
+      /* People */
+      for(let i=0;i<4;i++){
+        const angle = (i/4)*Math.PI*2 - Math.PI/2 + rotation;
+        const px=cx+Math.cos(angle)*radius;
+        const py=cy+Math.sin(angle)*radius;
+        ctx.beginPath();ctx.arc(px,py,18,0,Math.PI*2);
+        ctx.fillStyle=pColors[i]+'44';ctx.fill();
+        ctx.strokeStyle=pColors[i];ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle=pColors[i];ctx.font='bold 16px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText(people[i],px,py+6);
+      }
+
+      /* Phase labels */
+      ctx.textAlign='left';ctx.font='11px Segoe UI,sans-serif';
+      if(phase===0){
+        ctx.fillStyle=COLORS.white;
+        ctx.fillText('Arrangement: ABCD',16,22);
+        ctx.fillStyle=COLORS.dim;
+        ctx.fillText('Watch: rotating gives the SAME circular arrangement...',16,40);
+      } else if(phase>=1){
+        ctx.fillStyle=COLORS.green;
+        ctx.fillText('All 4 rotations are identical!',16,22);
+        ctx.fillStyle=COLORS.amber;ctx.font='bold 12px Segoe UI,sans-serif';
+        ctx.fillText('Circular perms = n!/n = (n−1)! = 3! = 6',16,40);
+      }
+
+      /* Rotation indicator */
+      if(phase===0 && t>30){
+        const rot=Math.floor(rotation/(Math.PI/2))%4;
+        ctx.fillStyle=COLORS.blue;ctx.font='bold 11px Segoe UI,sans-serif';ctx.textAlign='right';
+        ctx.fillText('Rotation '+(rot+1)+'/4',w-16,22);
+      }
+
+      t++;
+      if(phase===0){
+        if(t>30) rotation+=0.02;
+        if(rotation>=Math.PI*2){rotation=0;phase=1;t=0;}
+      }
+      requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{rotation=0;phase=0;t=0;};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 7: 3D Necklace / Bracelet (Slide 13)
+     A ring of colored beads rotating in 3D
+     ========================================================= */
+  function animNecklace3D(){
+    const canvas = document.getElementById('anim-necklace-3d');
+    if(!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const cw=rect.width, ch=rect.height;
+
+    const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(cw,ch);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45,cw/ch,0.1,100);
+    camera.position.set(0,2,6);
+    camera.lookAt(0,0,0);
+
+    const beadColors=[0x60a5fa,0xa78bfa,0x34d399,0xfbbf24,0xf87171,0xec4899,0x06b6d4];
+    const numBeads=7;
+    const ring = new THREE.Group();
+    const beadRadius=0.25;
+    const ringRadius=1.5;
+
+    /* Create beads */
+    for(let i=0;i<numBeads;i++){
+      const angle=(i/numBeads)*Math.PI*2;
+      const geo=new THREE.SphereGeometry(beadRadius,16,16);
+      const mat=new THREE.MeshBasicMaterial({color:beadColors[i],transparent:true,opacity:0.85});
+      const bead=new THREE.Mesh(geo,mat);
+      bead.position.set(Math.cos(angle)*ringRadius,0,Math.sin(angle)*ringRadius);
+      ring.add(bead);
+    }
+
+    /* Wire connecting beads */
+    const curve = new THREE.CatmullRomCurve3(
+      Array.from({length:numBeads+1},(_,i)=>{
+        const a=(i/numBeads)*Math.PI*2;
+        return new THREE.Vector3(Math.cos(a)*ringRadius,0,Math.sin(a)*ringRadius);
+      }),true
+    );
+    const tubeGeo = new THREE.TubeGeometry(curve,64,0.04,8,true);
+    const tubeMat = new THREE.MeshBasicMaterial({color:0x475569,transparent:true,opacity:0.4});
+    ring.add(new THREE.Mesh(tubeGeo,tubeMat));
+    scene.add(ring);
+
+    /* Labels */
+    function makeLabel3(text,x,y,z,color){
+      const c=document.createElement('canvas');c.width=300;c.height=64;
+      const cx2=c.getContext('2d');
+      cx2.fillStyle=color||'#e2e8f0';cx2.font='bold 26px Segoe UI,sans-serif';cx2.textAlign='center';
+      cx2.fillText(text,150,44);
+      const tex=new THREE.CanvasTexture(c);
+      const sp=new THREE.SpriteMaterial({map:tex,transparent:true});
+      const sprite=new THREE.Sprite(sp);
+      sprite.position.set(x,y,z);sprite.scale.set(3,0.6,1);
+      scene.add(sprite);
+    }
+    makeLabel3('Necklace: (n−1)! = 720',0,2.2,0,'#60a5fa');
+    makeLabel3('Bracelet: (n−1)!/2 = 360',0,-1.8,0,'#34d399');
+
+    let running=true, flipPhase=false, flipTime=0;
+    function anim(){
+      if(!running) return;
+      requestAnimationFrame(anim);
+      ring.rotation.y += 0.01;
+      /* Occasionally flip to show bracelet symmetry */
+      flipTime++;
+      if(flipTime>300&&!flipPhase){flipPhase=true;flipTime=0;}
+      if(flipPhase){
+        ring.rotation.x += 0.03;
+        if(flipTime>60){flipPhase=false;flipTime=0;ring.rotation.x=0;}
+      }
+      renderer.render(scene,camera);
+    }
+    canvas._stop=()=>{running=false;};
+    canvas._reset=()=>{running=true;ring.rotation.x=0;ring.rotation.y=0;flipTime=0;flipPhase=false;anim();};
+    anim();
+  }
+
+  /* =========================================================
+     ANIM 8: Derangement — Letters & Envelopes (Slide 14)
+     4 letters shuffling into wrong envelopes
+     ========================================================= */
+  function animDerange(){
+    const canvas = document.getElementById('anim-derange');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const letters=['L1','L2','L3','L4'];
+    const envColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber];
+    /* Each array maps letter i → envelope derangements[config][i] (no letter in its own envelope) */
+    const derangements=[
+      [1,0,3,2],[1,2,3,0],[1,3,0,2],[2,0,3,1],[2,3,0,1],[2,3,1,0],
+      [3,0,1,2],[3,2,0,1],[3,2,1,0]
+    ];
+    let currentDerange=0, t=0, phase=0; // 0=show correct, 1=animate shuffle, 2=show deranged
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2;
+      const envW=60, envH=40, gap=20;
+      const startX=cx-(4*(envW+gap)-gap)/2;
+      const envY=h/2+10;
+      const letterY=h/2-40;
+      const d=derangements[currentDerange];
+
+      ctx.fillStyle=COLORS.dim;ctx.font='11px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('Derangement '+(currentDerange+1)+'/'+derangements.length+' — D(4) = 9',cx,18);
+
+      /* Draw envelopes */
+      for(let i=0;i<4;i++){
+        const ex=startX+i*(envW+gap);
+        roundRect(ctx,ex,envY,envW,envH,6,'rgba(30,40,80,0.5)',envColors[i]);
+        ctx.fillStyle=envColors[i];ctx.font='bold 11px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('E'+(i+1),ex+envW/2,envY+envH/2+4);
+      }
+
+      /* Draw letters */
+      for(let i=0;i<4;i++){
+        let lx, ly;
+        if(phase===0){
+          // correct position (above matching envelope)
+          lx=startX+i*(envW+gap)+envW/2;
+          ly=letterY;
+        } else if(phase===1){
+          // animate to deranged position
+          const fromX=startX+i*(envW+gap)+envW/2;
+          const toX=startX+d[i]*(envW+gap)+envW/2;
+          const progress=Math.min(1,t/40);
+          const ease=progress<0.5?2*progress*progress:1-Math.pow(-2*progress+2,2)/2;
+          lx=fromX+(toX-fromX)*ease;
+          ly=letterY-Math.sin(ease*Math.PI)*25;
+        } else {
+          // deranged position
+          lx=startX+d[i]*(envW+gap)+envW/2;
+          ly=letterY;
+        }
+        ctx.beginPath();ctx.arc(lx,ly,16,0,Math.PI*2);
+        const wrong=phase===2&&d[i]!==i;
+        ctx.fillStyle=wrong?'rgba(248,113,113,0.2)':'rgba(96,165,250,0.15)';ctx.fill();
+        ctx.strokeStyle=wrong?COLORS.coral:COLORS.blue;ctx.lineWidth=1.5;ctx.stroke();
+        ctx.fillStyle=wrong?COLORS.coral:COLORS.blue;ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('L'+(i+1),lx,ly+4);
+      }
+
+      /* Status */
+      if(phase===2){
+        ctx.fillStyle=COLORS.coral;ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('✗ No letter in its own envelope!',cx,h-10);
+      } else if(phase===0){
+        ctx.fillStyle=COLORS.green;ctx.font='11px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('Original: each letter above its envelope',cx,h-10);
+      }
+
+      t++;
+      if(phase===0&&t>40){phase=1;t=0;}
+      if(phase===1&&t>45){phase=2;t=0;}
+      if(phase===2&&t>60){phase=0;t=0;currentDerange=(currentDerange+1)%derangements.length;}
+      requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{currentDerange=0;t=0;phase=0;};
+    draw();
+  }
+
+  /* =========================================================
+     Animation Registry & Lifecycle
+     ========================================================= */
+  const animMap = {
+    2: animMultiply,
+    4: animPermSlots,
+    6: animCombCollapse,
+    8: animPvC3D,
+    11: animStarsBars,
+    12: animCircular,
+    13: animNecklace3D,
+    14: animDerange
+  };
+  const initialized = new Set();
+
+  /* Initialize animations for the current slide */
+  function initAnimForSlide(slideNum){
+    if(initialized.has(slideNum)) return;
+    if(animMap[slideNum]){
+      animMap[slideNum]();
+      initialized.add(slideNum);
+    }
+  }
+
+  /* Observe slide changes to trigger animations */
+  const observer = new MutationObserver(mutations=>{
+    mutations.forEach(m=>{
+      if(m.type==='attributes'&&m.attributeName==='class'){
+        const el=m.target;
+        if(el.classList.contains('slide')&&el.classList.contains('active')){
+          const num=parseInt(el.getAttribute('data-slide'));
+          initAnimForSlide(num);
+        }
+      }
+    });
+  });
+  document.querySelectorAll('.slide').forEach(s=>{
+    observer.observe(s,{attributes:true,attributeFilter:['class']});
+  });
+
+  /* Initialize animation for slide 2 (first slide with animation) */
+  initAnimForSlide(2);
+
+  /* Replay buttons */
+  document.querySelectorAll('.anim-replay').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.getAttribute('data-target');
+      const canvas=document.getElementById(id);
+      if(canvas&&canvas._reset) canvas._reset();
+    });
+  });
+
+})();
+</script>
+</body>
+</html>
