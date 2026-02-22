@@ -1,0 +1,21 @@
+title: GATE CSE Study Material
+description: Complete study material for GATE, ESE, PSU & Banking exams — Computer Science & Engineering
+baseurl: "/CSE"
+url: "https://dailycodingworkout.github.io"
+
+markdown: kramdown
+kramdown:
+  math_engine: null
+  input: GFM
+  hard_wrap: false
+
+exclude:
+  - GateOverflow/
+  - node_modules/
+  - "*.pdf"
+
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: "default"

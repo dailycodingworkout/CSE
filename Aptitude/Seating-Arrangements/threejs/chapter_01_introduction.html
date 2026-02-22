@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 1: Introduction and Fundamentals of Seating Arrangements</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+#title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 48px;
+  background: #1a8a8a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  z-index: 10;
+  letter-spacing: 0.3px;
+}
+#canvas-container {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 70%;
+  height: calc(100vh - 48px);
+  background: #f8f8f8;
+}
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100vh;
+  background: #fff;
+  border-left: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#info-header {
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a8a8a;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+#info-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+}
+#info-body h3 {
+  color: #1a8a8a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+#info-body ul,
+#info-body ol {
+  margin: 8px 0 16px 18px;
+}
+#info-body li {
+  margin-bottom: 4px;
+}
+#info-body .key-point {
+  background: #e8f5f5;
+  border-left: 3px solid #1a8a8a;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#info-body .warn {
+  background: #fff3e0;
+  border-left: 3px solid #e8a317;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#nav-bar {
+  padding: 14px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+}
+#nav-bar .counter {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+#nav-bar button {
+  padding: 7px 18px;
+  border: 1px solid #1a8a8a;
+  background: #fff;
+  color: #1a8a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+#nav-bar button:hover {
+  background: #1a8a8a;
+  color: #fff;
+}
+#nav-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+  color: #1a8a8a;
+}
+#scene-title {
+  position: fixed;
+  top: 56px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid #ddd;
+}
+.label-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.label-overlay.box-label {
+  background: rgba(255, 255, 255, 0.90);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.label-overlay.highlight-label {
+  background: rgba(217, 79, 79, 0.12);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+}
+.label-overlay.trap-label {
+  background: rgba(255, 240, 240, 0.95);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 2px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="title-bar">Chapter 1: Introduction and Fundamentals of Seating Arrangements</div>
+<div id="canvas-container"></div>
+<div id="scene-title"></div>
+
+<div id="info-panel">
+  <div id="info-header">Scene Information</div>
+  <div id="info-body"></div>
+  <div id="nav-bar">
+    <button id="btn-prev" onclick="prevScene()">Previous</button>
+    <span class="counter" id="counter">Scene 1 of 6</span>
+    <button id="btn-next" onclick="nextScene()">Next</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+
+/* ===== COLOR PALETTE ===== */
+var TEAL = 0x1a8a8a, CORAL = 0xd94f4f, AMBER = 0xe8a317;
+var INDIGO = 0x4a5da8, GREEN = 0x2e8b57;
+var DARK = 0x333333, LGRAY = 0xdddddd;
+
+var TEAL_S = "#1a8a8a", CORAL_S = "#d94f4f", AMBER_S = "#e8a317";
+var INDIGO_S = "#4a5da8", GREEN_S = "#2e8b57";
+
+/* ===== GLOBALS ===== */
+var renderer, camera, controls, clock;
+var currentScene = 0, totalScenes = 6;
+var container = document.getElementById("canvas-container");
+var labelPool = [];
+var sceneGroup, activeScene;
+var animState = { time: 0, phase: 0, data: {}, update: null };
+
+/* ===== RENDERER SETUP ===== */
+function initRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  // Cap at 2x to avoid excessive GPU cost on high-DPI displays
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0xf8f8f8);
+  container.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(
+    50, container.clientWidth / container.clientHeight, 0.1, 200
+  );
+  camera.position.set(0, 8, 18);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 4;
+  controls.maxDistance = 60;
+  clock = new THREE.Clock();
+}
+
+function onResize() {
+  var w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener("resize", onResize);
+
+/* ===== LABEL SYSTEM ===== */
+function clearLabels() {
+  for (var i = 0; i < labelPool.length; i++) labelPool[i].el.remove();
+  labelPool.length = 0;
+}
+
+function addLabel(text, obj, offsetY, cls) {
+  var el = document.createElement("div");
+  el.className = "label-overlay" + (cls ? " " + cls : "");
+  el.textContent = text;
+  container.appendChild(el);
+  labelPool.push({ el: el, obj: obj, offsetY: offsetY || 0 });
+  return el;
+}
+
+function updateLabels() {
+  var w = container.clientWidth, h = container.clientHeight;
+  var v = new THREE.Vector3();
+  for (var i = 0; i < labelPool.length; i++) {
+    var l = labelPool[i];
+    if (!l.obj || !l.obj.parent) { l.el.style.display = "none"; continue; }
+    l.obj.getWorldPosition(v);
+    v.y += l.offsetY;
+    v.project(camera);
+    if (v.z > 1) { l.el.style.display = "none"; continue; }
+    l.el.style.display = "";
+    l.el.style.left = ((v.x * 0.5 + 0.5) * w) + "px";
+    l.el.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  }
+}
+
+/* ===== GEOMETRY HELPERS ===== */
+function mat(color, em) {
+  return new THREE.MeshPhongMaterial({ color: color, emissive: em || 0, shininess: 60 });
+}
+function matT(color, op) {
+  return new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: op, shininess: 40 });
+}
+function lineMat(color) {
+  return new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+}
+function makeBox(w, h, d, c) {
+  return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+}
+function makeSphere(r, c) {
+  return new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), mat(c));
+}
+function makeCyl(rt, rb, h, c) {
+  return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 24), mat(c));
+}
+function makeLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(g, lineMat(c));
+}
+function makeArrow(from, to, c, hl) {
+  var dir = new THREE.Vector3().subVectors(to, from);
+  var len = dir.length(); dir.normalize();
+  return new THREE.ArrowHelper(dir, from, len, c, hl || 0.4, 0.2);
+}
+
+function makeChair(x, y, z) {
+  var g = new THREE.Group();
+  var seat = makeBox(1.0, 0.12, 0.9, 0xcccccc);
+  g.add(seat);
+  var back = makeBox(1.0, 0.8, 0.1, 0xbbbbbb);
+  back.position.set(0, 0.4, -0.4);
+  g.add(back);
+  var legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+  var legM = mat(0x999999);
+  [[-0.38, -0.31, -0.32], [0.38, -0.31, -0.32],
+   [-0.38, -0.31, 0.32], [0.38, -0.31, 0.32]].forEach(function(o) {
+    var leg = new THREE.Mesh(legGeo, legM);
+    leg.position.set(o[0], o[1], o[2]);
+    g.add(leg);
+  });
+  g.position.set(x, y, z);
+  return g;
+}
+
+/* ===== LIGHTING ===== */
+function addLights(sc) {
+  sc.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var d1 = new THREE.DirectionalLight(0xffffff, 0.65);
+  d1.position.set(8, 12, 10); sc.add(d1);
+  var d2 = new THREE.DirectionalLight(0xffffff, 0.3);
+  d2.position.set(-6, 8, -8); sc.add(d2);
+}
+
+function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
+
+/* ===== SCENE INFO ===== */
+var sceneInfo = [
+  {
+    title: "Scene 1: Classification Tree",
+    header: "Classification of Seating Arrangements",
+    body: "<h3>Arrangement Types</h3>" +
+      "<p>Seating arrangement problems are broadly classified into three families, " +
+      "each requiring different solving strategies.</p>" +
+      "<ul>" +
+      "<li><b>Linear:</b> Single-row and double-row (face-to-face) arrangements</li>" +
+      "<li><b>Circular:</b> Round table and square table configurations</li>" +
+      "<li><b>Complex:</b> Rectangular tables, floor puzzles, and grid layouts</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Identifying the arrangement type is the very first step " +
+      "in any problem. The type determines which framework and notation to apply.</div>" +
+      "<p>Watch the tree build from root to leaves. Each branch uses a distinct color " +
+      "for quick identification during problem solving.</p>"
+  },
+  {
+    title: "Scene 2: Terminology Demonstration",
+    header: "Essential Terminology",
+    body: "<h3>Key Position Terms</h3>" +
+      "<p>These terms define spatial relationships between people in a linear row:</p>" +
+      "<ul>" +
+      "<li><b>Immediate Left / Right:</b> The chair directly adjacent on either side</li>" +
+      "<li><b>Second to the Left:</b> Exactly two positions away to the left</li>" +
+      "<li><b>Neighbours:</b> Both immediately adjacent persons (left and right)</li>" +
+      "<li><b>Between:</b> All chairs situated between two named persons</li>" +
+      "<li><b>End positions:</b> The first and last chairs in a row</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Precise understanding of these terms is essential. " +
+      "Misreading \"second to the left\" as \"immediate left\" is one of the most " +
+      "common errors in competitive exams.</div>" +
+      "<p>Red = referenced positions. Green = reference person.</p>"
+  },
+  {
+    title: "Scene 3: The Perspective Trap",
+    header: "The Perspective Trap",
+    body: "<h3>Left/Right Are Relative to the Person</h3>" +
+      "<p>This is the single most common source of errors in seating arrangement problems.</p>" +
+      "<div class=\"warn\"><b>TRAP:</b> Left and Right are always determined from the " +
+      "PERSON's facing direction, never from the reader's viewpoint.</div>" +
+      "<ul>" +
+      "<li>Person facing North: their left = viewer's left</li>" +
+      "<li>Person facing South: their left = viewer's RIGHT</li>" +
+      "<li>Always determine the facing direction first</li>" +
+      "</ul>" +
+      "<p>Watch the camera slowly orbit. Notice how the left and right arrows " +
+      "appear to swap when viewed from behind.</p>" +
+      "<div class=\"key-point\">Rule: Always imagine yourself sitting in " +
+      "that person's chair, facing their direction.</div>"
+  },
+  {
+    title: "Scene 4: 5-Step Universal Framework",
+    header: "The 5-Step Solving Framework",
+    body: "<h3>Universal Approach</h3>" +
+      "<ol>" +
+      "<li><b>DRAW SKELETON:</b> Create an empty layout matching the arrangement type</li>" +
+      "<li><b>FIND DEFINITES:</b> Identify clues that fix an absolute position</li>" +
+      "<li><b>PLACE ANCHOR:</b> Place the most-constrained person first</li>" +
+      "<li><b>APPLY RELATIVES:</b> Chain placements from the anchor</li>" +
+      "<li><b>ELIMINATE + VERIFY:</b> Cross-check all constraints</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">This framework works for every seating arrangement " +
+      "problem type. Master it and apply it consistently.</div>" +
+      "<p>Watch each step animate in sequence with the demo row below.</p>"
+  },
+  {
+    title: "Scene 5: Notation System",
+    header: "Standard Notation System",
+    body: "<h3>Quick Reference Symbols</h3>" +
+      "<ul>" +
+      "<li><b>A -- B</b> : A and B are adjacent (solid green line)</li>" +
+      "<li><b>A _ _ B</b> : Two-place gap between A and B</li>" +
+      "<li><b>A X B</b> : A and B are NOT adjacent (red cross)</li>" +
+      "<li><b>A &lt;-&gt; B</b> : A and B are opposite/facing (double arrow)</li>" +
+      "<li><b>A at end</b> : A sits at an end position</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Consistent notation speeds up problem solving. " +
+      "Adopt these symbols for every practice problem.</div>"
+  },
+  {
+    title: "Scene 6: Constraint Density Principle",
+    header: "Constraint Density Principle",
+    body: "<h3>Start with the Most Constrained</h3>" +
+      "<p>The person mentioned in the greatest number of clues should be placed first.</p>" +
+      "<ul>" +
+      "<li>Count how many clues reference each person</li>" +
+      "<li>The person with the highest count is the anchor</li>" +
+      "<li>Placing them first maximally restricts remaining positions</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Analogy: Like a jigsaw puzzle -- start with the " +
+      "piece that has the most matching edges.</div>" +
+      "<p>Person C (5 constraints) glows brightest and pulses as the anchor.</p>"
+  }
+];
+
+/* ===== NAVIGATION ===== */
+function updateNav() {
+  document.getElementById("counter").textContent =
+    "Scene " + (currentScene + 1) + " of " + totalScenes;
+  document.getElementById("btn-prev").disabled = (currentScene === 0);
+  document.getElementById("btn-next").disabled = (currentScene === totalScenes - 1);
+  var s = sceneInfo[currentScene];
+  document.getElementById("scene-title").textContent = s.title;
+  document.getElementById("info-header").textContent = s.header;
+  document.getElementById("info-body").innerHTML = s.body;
+}
+function nextScene() { if (currentScene < totalScenes - 1) { currentScene++; loadScene(currentScene); } }
+function prevScene() { if (currentScene > 0) { currentScene--; loadScene(currentScene); } }
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextScene();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevScene();
+});
+
+/* ===== SCENE LOADER ===== */
+function loadScene(idx) {
+  clearLabels();
+  activeScene = new THREE.Scene();
+  activeScene.background = new THREE.Color(0xf8f8f8);
+  addLights(activeScene);
+  sceneGroup = new THREE.Group();
+  activeScene.add(sceneGroup);
+  animState = { time: 0, phase: 0, data: {}, update: null };
+  [buildScene1, buildScene2, buildScene3,
+   buildScene4, buildScene5, buildScene6][idx]();
+  updateNav();
+}
+
+/* ===========================================================
+   SCENE 1 -- Classification Tree
+   =========================================================== */
+function buildScene1() {
+  camera.position.set(0, 7, 22);
+  controls.target.set(0, 3, 0);
+  controls.update();
+
+  var nodes = [];
+
+  function treeNode(label, x, y, z, color, parent) {
+    var box = makeBox(2.8, 0.75, 0.75, color);
+    box.position.set(x, y, z);
+    box.scale.set(0, 0, 0);
+    sceneGroup.add(box);
+    addLabel(label, box, 0.65, "box-label");
+
+    var lineObj = null;
+    if (parent) {
+      lineObj = makeLine(
+        new THREE.Vector3(parent.x, parent.y - 0.38, parent.z),
+        new THREE.Vector3(x, y + 0.38, z),
+        0x999999
+      );
+      lineObj.visible = false;
+      sceneGroup.add(lineObj);
+    }
+    nodes.push({ mesh: box, line: lineObj, delay: nodes.length * 0.45 });
+    return { x: x, y: y, z: z };
+  }
+
+  var root = treeNode("Seating Arrangements", 0, 9, 0, DARK, null);
+  var lin  = treeNode("Linear",   -6.5, 6, 0, TEAL,  root);
+  var circ = treeNode("Circular",  0,   6, 0, CORAL,  root);
+  var comp = treeNode("Complex",   6.5, 6, 0, AMBER, root);
+  treeNode("Single Row",   -8.5, 3, 0, TEAL,  lin);
+  treeNode("Double Row",   -4.5, 3, 0, TEAL,  lin);
+  treeNode("Round Table",  -1.5, 3, 0, CORAL, circ);
+  treeNode("Square Table",  1.5, 3, 0, CORAL, circ);
+  treeNode("Rectangular",   4.5, 3, 0, AMBER, comp);
+  treeNode("Floor Puzzle",  7.0, 3, 0, AMBER, comp);
+  treeNode("Grid",          9.5, 3, 0, AMBER, comp);
+
+  var ground = makeBox(24, 0.06, 4, 0xf0f0f0);
+  ground.position.set(0, 0, 0);
+  sceneGroup.add(ground);
+
+  animState.data.nodes = nodes;
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time;
+    for (var i = 0; i < nodes.length; i++) {
+      var n = nodes[i];
+      var elapsed = t - n.delay;
+      if (elapsed > 0) {
+        var s = easeOut(elapsed / 0.55);
+        n.mesh.scale.set(s, s, s);
+        if (n.line) n.line.visible = (elapsed > 0.2);
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 2 -- Terminology Demonstration
+   =========================================================== */
+function buildScene2() {
+  camera.position.set(0, 7, 14);
+  controls.target.set(0, 1.2, 0);
+  controls.update();
+
+  var persons = [];
+  var pNames = ["P1", "P2", "P3", "P4", "P5", "P6", "P7"];
+
+  for (var i = 0; i < 7; i++) {
+    var x = (i - 3) * 2.4;
+    var ch = makeChair(x, 0, 0);
+    sceneGroup.add(ch);
+    var ps = makeSphere(0.35, INDIGO);
+    ps.position.set(x, 0.85, 0);
+    sceneGroup.add(ps);
+    addLabel(pNames[i], ps, 0.55, "box-label");
+    persons.push(ps);
+  }
+
+  var floor = makeBox(20, 0.04, 3, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  // left-right direction marker
+  var dirAnchor = new THREE.Object3D();
+  dirAnchor.position.set(0, -1.4, 0);
+  sceneGroup.add(dirAnchor);
+  addLabel("LEFT <-- direction --> RIGHT  (all persons face you)", dirAnchor, 0, "box-label");
+
+  var termAnchor = new THREE.Object3D();
+  termAnchor.position.set(0, 3.5, 0);
+  sceneGroup.add(termAnchor);
+  var termLabel = addLabel("", termAnchor, 0, "highlight-label");
+
+  var descAnchor = new THREE.Object3D();
+  descAnchor.position.set(0, 2.7, 0);
+  sceneGroup.add(descAnchor);
+  var descLabel = addLabel("", descAnchor, 0, "box-label");
+
+  var terms = [
+    { name: "Immediate Right of P3", highlight: [3], ref: 2, dur: 3.5,
+      desc: "P4 is immediately to the right of P3" },
+    { name: "Immediate Left of P5", highlight: [3], ref: 4, dur: 3.5,
+      desc: "P4 is immediately to the left of P5" },
+    { name: "Second to the Left of P5", highlight: [2], ref: 4, dur: 3.5,
+      desc: "P3 is second to the left of P5" },
+    { name: "Neighbours of P4", highlight: [2, 4], ref: 3, dur: 3.5,
+      desc: "P3 and P5 are neighbours of P4" },
+    { name: "Between P2 and P6", highlight: [2, 3, 4], ref: -1, dur: 3.5,
+      desc: "P3, P4, P5 sit between P2 and P6" },
+    { name: "End Positions", highlight: [0, 6], ref: -1, dur: 3.5,
+      desc: "P1 and P7 occupy the end positions" }
+  ];
+
+  animState.data = {
+    persons: persons, terms: terms,
+    termIdx: 0, termTime: 0,
+    termLabel: termLabel, descLabel: descLabel
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data;
+    d.termTime += dt;
+    var ti = d.termIdx;
+    var term = d.terms[ti];
+
+    for (var i = 0; i < d.persons.length; i++) {
+      d.persons[i].material.color.setHex(INDIGO);
+      d.persons[i].material.emissive.setHex(0x000000);
+    }
+
+    if (term) {
+      d.termLabel.textContent = term.name;
+      d.descLabel.textContent = term.desc;
+      var pulse = 0.5 + 0.5 * Math.sin(animState.time * 5);
+      for (var j = 0; j < term.highlight.length; j++) {
+        var hi = term.highlight[j];
+        d.persons[hi].material.color.setHex(CORAL);
+        d.persons[hi].material.emissive.setRGB(0.2 * pulse, 0.05 * pulse, 0.05 * pulse);
+      }
+      if (term.ref >= 0) {
+        d.persons[term.ref].material.color.setHex(GREEN);
+        d.persons[term.ref].material.emissive.setHex(0x0a2a0a);
+      }
+    }
+
+    if (d.termTime > term.dur) {
+      d.termTime = 0;
+      d.termIdx = (d.termIdx + 1) % d.terms.length;
+    }
+
+    document.getElementById("scene-title").textContent = "Scene 2: " + term.name;
+  };
+}
+
+/* ===========================================================
+   SCENE 3 -- The Perspective Trap
+   =========================================================== */
+function buildScene3() {
+  camera.position.set(0, 6, 12);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  // person body
+  var body = makeCyl(0.4, 0.4, 1.6, INDIGO);
+  body.position.set(0, 0.8, 0);
+  sceneGroup.add(body);
+  var head = makeSphere(0.35, INDIGO);
+  head.position.set(0, 1.9, 0);
+  sceneGroup.add(head);
+  // nose to show facing
+  var nose = makeCyl(0.08, 0.02, 0.35, CORAL);
+  nose.rotation.x = Math.PI / 2;
+  nose.position.set(0, 1.85, -0.48);
+  sceneGroup.add(nose);
+  addLabel("Person (facing North)", head, 0.7, "box-label");
+
+  // facing direction arrow
+  sceneGroup.add(makeArrow(
+    new THREE.Vector3(0, 1.2, -0.6),
+    new THREE.Vector3(0, 1.2, -3.5), GREEN, 0.5
+  ));
+  var fAnc = new THREE.Object3D();
+  fAnc.position.set(0, 1.2, -4.2);
+  sceneGroup.add(fAnc);
+  addLabel("Facing Direction (North)", fAnc, 0, "box-label");
+
+  // person LEFT arrow
+  sceneGroup.add(makeArrow(
+    new THREE.Vector3(-0.6, 1.2, 0),
+    new THREE.Vector3(-3.2, 1.2, 0), TEAL, 0.5
+  ));
+  var lAnc = new THREE.Object3D();
+  lAnc.position.set(-4, 1.2, 0);
+  sceneGroup.add(lAnc);
+  addLabel("Person's LEFT", lAnc, 0, "box-label");
+
+  // person RIGHT arrow
+  sceneGroup.add(makeArrow(
+    new THREE.Vector3(0.6, 1.2, 0),
+    new THREE.Vector3(3.2, 1.2, 0), CORAL, 0.5
+  ));
+  var rAnc = new THREE.Object3D();
+  rAnc.position.set(4, 1.2, 0);
+  sceneGroup.add(rAnc);
+  addLabel("Person's RIGHT", rAnc, 0, "box-label");
+
+  // floor
+  var floor = makeBox(10, 0.05, 10, 0xeeeeee);
+  floor.position.set(0, -0.02, 0);
+  sceneGroup.add(floor);
+
+  // compass points
+  var cpData = [
+    { t: "NORTH", x: 0, z: -5 }, { t: "SOUTH", x: 0, z: 5 },
+    { t: "WEST", x: -5, z: 0 },  { t: "EAST", x: 5, z: 0 }
+  ];
+  cpData.forEach(function(cp) {
+    var a = new THREE.Object3D();
+    a.position.set(cp.x, 0.1, cp.z);
+    sceneGroup.add(a);
+    addLabel(cp.t, a, 0, "box-label");
+  });
+
+  // trap label
+  var tAnc = new THREE.Object3D();
+  tAnc.position.set(0, 4.2, 0);
+  sceneGroup.add(tAnc);
+  addLabel(
+    "TRAP: Left/Right is from the PERSON's facing direction",
+    tAnc, 0, "trap-label"
+  );
+
+  // perspective status
+  var pAnc = new THREE.Object3D();
+  pAnc.position.set(0, -1.2, 0);
+  sceneGroup.add(pAnc);
+  var pLabel = addLabel("View: Front (North side)", pAnc, 0, "box-label");
+
+  animState.data = { pLabel: pLabel };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var cycleSec = 16;
+    var angle = (animState.time % cycleSec) / cycleSec * Math.PI * 2;
+    var radius = 12;
+    camera.position.x = Math.sin(angle) * radius;
+    camera.position.z = Math.cos(angle) * radius;
+    camera.position.y = 5 + Math.sin(animState.time * 0.3) * 0.5;
+    controls.target.set(0, 1, 0);
+    controls.update();
+
+    // update perspective label
+    var na = ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
+    var vs;
+    if (na < Math.PI * 0.25 || na > Math.PI * 1.75) {
+      vs = "View: Front (North) -- Left appears LEFT";
+    } else if (na > Math.PI * 0.75 && na < Math.PI * 1.25) {
+      vs = "View: Behind (South) -- Left appears RIGHT!";
+    } else if (na >= Math.PI * 0.25 && na <= Math.PI * 0.75) {
+      vs = "View: Side (East) -- perspective shifting...";
+    } else {
+      vs = "View: Side (West) -- perspective shifting...";
+    }
+    animState.data.pLabel.textContent = vs;
+  };
+}
+
+/* ===========================================================
+   SCENE 4 -- 5-Step Universal Framework
+   =========================================================== */
+function buildScene4() {
+  camera.position.set(0, 6, 18);
+  controls.target.set(0, 2, 0);
+  controls.update();
+
+  var steps = [
+    { label: "1. DRAW SKELETON",      color: TEAL,   desc: "Create empty layout" },
+    { label: "2. FIND DEFINITES",     color: GREEN,  desc: "Identify fixed clues" },
+    { label: "3. PLACE ANCHOR",       color: CORAL,  desc: "Most-constrained first" },
+    { label: "4. APPLY RELATIVES",    color: AMBER,  desc: "Chain from anchor" },
+    { label: "5. ELIMINATE + VERIFY", color: INDIGO, desc: "Cross-check all" }
+  ];
+
+  var stepMeshes = [], stepArrows = [];
+  for (var i = 0; i < steps.length; i++) {
+    var sx = (i - 2) * 3.8;
+    var box = makeBox(3.0, 1.3, 1.3, steps[i].color);
+    box.position.set(sx, 5, 0);
+    box.scale.set(0, 0, 0);
+    sceneGroup.add(box);
+    addLabel(steps[i].label, box, 1.0, "box-label");
+    var dAnc = new THREE.Object3D();
+    dAnc.position.set(sx, 3.4, 0);
+    sceneGroup.add(dAnc);
+    addLabel(steps[i].desc, dAnc, 0, "box-label");
+    stepMeshes.push(box);
+
+    if (i < steps.length - 1) {
+      var arr = makeArrow(
+        new THREE.Vector3(sx + 1.6, 5, 0),
+        new THREE.Vector3(sx + 2.2, 5, 0), 0x999999, 0.25
+      );
+      arr.visible = false;
+      sceneGroup.add(arr);
+      stepArrows.push(arr);
+    }
+  }
+
+  // demo row
+  var demoSlots = [];
+  for (var j = 0; j < 5; j++) {
+    var cx = (j - 2) * 2.2;
+    var slot = makeBox(1.0, 0.12, 0.9, LGRAY);
+    slot.position.set(cx, -0.5, 0);
+    slot.scale.set(0, 0, 0);
+    sceneGroup.add(slot);
+    demoSlots.push(slot);
+  }
+
+  var dColors = [GREEN, CORAL, TEAL, AMBER, INDIGO];
+  var dNames = ["P1", "P2", "P3", "P4", "P5"];
+  var demoPeople = [];
+  for (var k = 0; k < 5; k++) {
+    var px = (k - 2) * 2.2;
+    var ps = makeSphere(0.3, dColors[k]);
+    ps.position.set(px, 0.3, 0);
+    ps.visible = false;
+    sceneGroup.add(ps);
+    var pAnc = new THREE.Object3D();
+    pAnc.position.set(px, 0.8, 0);
+    sceneGroup.add(pAnc);
+    addLabel(dNames[k], pAnc, 0, "box-label");
+    demoPeople.push(ps);
+  }
+
+  // checkmark
+  var ckAnc = new THREE.Object3D();
+  ckAnc.position.set(7, 0, 0);
+  sceneGroup.add(ckAnc);
+  var ckLabel = addLabel("", ckAnc, 0, "box-label");
+  ckLabel.style.color = GREEN_S;
+  ckLabel.style.fontSize = "18px";
+
+  // definite highlight ring for step 2
+  var defRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.5, 0.06, 12, 32),
+    new THREE.MeshPhongMaterial({ color: GREEN, emissive: 0x0a2a0a })
+  );
+  defRing.rotation.x = Math.PI / 2;
+  defRing.position.set(-4.4, -0.3, 0);
+  defRing.visible = false;
+  sceneGroup.add(defRing);
+
+  animState.data = {
+    stepMeshes: stepMeshes, stepArrows: stepArrows,
+    demoSlots: demoSlots, demoPeople: demoPeople,
+    ckLabel: ckLabel, defRing: defRing
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // step boxes appear
+    for (var i = 0; i < d.stepMeshes.length; i++) {
+      var delay = i * 1.3;
+      var el = t - delay;
+      if (el > 0) {
+        var s = easeOut(el / 0.6);
+        d.stepMeshes[i].scale.set(s, s, s);
+      }
+      if (i < d.stepArrows.length && el > 0.5) d.stepArrows[i].visible = true;
+    }
+
+    // pulse active step
+    var ai = Math.floor((t % 18) / 3.6) % 5;
+    for (var m = 0; m < d.stepMeshes.length; m++) {
+      if (m === ai) {
+        var p = 1 + 0.08 * Math.sin(t * 5);
+        if (d.stepMeshes[m].scale.x > 0.5) d.stepMeshes[m].scale.set(p, p, p);
+        d.stepMeshes[m].material.emissive.setHex(0x222222);
+      } else if (d.stepMeshes[m].scale.x >= 1) {
+        d.stepMeshes[m].scale.set(1, 1, 1);
+        d.stepMeshes[m].material.emissive.setHex(0x000000);
+      }
+    }
+
+    // step 1: skeleton slots appear
+    if (t > 1.5) {
+      for (var si = 0; si < d.demoSlots.length; si++) {
+        var se = t - 1.5 - si * 0.25;
+        if (se > 0) {
+          var sv = easeOut(se / 0.4);
+          d.demoSlots[si].scale.set(sv, sv, sv);
+        }
+      }
+    }
+
+    // step 2: definite highlight
+    if (t > 4 && t < 7) {
+      d.defRing.visible = true;
+      d.defRing.rotation.z += dt * 2;
+    } else {
+      d.defRing.visible = false;
+    }
+
+    // step 3+: people appear
+    var order = [2, 1, 3, 0, 4];
+    if (t > 7) {
+      for (var oi = 0; oi < order.length; oi++) {
+        var pi = order[oi];
+        var pe = t - 7 - oi * 1.4;
+        if (pe > 0) {
+          d.demoPeople[pi].visible = true;
+          var pv = easeOut(pe / 0.5);
+          d.demoPeople[pi].scale.set(pv, pv, pv);
+        }
+      }
+    }
+
+    // step 5: checkmark
+    d.ckLabel.textContent = (t > 14) ? "VERIFIED" : "";
+  };
+}
+
+/* ===========================================================
+   SCENE 5 -- Notation System
+   =========================================================== */
+function buildScene5() {
+  camera.position.set(0, 5, 16);
+  controls.target.set(0, 2, 0);
+  controls.update();
+
+  var notations = [
+    { label: "A -- B  (Adjacent)",          y: 7 },
+    { label: "A _ _ B  (Two-place gap)",    y: 5 },
+    { label: "A X B  (Not adjacent)",       y: 3 },
+    { label: "A <-> B  (Opposite/Facing)",  y: 1 },
+    { label: "A at end  (End position)",    y: -1 }
+  ];
+
+  var items = [];
+
+  for (var i = 0; i < notations.length; i++) {
+    var n = notations[i];
+    var lAnc = new THREE.Object3D();
+    lAnc.position.set(-5, n.y, 0);
+    sceneGroup.add(lAnc);
+    addLabel(n.label, lAnc, 0, "box-label");
+
+    var mA = makeSphere(0.35, TEAL);
+    mA.position.set(1, n.y, 0);
+    sceneGroup.add(mA);
+    addLabel("A", mA, 0.55, "box-label");
+
+    var mB, bx;
+
+    if (i === 0) {
+      // adjacent
+      bx = 3.5;
+      mB = makeSphere(0.35, CORAL);
+      mB.position.set(bx, n.y, 0);
+      sceneGroup.add(mB);
+      addLabel("B", mB, 0.55, "box-label");
+      sceneGroup.add(makeLine(
+        new THREE.Vector3(1.4, n.y, 0),
+        new THREE.Vector3(3.1, n.y, 0), GREEN
+      ));
+    } else if (i === 1) {
+      // two-place gap
+      bx = 5.5;
+      mB = makeSphere(0.35, CORAL);
+      mB.position.set(bx, n.y, 0);
+      sceneGroup.add(mB);
+      addLabel("B", mB, 0.55, "box-label");
+      var g1 = makeBox(0.35, 0.35, 0.35, 0xbbbbbb);
+      g1.position.set(2.7, n.y, 0); sceneGroup.add(g1);
+      var g2 = makeBox(0.35, 0.35, 0.35, 0xbbbbbb);
+      g2.position.set(3.8, n.y, 0); sceneGroup.add(g2);
+      sceneGroup.add(makeLine(new THREE.Vector3(1.4, n.y, 0), new THREE.Vector3(2.5, n.y, 0), 0x999999));
+      sceneGroup.add(makeLine(new THREE.Vector3(2.9, n.y, 0), new THREE.Vector3(3.6, n.y, 0), 0x999999));
+      sceneGroup.add(makeLine(new THREE.Vector3(4.0, n.y, 0), new THREE.Vector3(5.1, n.y, 0), 0x999999));
+    } else if (i === 2) {
+      // not adjacent (red X)
+      bx = 3.5;
+      mB = makeSphere(0.35, CORAL);
+      mB.position.set(bx, n.y, 0);
+      sceneGroup.add(mB);
+      addLabel("B", mB, 0.55, "box-label");
+      var xc = 2.25;
+      sceneGroup.add(makeLine(
+        new THREE.Vector3(xc - 0.35, n.y + 0.35, 0),
+        new THREE.Vector3(xc + 0.35, n.y - 0.35, 0), CORAL
+      ));
+      sceneGroup.add(makeLine(
+        new THREE.Vector3(xc - 0.35, n.y - 0.35, 0),
+        new THREE.Vector3(xc + 0.35, n.y + 0.35, 0), CORAL
+      ));
+    } else if (i === 3) {
+      // opposite/facing (double arrow)
+      bx = 3.5;
+      mB = makeSphere(0.35, CORAL);
+      mB.position.set(bx, n.y, 0);
+      sceneGroup.add(mB);
+      addLabel("B", mB, 0.55, "box-label");
+      sceneGroup.add(makeArrow(
+        new THREE.Vector3(1.5, n.y, 0),
+        new THREE.Vector3(3.1, n.y, 0), AMBER, 0.3
+      ));
+      sceneGroup.add(makeArrow(
+        new THREE.Vector3(3.1, n.y, 0),
+        new THREE.Vector3(1.5, n.y, 0), AMBER, 0.3
+      ));
+    } else {
+      // end position
+      mA.position.set(-1.5, n.y, 0);
+      mB = makeSphere(0.01, 0xffffff);
+      mB.position.set(99, 99, 0);
+      sceneGroup.add(mB);
+      for (var si = 0; si < 4; si++) {
+        var seat = makeBox(1.0, 0.12, 0.9, LGRAY);
+        seat.position.set(-1.5 + si * 1.6, n.y - 0.35, 0);
+        sceneGroup.add(seat);
+      }
+      var hlBox = new THREE.Mesh(
+        new THREE.BoxGeometry(1.2, 0.8, 1.0),
+        matT(GREEN, 0.22)
+      );
+      hlBox.position.set(-1.5, n.y, 0);
+      sceneGroup.add(hlBox);
+      addLabel("End", hlBox, 0.65, "box-label");
+    }
+
+    items.push({ mA: mA, mB: mB, baseY: n.y });
+  }
+
+  animState.data = { items: items };
+  animState.update = function(dt) {
+    animState.time += dt;
+    for (var i = 0; i < animState.data.items.length; i++) {
+      var it = animState.data.items[i];
+      var off = Math.sin(animState.time * 2 + i * 1.2) * 0.06;
+      it.mA.position.y = it.baseY + off;
+      if (it.mB.visible && it.mB.position.x < 50)
+        it.mB.position.y = it.baseY + off;
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 6 -- Constraint Density Principle
+   =========================================================== */
+function buildScene6() {
+  camera.position.set(0, 9, 15);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var people = [
+    { name: "A", x: -4,   z: 2.5,  constraints: 2, color: TEAL },
+    { name: "B", x: 3,    z: 3,    constraints: 3, color: INDIGO },
+    { name: "C", x: 0,    z: -1.5, constraints: 5, color: CORAL },
+    { name: "D", x: -5,   z: -1,   constraints: 1, color: AMBER },
+    { name: "E", x: 4.5,  z: -1,   constraints: 4, color: GREEN }
+  ];
+
+  var edges = [[0,1],[0,2],[1,2],[1,4],[2,3],[2,4]];
+
+  var spheres = [];
+  for (var i = 0; i < people.length; i++) {
+    var p = people[i];
+    var s = makeSphere(0.5, p.color);
+    s.position.set(p.x, 1, p.z);
+    sceneGroup.add(s);
+    addLabel(p.name + " (" + p.constraints + " constraints)", s, 0.85, "box-label");
+    spheres.push(s);
+  }
+
+  for (var j = 0; j < edges.length; j++) {
+    var e = edges[j];
+    var a = people[e[0]], b = people[e[1]];
+    sceneGroup.add(makeLine(
+      new THREE.Vector3(a.x, 1, a.z),
+      new THREE.Vector3(b.x, 1, b.z), 0xaaaaaa
+    ));
+  }
+
+  // floor
+  var floor = makeBox(14, 0.05, 10, 0xf0f0f0);
+  floor.position.set(0, -0.02, 0);
+  sceneGroup.add(floor);
+
+  // instruction label
+  var iAnc = new THREE.Object3D();
+  iAnc.position.set(0, 4, 0);
+  sceneGroup.add(iAnc);
+  var iLabel = addLabel("Place the most-constrained person FIRST", iAnc, 0, "box-label");
+  iLabel.style.color = CORAL_S;
+  iLabel.style.fontWeight = "700";
+  iLabel.style.fontSize = "14px";
+
+  // anchor indicator for C
+  var aAnc = new THREE.Object3D();
+  aAnc.position.set(people[2].x, 2.8, people[2].z);
+  sceneGroup.add(aAnc);
+  addLabel("ANCHOR", aAnc, 0, "highlight-label");
+
+  // analogy label
+  var anAnc = new THREE.Object3D();
+  anAnc.position.set(0, -1.5, 0);
+  sceneGroup.add(anAnc);
+  addLabel("Like a jigsaw: start with the piece having the most matching edges", anAnc, 0, "box-label");
+
+  animState.data = { spheres: spheres, people: people, maxC: 5 };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    for (var i = 0; i < d.spheres.length; i++) {
+      var ratio = d.people[i].constraints / d.maxC;
+      var glow = ratio * 0.45 * (0.5 + 0.5 * Math.sin(t * 3 + i));
+      d.spheres[i].material.emissive.setRGB(glow, glow * 0.3, glow * 0.1);
+      var sc = 0.75 + ratio * 0.55;
+      if (i === 2) sc += 0.12 * Math.sin(t * 4);
+      d.spheres[i].scale.set(sc, sc, sc);
+    }
+  };
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  var dt = Math.min(clock.getDelta(), 0.1);
+  if (animState.update) animState.update(dt);
+  controls.update();
+  updateLabels();
+  renderer.render(activeScene, camera);
+}
+
+/* ===== INIT ===== */
+initRenderer();
+loadScene(0);
+animate();
+</script>
+</body>
+</html>

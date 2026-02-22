@@ -1,0 +1,1383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 6: Advanced Techniques and Shortcuts</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+#title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 48px;
+  background: #1a8a8a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  z-index: 10;
+  letter-spacing: 0.3px;
+}
+#canvas-container {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 70%;
+  height: calc(100vh - 48px);
+  background: #f8f8f8;
+}
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100vh;
+  background: #fff;
+  border-left: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#info-header {
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a8a8a;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+#info-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+}
+#info-body h3 {
+  color: #1a8a8a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+#info-body ul,
+#info-body ol {
+  margin: 8px 0 16px 18px;
+}
+#info-body li {
+  margin-bottom: 4px;
+}
+#info-body .key-point {
+  background: #e8f5f5;
+  border-left: 3px solid #1a8a8a;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#info-body .warn {
+  background: #fff3e0;
+  border-left: 3px solid #e8a317;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#nav-bar {
+  padding: 14px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+}
+#nav-bar .counter {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+#nav-bar button {
+  padding: 7px 18px;
+  border: 1px solid #1a8a8a;
+  background: #fff;
+  color: #1a8a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+#nav-bar button:hover {
+  background: #1a8a8a;
+  color: #fff;
+}
+#nav-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+  color: #1a8a8a;
+}
+#scene-title {
+  position: fixed;
+  top: 56px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid #ddd;
+}
+.label-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.label-overlay.box-label {
+  background: rgba(255, 255, 255, 0.90);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.label-overlay.highlight-label {
+  background: rgba(217, 79, 79, 0.12);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+}
+.label-overlay.trap-label {
+  background: rgba(255, 240, 240, 0.95);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 2px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="title-bar">Chapter 6: Advanced Techniques and Shortcuts</div>
+<div id="canvas-container"></div>
+<div id="scene-title"></div>
+
+<div id="info-panel">
+  <div id="info-header">Scene Information</div>
+  <div id="info-body"></div>
+  <div id="nav-bar">
+    <button id="btn-prev" onclick="prevScene()">Previous</button>
+    <span class="counter" id="counter">Scene 1 of 7</span>
+    <button id="btn-next" onclick="nextScene()">Next</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+
+/* ===== COLOR PALETTE ===== */
+var TEAL = 0x1a8a8a, CORAL = 0xd94f4f, AMBER = 0xe8a317;
+var INDIGO = 0x4a5da8, GREEN = 0x2e8b57;
+var DARK = 0x333333, LGRAY = 0xdddddd;
+
+var TEAL_S = "#1a8a8a", CORAL_S = "#d94f4f", AMBER_S = "#e8a317";
+var INDIGO_S = "#4a5da8", GREEN_S = "#2e8b57";
+
+/* ===== GLOBALS ===== */
+var renderer, camera, controls, clock;
+var currentScene = 0, totalScenes = 7;
+var container = document.getElementById("canvas-container");
+var labelPool = [];
+var sceneGroup, activeScene;
+var animState = { time: 0, phase: 0, data: {}, update: null };
+
+/* ===== RENDERER SETUP ===== */
+function initRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0xf8f8f8);
+  container.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(
+    50, container.clientWidth / container.clientHeight, 0.1, 200
+  );
+  camera.position.set(0, 8, 18);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 4;
+  controls.maxDistance = 60;
+  clock = new THREE.Clock();
+}
+
+function onResize() {
+  var w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener("resize", onResize);
+
+/* ===== LABEL SYSTEM ===== */
+function clearLabels() {
+  for (var i = 0; i < labelPool.length; i++) labelPool[i].el.remove();
+  labelPool.length = 0;
+}
+
+function addLabel(text, obj, offsetY, cls) {
+  var el = document.createElement("div");
+  el.className = "label-overlay" + (cls ? " " + cls : "");
+  el.textContent = text;
+  container.appendChild(el);
+  labelPool.push({ el: el, obj: obj, offsetY: offsetY || 0 });
+  return el;
+}
+
+function updateLabels() {
+  var w = container.clientWidth, h = container.clientHeight;
+  var v = new THREE.Vector3();
+  for (var i = 0; i < labelPool.length; i++) {
+    var l = labelPool[i];
+    if (!l.obj || !l.obj.parent) { l.el.style.display = "none"; continue; }
+    l.obj.getWorldPosition(v);
+    v.y += l.offsetY;
+    v.project(camera);
+    if (v.z > 1) { l.el.style.display = "none"; continue; }
+    l.el.style.display = "";
+    l.el.style.left = ((v.x * 0.5 + 0.5) * w) + "px";
+    l.el.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  }
+}
+
+/* ===== GEOMETRY HELPERS ===== */
+function mat(color, em) {
+  return new THREE.MeshPhongMaterial({ color: color, emissive: em || 0, shininess: 60 });
+}
+function matT(color, op) {
+  return new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: op, shininess: 40 });
+}
+function lineMat(color) {
+  return new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+}
+function makeBox(w, h, d, c) {
+  return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+}
+function makeSphere(r, c) {
+  return new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), mat(c));
+}
+function makeCyl(rt, rb, h, c) {
+  return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 24), mat(c));
+}
+function makeLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(g, lineMat(c));
+}
+function makeArrow(from, to, c, hl) {
+  var dir = new THREE.Vector3().subVectors(to, from);
+  var len = dir.length(); dir.normalize();
+  return new THREE.ArrowHelper(dir, from, len, c, hl || 0.4, 0.2);
+}
+
+function makeChair(x, y, z) {
+  var g = new THREE.Group();
+  var seat = makeBox(1.0, 0.12, 0.9, 0xcccccc);
+  g.add(seat);
+  var back = makeBox(1.0, 0.8, 0.1, 0xbbbbbb);
+  back.position.set(0, 0.4, -0.4);
+  g.add(back);
+  var legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+  var legM = mat(0x999999);
+  [[-0.38, -0.31, -0.32], [0.38, -0.31, -0.32],
+   [-0.38, -0.31, 0.32], [0.38, -0.31, 0.32]].forEach(function(o) {
+    var leg = new THREE.Mesh(legGeo, legM);
+    leg.position.set(o[0], o[1], o[2]);
+    g.add(leg);
+  });
+  g.position.set(x, y, z);
+  return g;
+}
+
+/* ===== LIGHTING ===== */
+function addLights(sc) {
+  sc.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var d1 = new THREE.DirectionalLight(0xffffff, 0.65);
+  d1.position.set(8, 12, 10); sc.add(d1);
+  var d2 = new THREE.DirectionalLight(0xffffff, 0.3);
+  d2.position.set(-6, 8, -8); sc.add(d2);
+}
+
+function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
+
+/* ===== SCENE INFO ===== */
+var sceneInfo = [
+  {
+    title: "Scene 1: Fixed-Point Cascade",
+    header: "Fixed-Point Cascade (BFS / Domino Analogy)",
+    body: "<h3>Start From What You KNOW</h3>" +
+      "<p>Every seating problem has at least one clue that fixes a person to an exact position. " +
+      "That is your <b>fixed point</b> — the spark that ignites the whole chain.</p>" +
+      "<ul>" +
+      "<li>Place the fixed point first (glows green)</li>" +
+      "<li>Constraints ripple outward like dominos falling</li>" +
+      "<li>Each resolved position triggers the next, BFS-style</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Like lighting a fuse — one spark sets off the whole chain. " +
+      "The constraint graph shows edges lighting up as the wave passes through.</div>" +
+      "<p>Watch the cascade ripple from the anchor through the constraint graph.</p>"
+  },
+  {
+    title: "Scene 2: Two-Case Split",
+    header: "Two-Case Split (Fork Analogy)",
+    body: "<h3>Fork in the Road</h3>" +
+      "<p>After the cascade, sometimes one person can be in exactly two positions. " +
+      "This creates a <b>two-case split</b>.</p>" +
+      "<ol>" +
+      "<li>Try Case 1 — continue solving</li>" +
+      "<li>If it contradicts a clue → Case 2 MUST be correct</li>" +
+      "<li>If both work → check if the question's answer is same in both</li>" +
+      "</ol>" +
+      "<div class=\"warn\"><b>WARNING:</b> Never split into more than 2 cases. " +
+      "If you have 3+, you missed a constraint. Go back and re-read the clues.</div>" +
+      "<div class=\"key-point\">Like a fork in the road — try one path, " +
+      "backtrack if it's a dead end.</div>"
+  },
+  {
+    title: "Scene 3: Negative Constraint Matrix",
+    header: "Negative Constraint Matrix (Sudoku Analogy)",
+    body: "<h3>Eliminate Impossibilities</h3>" +
+      "<p>Build a grid of People × Positions. Apply negative constraints to mark " +
+      "cells as impossible (✗). When only one cell remains in a row or column — " +
+      "that's the answer (✓).</p>" +
+      "<ul>" +
+      "<li>Each ✗ narrows the possibilities</li>" +
+      "<li>Row with one \'?\' left → person is DETERMINED</li>" +
+      "<li>Column with one \'?\' left → position is DETERMINED</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Exactly like Sudoku — eliminate impossibilities, " +
+      "truth remains. This is one of the most powerful techniques.</div>"
+  },
+  {
+    title: "Scene 4: Block Method",
+    header: "Block Method (Consecutive Constraints)",
+    body: "<h3>Lock Consecutive People Into Blocks</h3>" +
+      "<p>When clues say \"A is immediately right of B\" and \"B is immediately right of C\", " +
+      "the trio [C, B, A] forms a rigid <b>block</b>.</p>" +
+      "<ul>" +
+      "<li>Treat the block as a single unit</li>" +
+      "<li>Slide the block along the row to count positions</li>" +
+      "<li>Formula: block of m in row of n → <b>n − m + 1</b> starting positions</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Consecutive constraints form blocks. " +
+      "Blocks simplify everything by reducing the effective row length.</div>"
+  },
+  {
+    title: "Scene 5: Counting Shortcuts",
+    header: "Counting Shortcuts (Linear & Circular)",
+    body: "<h3>Memorize These Formulas</h3>" +
+      "<p><b>Linear:</b> People between positions i and j = |j − i| − 1</p>" +
+      "<p><b>Circular (n seats):</b> d = |j − i|, shorter arc = min(d, n−d), " +
+      "people between = shorter arc − 1</p>" +
+      "<ul>" +
+      "<li>Linear example: positions 2 and 6 → |6−2|−1 = 3 people between</li>" +
+      "<li>Circular example: positions 1 and 5 in 8 seats → d=4, min(4,4)=4, people=3</li>" +
+      "<li>Asymmetric: positions 1 and 3 in 8 → short arc: 1, long arc: 5</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">These formulas save 30 seconds per question — memorize them.</div>"
+  },
+  {
+    title: "Scene 6: Symmetry & Option Elimination",
+    header: "Symmetry and Option Elimination",
+    body: "<h3>Smart Shortcuts for MCQ</h3>" +
+      "<p><b>Symmetry:</b> If a circular problem has no CW/ACW clues, " +
+      "both mirror arrangements are valid. The answer must be the same in both.</p>" +
+      "<p><b>Option Elimination:</b> Instead of solving completely, test each MCQ option:</p>" +
+      "<ol>" +
+      "<li>Test Option A → contradicts a clue → eliminated</li>" +
+      "<li>Test Option B → contradicts a clue → eliminated</li>" +
+      "<li>Test Option C → all clues satisfied → ANSWER!</li>" +
+      "<li>Option D → never even tested — saved time</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">For MCQ under time pressure: TEST options, " +
+      "don't SOLVE from scratch.</div>"
+  },
+  {
+    title: "Scene 7: Time Management Strategy",
+    header: "Time Management & Pre-Solve Checklist",
+    body: "<h3>Budget Your Exam Time</h3>" +
+      "<p><b>Banking (6 min set):</b> Setup 2 min → Solve 2 min → Answer 2 min</p>" +
+      "<p><b>GATE (3 min per Q):</b> Read+Draw 1 min → Solve 1 min → Verify 1 min</p>" +
+      "<div class=\"warn\">RED ZONE: If you exceed the time budget, flag the question " +
+      "and move on immediately. Coming back with fresh eyes is faster than grinding.</div>" +
+      "<h3>Pre-Solve Checklist</h3>" +
+      "<ul>" +
+      "<li>☐ Layout type identified?</li>" +
+      "<li>☐ Direction convention noted?</li>" +
+      "<li>☐ People count = Seat count?</li>" +
+      "<li>☐ Fixed-position clues highlighted?</li>" +
+      "<li>☐ Negative clues circled?</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Run the checklist BEFORE solving. It takes 15 seconds " +
+      "and prevents 2-minute mistakes.</div>"
+  }
+];
+
+/* ===== NAVIGATION ===== */
+function updateNav() {
+  document.getElementById("counter").textContent =
+    "Scene " + (currentScene + 1) + " of " + totalScenes;
+  document.getElementById("btn-prev").disabled = (currentScene === 0);
+  document.getElementById("btn-next").disabled = (currentScene === totalScenes - 1);
+  var s = sceneInfo[currentScene];
+  document.getElementById("scene-title").textContent = s.title;
+  document.getElementById("info-header").textContent = s.header;
+  document.getElementById("info-body").innerHTML = s.body;
+}
+function nextScene() { if (currentScene < totalScenes - 1) { currentScene++; loadScene(currentScene); } }
+function prevScene() { if (currentScene > 0) { currentScene--; loadScene(currentScene); } }
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextScene();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevScene();
+});
+
+/* ===== SCENE LOADER ===== */
+function loadScene(idx) {
+  clearLabels();
+  activeScene = new THREE.Scene();
+  activeScene.background = new THREE.Color(0xf8f8f8);
+  addLights(activeScene);
+  sceneGroup = new THREE.Group();
+  activeScene.add(sceneGroup);
+  animState = { time: 0, phase: 0, data: {}, update: null };
+  [buildScene1, buildScene2, buildScene3,
+   buildScene4, buildScene5, buildScene6, buildScene7][idx]();
+  updateNav();
+}
+
+/* ===========================================================
+   SCENE 1 — Fixed-Point Cascade (BFS / Domino Analogy)
+   =========================================================== */
+function buildScene1() {
+  camera.position.set(0, 8, 18);
+  controls.target.set(0, 2, 0);
+  controls.update();
+
+  var boxes = [], boxColors = [];
+  var names = ["P1", "P2", "P3", "P4", "P5", "P6"];
+  for (var i = 0; i < 6; i++) {
+    var x = (i - 2.5) * 2.4;
+    var box = makeBox(1.8, 1.2, 1.2, LGRAY);
+    box.position.set(x, 0.6, 2);
+    box.userData.baseX = x;
+    sceneGroup.add(box);
+    addLabel(names[i], box, 1.0, "box-label");
+    boxes.push(box);
+    boxColors.push(LGRAY);
+  }
+
+  // Constraint graph below: people as nodes, constraints as edges
+  var graphNodes = [], graphEdges = [];
+  var graphY = -2.5;
+  for (var i = 0; i < 6; i++) {
+    var x = (i - 2.5) * 2.4;
+    var nd = makeSphere(0.35, INDIGO);
+    nd.position.set(x, graphY, 2);
+    sceneGroup.add(nd);
+    addLabel(names[i], nd, 0.55, "box-label");
+    graphNodes.push(nd);
+  }
+
+  // Edges: 0-1, 1-2, 2-3, 3-4, 4-5, 0-3, 2-5
+  var edgePairs = [[0,1],[1,2],[2,3],[3,4],[4,5],[0,3],[2,5]];
+  for (var i = 0; i < edgePairs.length; i++) {
+    var a = edgePairs[i][0], b = edgePairs[i][1];
+    var pa = graphNodes[a].position, pb = graphNodes[b].position;
+    var ln = makeLine(
+      new THREE.Vector3(pa.x, pa.y, pa.z),
+      new THREE.Vector3(pb.x, pb.y, pb.z), LGRAY
+    );
+    sceneGroup.add(ln);
+    graphEdges.push({ line: ln, a: a, b: b, lit: false });
+  }
+
+  var floor = makeBox(20, 0.04, 3, 0xf2f2f2);
+  floor.position.set(0, -0.1, 2);
+  sceneGroup.add(floor);
+
+  var tipAnc = new THREE.Object3D();
+  tipAnc.position.set(0, 4.5, 2);
+  sceneGroup.add(tipAnc);
+  addLabel("Start from what you KNOW. Let constraints cascade like dominos.", tipAnc, 0, "box-label");
+
+  var fuseAnc = new THREE.Object3D();
+  fuseAnc.position.set(0, -4.5, 2);
+  sceneGroup.add(fuseAnc);
+  addLabel("Like lighting a fuse — one spark sets off the whole chain", fuseAnc, 0, "highlight-label");
+
+  // Cascade order: start at index 2 (fixed point), then BFS outward
+  var cascadeOrder = [2, 1, 3, 0, 5, 4];
+  var cascadeDelay = 1.2;
+
+  animState.data = { boxes: boxes, graphNodes: graphNodes, graphEdges: graphEdges,
+                     cascadeOrder: cascadeOrder, cascadeDelay: cascadeDelay,
+                     litNodes: [] };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    for (var ci = 0; ci < d.cascadeOrder.length; ci++) {
+      var idx = d.cascadeOrder[ci];
+      var triggerT = ci * d.cascadeDelay + 0.5;
+      var elapsed = t - triggerT;
+      if (elapsed > 0) {
+        // Domino tipping animation on position boxes
+        var tip = easeOut(Math.min(elapsed / 0.6, 1));
+        var col = ci === 0 ? GREEN : TEAL;
+        d.boxes[idx].material.color.setHex(col);
+        d.boxes[idx].material.emissive.setHex(ci === 0 ? 0x0a4a0a : 0x0a4a4a);
+        var rotZ = (1 - tip) * 0.5;
+        d.boxes[idx].rotation.z = idx < 2.5 ? -rotZ : rotZ;
+
+        // Light up graph node
+        d.graphNodes[idx].material.color.setHex(ci === 0 ? GREEN : TEAL);
+        d.graphNodes[idx].material.emissive.setHex(0x0a3a3a);
+
+        // Light up edges connected to this node
+        for (var ei = 0; ei < d.graphEdges.length; ei++) {
+          var e = d.graphEdges[ei];
+          if (!e.lit && (e.a === idx || e.b === idx)) {
+            var otherLit = false;
+            for (var li = 0; li < ci; li++) {
+              var prev = d.cascadeOrder[li];
+              if (prev === e.a || prev === e.b) otherLit = true;
+            }
+            if (otherLit || ci === 0) {
+              e.line.material.color.setHex(AMBER);
+              e.lit = true;
+            }
+          }
+        }
+      }
+    }
+
+    // Pulse the fixed point
+    var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+    d.boxes[2].material.emissive.setRGB(0, 0.15 + pulse * 0.2, 0);
+    d.graphNodes[2].material.emissive.setRGB(0, 0.15 + pulse * 0.2, 0);
+  };
+}
+
+/* ===========================================================
+   SCENE 2 — Two-Case Split (Fork Analogy)
+   =========================================================== */
+function buildScene2() {
+  camera.position.set(0, 6, 16);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  // Decision tree
+  function treeNode(label, x, y, color, parentPos) {
+    var box = makeBox(3.2, 0.8, 0.7, color);
+    box.position.set(x, y, 0);
+    box.scale.set(0, 0, 0);
+    sceneGroup.add(box);
+    addLabel(label, box, 0.65, "box-label");
+    var ln = null;
+    if (parentPos) {
+      ln = makeLine(
+        new THREE.Vector3(parentPos[0], parentPos[1] - 0.4, 0),
+        new THREE.Vector3(x, y + 0.4, 0), 0x999999
+      );
+      ln.visible = false;
+      sceneGroup.add(ln);
+    }
+    return { mesh: box, line: ln, x: x, y: y };
+  }
+
+  var nodes = [];
+  // Root
+  nodes.push(treeNode("X at pos 2 OR pos 5?", 0, 7, DARK, null));
+  // Branches
+  nodes.push(treeNode("Case 1: X at pos 2", -5, 4.5, INDIGO, [0, 7]));
+  nodes.push(treeNode("Case 2: X at pos 5", 5, 4.5, INDIGO, [0, 7]));
+  // Results
+  nodes.push(treeNode("Continue solving...", -5, 2, LGRAY, [-5, 4.5]));
+  nodes.push(treeNode("Continue solving...", 5, 2, LGRAY, [5, 4.5]));
+  // Outcomes
+  nodes.push(treeNode("CONTRADICTS ✗", -5, -0.5, CORAL, [-5, 2]));
+  nodes.push(treeNode("WORKS ✓", 5, -0.5, GREEN, [5, 2]));
+
+  // Labels
+  var forkAnc = new THREE.Object3D();
+  forkAnc.position.set(0, 9, 0);
+  sceneGroup.add(forkAnc);
+  addLabel("Like a fork in the road — try one path, backtrack if dead end", forkAnc, 0, "box-label");
+
+  var skipAnc = new THREE.Object3D();
+  skipAnc.position.set(-5, -2.2, 0);
+  sceneGroup.add(skipAnc);
+  addLabel("If Case 1 contradicts → Case 2 MUST be correct!", skipAnc, 0, "highlight-label");
+
+  var warnAnc = new THREE.Object3D();
+  warnAnc.position.set(0, -3.5, 0);
+  sceneGroup.add(warnAnc);
+  addLabel("WARNING: Never split into more than 2 cases. 3+ means you missed a constraint.", warnAnc, 0, "trap-label");
+
+  var bothAnc = new THREE.Object3D();
+  bothAnc.position.set(5, -2.2, 0);
+  sceneGroup.add(bothAnc);
+  addLabel("If both work → check question answer is same in both", bothAnc, 0, "box-label");
+
+  animState.data = { nodes: nodes };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time;
+    for (var i = 0; i < nodes.length; i++) {
+      var delay = i * 0.7;
+      var elapsed = t - delay;
+      if (elapsed > 0) {
+        var s = easeOut(elapsed / 0.5);
+        nodes[i].mesh.scale.set(s, s, s);
+        if (nodes[i].line) nodes[i].line.visible = (elapsed > 0.2);
+      }
+    }
+    // Pulse contradiction node red
+    if (t > 4.2) {
+      var p = 0.5 + 0.5 * Math.sin(t * 5);
+      nodes[5].mesh.material.emissive.setRGB(p * 0.3, 0, 0);
+    }
+    // Pulse success node green
+    if (t > 4.9) {
+      var p2 = 0.5 + 0.5 * Math.sin(t * 5);
+      nodes[6].mesh.material.emissive.setRGB(0, p2 * 0.3, 0);
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 3 — Negative Constraint Matrix (Sudoku Analogy)
+   =========================================================== */
+function buildScene3() {
+  camera.position.set(0, 8, 16);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var people = ["A", "B", "C", "D", "E"];
+  var positions = ["1", "2", "3", "4", "5"];
+  var cellSize = 1.8;
+  var gridOffX = -((positions.length - 1) * cellSize) / 2;
+  var gridOffY = 5.5;
+  var cells = []; // cells[row][col] = { mesh, state: '?'|'x'|'ok' }
+
+  // Column headers
+  for (var c = 0; c < 5; c++) {
+    var anc = new THREE.Object3D();
+    anc.position.set(gridOffX + c * cellSize, gridOffY + cellSize * 0.8, 0);
+    sceneGroup.add(anc);
+    addLabel("Pos " + positions[c], anc, 0, "box-label");
+  }
+
+  // Row headers and cells
+  for (var r = 0; r < 5; r++) {
+    cells[r] = [];
+    var anc = new THREE.Object3D();
+    anc.position.set(gridOffX - cellSize * 1.0, gridOffY - r * cellSize, 0);
+    sceneGroup.add(anc);
+    addLabel(people[r], anc, 0, "box-label");
+
+    for (var c = 0; c < 5; c++) {
+      var box = makeBox(cellSize * 0.85, cellSize * 0.85, 0.3, 0xeeeeee);
+      box.position.set(gridOffX + c * cellSize, gridOffY - r * cellSize, 0);
+      sceneGroup.add(box);
+      addLabel("?", box, 0, "box-label");
+      cells[r][c] = { mesh: box, state: "?", labelIdx: labelPool.length - 1 };
+    }
+  }
+
+  // Constraints to apply in sequence: [row, col, 'x'] or [row, col, 'ok']
+  // A not at 1; B not at 2,3; C not at 1,4,5; D not at 2,3,5; E not at 1,3,4
+  var steps = [
+    { r: 0, c: 0, s: "x", desc: "A is not at position 1" },
+    { r: 1, c: 1, s: "x", desc: "B is not at position 2" },
+    { r: 1, c: 2, s: "x", desc: "B is not at position 3" },
+    { r: 2, c: 0, s: "x", desc: "C is not at position 1" },
+    { r: 2, c: 3, s: "x", desc: "C is not at position 4" },
+    { r: 2, c: 4, s: "x", desc: "C is not at position 5" },
+    { r: 3, c: 1, s: "x", desc: "D is not at position 2" },
+    { r: 3, c: 2, s: "x", desc: "D is not at position 3" },
+    { r: 3, c: 4, s: "x", desc: "D is not at position 5" },
+    { r: 4, c: 0, s: "x", desc: "E is not at position 1" },
+    { r: 4, c: 2, s: "x", desc: "E is not at position 3" },
+    { r: 4, c: 3, s: "x", desc: "E is not at position 4" }
+  ];
+
+  // After eliminations: check for determined cells
+  // C: only col 2 left → C at 3 (index 2)
+  // D: only col 0,3 left → ... let's find determined ones
+  // A: ?,?,?,?,?  minus c0 → cols 1,2,3,4
+  // B: ?,?,?,?,?  minus c1,c2 → cols 0,3,4
+  // C: minus c0,c3,c4 → cols 1,2
+  // D: minus c1,c2,c4 → cols 0,3
+  // E: minus c0,c2,c3 → cols 1,4
+  // After step 12 we can also add "determined" steps
+  // C has 2 options, not 1 yet. We need more constraints or to show partial resolution.
+  // Let's add a couple more to get a determined cell:
+  // Add: A not at 2; C not at 2 → C only at 2 (idx 1) wait... let me recalculate.
+  // Let me make it so C ends up determined:
+  // C: cols available after c0,c3,c4 eliminated → cols 1,2
+  // Add: C not at 2 → C only at col 1 → C at position 2!
+
+  steps.push({ r: 2, c: 1, s: "x", desc: "C is not at position 2" });
+  // Now C only has col 2 → position 3
+  steps.push({ r: 2, c: 2, s: "ok", desc: "C determined → position 3! ✓" });
+  // E has cols 1,4. Since C is at col 2, E still has 1,4. Add: E not at 2 (already excluded)
+  // After C at col 2, eliminate col 2 for others:
+  steps.push({ r: 0, c: 2, s: "x", desc: "Column 3 taken by C" });
+  steps.push({ r: 1, c: 2, s: "x", desc: "Column 3 taken by C (already excluded)" });
+  steps.push({ r: 3, c: 2, s: "x", desc: "Column 3 taken by C (already excluded)" });
+  // A: cols 1,3,4; B: cols 0,3,4; D: cols 0,3; E: cols 1,4
+  // D has only cols 0,3 → still 2. Add: D not at 1 → D at pos 4
+  steps.push({ r: 3, c: 0, s: "x", desc: "D is not at position 1" });
+  // D only col 3 → position 4
+  steps.push({ r: 3, c: 3, s: "ok", desc: "D determined → position 4! ✓" });
+
+  var insightAnc = new THREE.Object3D();
+  insightAnc.position.set(0, -2.5, 0);
+  sceneGroup.add(insightAnc);
+  addLabel("Exactly like Sudoku — eliminate impossibilities, truth remains", insightAnc, 0, "highlight-label");
+
+  var detAnc = new THREE.Object3D();
+  detAnc.position.set(0, -3.8, 0);
+  sceneGroup.add(detAnc);
+  addLabel("When a row has only ONE \'?\' left → that person is DETERMINED", detAnc, 0, "box-label");
+
+  animState.data = { cells: cells, steps: steps, stepDelay: 0.9, applied: 0 };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var targetStep = Math.floor(t / d.stepDelay);
+    while (d.applied < d.steps.length && d.applied < targetStep) {
+      var st = d.steps[d.applied];
+      var cell = d.cells[st.r][st.c];
+      if (st.s === "x" && cell.state === "?") {
+        cell.mesh.material.color.setHex(0xffcccc);
+        cell.mesh.material.emissive.setHex(0x220000);
+        cell.state = "x";
+        labelPool[cell.labelIdx].el.textContent = "✗";
+        labelPool[cell.labelIdx].el.style.color = CORAL_S;
+      } else if (st.s === "ok" && cell.state === "?") {
+        cell.mesh.material.color.setHex(0xccffcc);
+        cell.mesh.material.emissive.setHex(0x002200);
+        cell.state = "ok";
+        labelPool[cell.labelIdx].el.textContent = "✓";
+        labelPool[cell.labelIdx].el.style.color = GREEN_S;
+      } else if (st.s === "x" && cell.state !== "?") {
+        // already handled
+      }
+      d.applied++;
+    }
+
+    // Pulse determined cells
+    for (var r = 0; r < 5; r++) {
+      for (var c = 0; c < 5; c++) {
+        if (d.cells[r][c].state === "ok") {
+          var p = 0.3 + 0.2 * Math.sin(t * 4);
+          d.cells[r][c].mesh.material.emissive.setRGB(0, p, 0);
+        }
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 4 — Block Method
+   =========================================================== */
+function buildScene4() {
+  camera.position.set(0, 7, 16);
+  controls.target.set(0, 1.5, 0);
+  controls.update();
+
+  // 7 position slots
+  var slots = [];
+  for (var i = 0; i < 7; i++) {
+    var x = (i - 3) * 2.0;
+    var ch = makeChair(x, 0, 0);
+    sceneGroup.add(ch);
+    addLabel("" + (i + 1), ch, -1.0, "box-label");
+    slots.push(ch);
+  }
+
+  var floor = makeBox(18, 0.04, 3, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  // Block: [C, B, A] as three colored spheres in a bracket
+  var blockGroup = new THREE.Group();
+  var blockNames = ["C", "B", "A"];
+  var blockSpheres = [];
+  for (var i = 0; i < 3; i++) {
+    var sp = makeSphere(0.4, TEAL);
+    sp.position.set((i - 1) * 2.0, 0.85, 0);
+    blockGroup.add(sp);
+    blockSpheres.push(sp);
+    addLabel(blockNames[i], sp, 0.6, "box-label");
+  }
+
+  // Bracket around block
+  var bracketLeft = makeCyl(0.04, 0.04, 1.6, AMBER);
+  bracketLeft.position.set(-2.3, 0.85, 0);
+  blockGroup.add(bracketLeft);
+  var bracketRight = makeCyl(0.04, 0.04, 1.6, AMBER);
+  bracketRight.position.set(2.3, 0.85, 0);
+  blockGroup.add(bracketRight);
+  var bracketTop = makeCyl(0.04, 0.04, 4.7, AMBER);
+  bracketTop.rotation.z = Math.PI / 2;
+  bracketTop.position.set(0, 1.65, 0);
+  blockGroup.add(bracketTop);
+  var bracketBot = makeCyl(0.04, 0.04, 4.7, AMBER);
+  bracketBot.rotation.z = Math.PI / 2;
+  bracketBot.position.set(0, 0.05, 0);
+  blockGroup.add(bracketBot);
+
+  blockGroup.position.set(-6, 0, 0); // start at pos 1 (leftmost)
+  sceneGroup.add(blockGroup);
+
+  // Formula display
+  var formulaAnc = new THREE.Object3D();
+  formulaAnc.position.set(0, 4.5, 0);
+  sceneGroup.add(formulaAnc);
+  addLabel("Block of m in row of n → n − m + 1 starting positions", formulaAnc, 0, "box-label");
+
+  var countAnc = new THREE.Object3D();
+  countAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(countAnc);
+  var countLabel = addLabel("7 − 3 + 1 = 5 possible positions", countAnc, 0, "highlight-label");
+
+  var tipAnc = new THREE.Object3D();
+  tipAnc.position.set(0, -2.5, 0);
+  sceneGroup.add(tipAnc);
+  addLabel("Treat the block as a SINGLE UNIT → reduces effective row length", tipAnc, 0, "box-label");
+
+  // Slide positions: 5 stops, starting at slot 0 (x=-6) through slot 4 (x=-6+4*2=2)
+  var slidePositions = [];
+  for (var i = 0; i < 5; i++) {
+    slidePositions.push((i - 3) * 2.0 - 0 * 2.0); // center of block at slot i+1
+  }
+  // Block center is at 0 within blockGroup, block occupies [-2, 0, 2]
+  // Slot positions: slot 0=-6, 1=-4, 2=-2, 3=0, 4=2, 5=4, 6=6
+  // Block at pos 1,2,3: block center at slot 1 = -4
+  // Block at pos 2,3,4: block center at slot 2 = -2, etc.
+  var blockCenters = [-4, -2, 0, 2, 4];
+
+  animState.data = { blockGroup: blockGroup, blockCenters: blockCenters,
+                     slideDur: 1.2, pauseDur: 0.8 };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var cycleDur = d.slideDur + d.pauseDur;
+    var totalCycle = (d.blockCenters.length - 1) * cycleDur + d.pauseDur;
+    var loopT = t % (totalCycle + 2.0); // 2 second pause at end
+
+    var posIdx = Math.floor(loopT / cycleDur);
+    var frac = (loopT - posIdx * cycleDur) / d.slideDur;
+
+    if (posIdx >= d.blockCenters.length - 1) {
+      d.blockGroup.position.x = d.blockCenters[d.blockCenters.length - 1];
+    } else {
+      frac = Math.min(1, Math.max(0, frac));
+      var ease = easeOut(frac);
+      var fromX = d.blockCenters[posIdx];
+      var toX = d.blockCenters[posIdx + 1];
+      d.blockGroup.position.x = fromX + (toX - fromX) * ease;
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 5 — Counting Shortcuts
+   =========================================================== */
+function buildScene5() {
+  camera.position.set(0, 8, 20);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  // ---- LINEAR SECTION (top) ----
+  var linY = 5;
+  var linAnc = new THREE.Object3D();
+  linAnc.position.set(0, linY + 2.5, 0);
+  sceneGroup.add(linAnc);
+  addLabel("LINEAR: People between positions i and j = |j − i| − 1", linAnc, 0, "box-label");
+
+  var linSlots = [];
+  for (var i = 0; i < 8; i++) {
+    var x = (i - 3.5) * 1.8;
+    var box = makeBox(1.4, 0.8, 0.8, LGRAY);
+    box.position.set(x, linY, 0);
+    sceneGroup.add(box);
+    addLabel("" + (i + 1), box, 0.7, "box-label");
+    linSlots.push(box);
+  }
+
+  // Highlight positions 2 and 6
+  linSlots[1].material.color.setHex(INDIGO);
+  linSlots[5].material.color.setHex(INDIGO);
+  // Highlight between: positions 3,4,5
+  linSlots[2].material.color.setHex(TEAL);
+  linSlots[3].material.color.setHex(TEAL);
+  linSlots[4].material.color.setHex(TEAL);
+
+  var linFormAnc = new THREE.Object3D();
+  linFormAnc.position.set(0, linY - 1.3, 0);
+  sceneGroup.add(linFormAnc);
+  addLabel("|6 − 2| − 1 = 3 people between", linFormAnc, 0, "highlight-label");
+
+  // Stepping markers
+  var markers = [];
+  for (var i = 2; i <= 4; i++) {
+    var mk = makeSphere(0.2, AMBER);
+    mk.position.set((i - 3.5) * 1.8, linY + 0.8, 0);
+    mk.scale.set(0, 0, 0);
+    sceneGroup.add(mk);
+    markers.push({ mesh: mk, delay: 1.0 + i * 0.5 });
+  }
+
+  // ---- CIRCULAR SECTION (bottom) ----
+  var circY = -2;
+  var circAnc = new THREE.Object3D();
+  circAnc.position.set(0, circY + 3.5, 0);
+  sceneGroup.add(circAnc);
+  addLabel("CIRCULAR: d = |j−i|, shorter arc = min(d, n−d), people between = shorter − 1", circAnc, 0, "box-label");
+
+  var circR = 3.0;
+  var circNodes = [];
+  for (var i = 0; i < 8; i++) {
+    var angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+    var x = Math.cos(angle) * circR;
+    var y = Math.sin(angle) * circR + circY;
+    var box = makeSphere(0.35, LGRAY);
+    box.position.set(x, y, 0);
+    sceneGroup.add(box);
+    addLabel("" + (i + 1), box, 0.55, "box-label");
+    circNodes.push(box);
+  }
+
+  // Highlight positions 1 and 5
+  circNodes[0].material.color.setHex(INDIGO);
+  circNodes[4].material.color.setHex(INDIGO);
+
+  // Short arc: 1→2→3→4→5 (nodes 1,2,3 between)
+  for (var i = 1; i <= 3; i++) {
+    circNodes[i].material.color.setHex(TEAL);
+  }
+  // Long arc: 1→8→7→6→5 (nodes 7,6,5 = indices 7,6,5 → between: 7,6,5 = 3 nodes)
+  for (var i = 5; i <= 7; i++) {
+    circNodes[i].material.color.setHex(AMBER);
+  }
+
+  // Draw arc lines
+  var shortArcPts = [];
+  for (var i = 0; i <= 4; i++) {
+    var angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+    shortArcPts.push(new THREE.Vector3(Math.cos(angle) * (circR + 0.6), Math.sin(angle) * (circR + 0.6) + circY, 0));
+  }
+  var shortGeom = new THREE.BufferGeometry().setFromPoints(shortArcPts);
+  sceneGroup.add(new THREE.Line(shortGeom, lineMat(TEAL)));
+
+  var longArcPts = [];
+  for (var i = 4; i <= 8; i++) {
+    var angle = (i / 8) * Math.PI * 2 - Math.PI / 2;
+    longArcPts.push(new THREE.Vector3(Math.cos(angle) * (circR + 0.6), Math.sin(angle) * (circR + 0.6) + circY, 0));
+  }
+  var longGeom = new THREE.BufferGeometry().setFromPoints(longArcPts);
+  sceneGroup.add(new THREE.Line(longGeom, lineMat(AMBER)));
+
+  var circFormAnc = new THREE.Object3D();
+  circFormAnc.position.set(5, circY - 0.5, 0);
+  sceneGroup.add(circFormAnc);
+  addLabel("d=4, min(4,4)=4, people=3 (symmetric!)", circFormAnc, 0, "highlight-label");
+
+  var asymAnc = new THREE.Object3D();
+  asymAnc.position.set(5, circY - 1.7, 0);
+  sceneGroup.add(asymAnc);
+  addLabel("Asymmetric: pos 1&3 → short:1, long:5", asymAnc, 0, "box-label");
+
+  var memAnc = new THREE.Object3D();
+  memAnc.position.set(0, circY - 4.2, 0);
+  sceneGroup.add(memAnc);
+  addLabel("These formulas save 30 seconds per question — memorize them", memAnc, 0, "highlight-label");
+
+  animState.data = { markers: markers };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+    for (var i = 0; i < d.markers.length; i++) {
+      var el = t - d.markers[i].delay;
+      if (el > 0) {
+        var s = easeOut(el / 0.4);
+        d.markers[i].mesh.scale.set(s, s, s);
+      }
+    }
+    // Pulse the highlighted circular nodes
+    for (var i = 1; i <= 3; i++) {
+      var p = 0.1 + 0.1 * Math.sin(t * 3 + i);
+      circNodes[i].material.emissive.setRGB(0, p, p);
+    }
+    for (var i = 5; i <= 7; i++) {
+      var p2 = 0.1 + 0.1 * Math.sin(t * 3 + i);
+      circNodes[i].material.emissive.setRGB(p2, p2 * 0.5, 0);
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 6 — Symmetry and Option Elimination
+   =========================================================== */
+function buildScene6() {
+  camera.position.set(0, 7, 18);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  // ---- SYMMETRY (top half) ----
+  var symY = 5;
+  var symAnc = new THREE.Object3D();
+  symAnc.position.set(0, symY + 3.2, 0);
+  sceneGroup.add(symAnc);
+  addLabel("SYMMETRY: Mirror arrangements are both valid if no CW/ACW clues", symAnc, 0, "box-label");
+
+  // Original circle (left)
+  var circR = 1.8;
+  var origNodes = [], mirrorNodes = [];
+  var origNames = ["A", "B", "C", "D", "E", "F"];
+  var mirrorNames = ["A", "F", "E", "D", "C", "B"];
+
+  for (var i = 0; i < 6; i++) {
+    var angle = (i / 6) * Math.PI * 2 - Math.PI / 2;
+    var x1 = Math.cos(angle) * circR - 4.5;
+    var y1 = Math.sin(angle) * circR + symY;
+    var nd1 = makeSphere(0.3, TEAL);
+    nd1.position.set(x1, y1, 0);
+    sceneGroup.add(nd1);
+    addLabel(origNames[i], nd1, 0.5, "box-label");
+    origNodes.push(nd1);
+
+    var x2 = -Math.cos(angle) * circR + 4.5; // mirrored x
+    var y2 = Math.sin(angle) * circR + symY;
+    var nd2 = makeSphere(0.3, AMBER);
+    nd2.position.set(x2, y2, 0);
+    sceneGroup.add(nd2);
+    addLabel(mirrorNames[i], nd2, 0.5, "box-label");
+    mirrorNodes.push(nd2);
+  }
+
+  var origLbl = new THREE.Object3D();
+  origLbl.position.set(-4.5, symY - 2.8, 0);
+  sceneGroup.add(origLbl);
+  addLabel("Original", origLbl, 0, "box-label");
+
+  var mirLbl = new THREE.Object3D();
+  mirLbl.position.set(4.5, symY - 2.8, 0);
+  sceneGroup.add(mirLbl);
+  addLabel("Mirror", mirLbl, 0, "box-label");
+
+  var mirArrow = new THREE.Object3D();
+  mirArrow.position.set(0, symY, 0);
+  sceneGroup.add(mirArrow);
+  addLabel("⟷ REFLECT", mirArrow, 0, "highlight-label");
+
+  var verAnc = new THREE.Object3D();
+  verAnc.position.set(0, symY - 3.5, 0);
+  sceneGroup.add(verAnc);
+  addLabel("Answer must be the same in both → use as verification tool", verAnc, 0, "box-label");
+
+  // ---- OPTION ELIMINATION (bottom half) ----
+  var optY = -2;
+  var optAnc = new THREE.Object3D();
+  optAnc.position.set(0, optY + 3, 0);
+  sceneGroup.add(optAnc);
+  addLabel("OPTION ELIMINATION: Test options, don't solve from scratch", optAnc, 0, "box-label");
+
+  var options = ["A", "B", "C", "D"];
+  var optResults = ["contradicts clue 3", "contradicts clue 1", "ALL clues satisfied!", "not tested"];
+  var optColors = [CORAL, CORAL, GREEN, LGRAY];
+  var optSymbols = ["✗", "✗", "✓", "—"];
+  var optCards = [];
+
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * 3.2;
+    var card = makeBox(2.4, 1.6, 0.3, 0xeeeeee);
+    card.position.set(x, optY, 0);
+    card.scale.set(0, 0, 0);
+    sceneGroup.add(card);
+    addLabel("Option " + options[i], card, 1.2, "box-label");
+    optCards.push({ mesh: card, delay: i * 1.2 + 1.0,
+                    color: optColors[i], symbol: optSymbols[i],
+                    result: optResults[i] });
+
+    var resAnc = new THREE.Object3D();
+    resAnc.position.set(x, optY - 1.3, 0);
+    sceneGroup.add(resAnc);
+    optCards[i].resLabel = addLabel("", resAnc, 0, "box-label");
+    optCards[i].symAnc = new THREE.Object3D();
+    optCards[i].symAnc.position.set(x, optY, 0);
+    sceneGroup.add(optCards[i].symAnc);
+    optCards[i].symLabel = addLabel("", optCards[i].symAnc, 0, "highlight-label");
+  }
+
+  var mcqAnc = new THREE.Object3D();
+  mcqAnc.position.set(0, optY - 3.5, 0);
+  sceneGroup.add(mcqAnc);
+  addLabel("For MCQ under time pressure: TEST options, don't SOLVE from scratch", mcqAnc, 0, "highlight-label");
+
+  animState.data = { optCards: optCards, origNodes: origNodes, mirrorNodes: mirrorNodes };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // Animate option cards appearing and getting marked
+    for (var i = 0; i < d.optCards.length; i++) {
+      var oc = d.optCards[i];
+      var elapsed = t - oc.delay;
+      if (elapsed > 0) {
+        var s = easeOut(Math.min(elapsed / 0.5, 1));
+        oc.mesh.scale.set(s, s, s);
+        if (elapsed > 0.8) {
+          oc.mesh.material.color.setHex(oc.color);
+          if (oc.color === GREEN) oc.mesh.material.emissive.setHex(0x002200);
+          else if (oc.color === CORAL) oc.mesh.material.emissive.setHex(0x220000);
+          oc.resLabel.textContent = oc.result;
+          oc.symLabel.textContent = oc.symbol;
+          if (oc.color === GREEN) oc.symLabel.style.color = GREEN_S;
+          else if (oc.color === CORAL) oc.symLabel.style.color = CORAL_S;
+        }
+      }
+    }
+
+    // Pulse symmetry nodes
+    for (var i = 0; i < d.origNodes.length; i++) {
+      var p = 0.08 + 0.08 * Math.sin(t * 2 + i * 0.5);
+      d.origNodes[i].material.emissive.setRGB(0, p, p);
+      d.mirrorNodes[i].material.emissive.setRGB(p, p * 0.5, 0);
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 7 — Time Management Strategy
+   =========================================================== */
+function buildScene7() {
+  camera.position.set(0, 6, 18);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  // ---- BANKING TIMELINE (top) ----
+  var bankY = 6.5;
+  var bankAnc = new THREE.Object3D();
+  bankAnc.position.set(0, bankY + 1.5, 0);
+  sceneGroup.add(bankAnc);
+  addLabel("BANKING: 6-minute set", bankAnc, 0, "box-label");
+
+  var timeW = 12;
+  var segH = 0.8;
+  // Setup: 0-2 min (teal), Solve: 2-4 min (green), Answer: 4-6 min (amber), Red zone after
+  var bankSegs = [
+    { label: "Setup: Draw + Mark (0-2 min)", frac: 1/3, color: TEAL },
+    { label: "Solve: Cascade + Verify (2-4 min)", frac: 1/3, color: GREEN },
+    { label: "Answer: Match to Questions (4-6 min)", frac: 1/3, color: AMBER }
+  ];
+
+  var bankBars = [];
+  var cumX = -timeW / 2;
+  for (var i = 0; i < bankSegs.length; i++) {
+    var seg = bankSegs[i];
+    var w = timeW * seg.frac;
+    var bar = makeBox(w, segH, 0.4, seg.color);
+    bar.position.set(cumX + w / 2, bankY, 0);
+    bar.scale.x = 0;
+    sceneGroup.add(bar);
+    var lblAnc = new THREE.Object3D();
+    lblAnc.position.set(cumX + w / 2, bankY - 0.8, 0);
+    sceneGroup.add(lblAnc);
+    addLabel(seg.label, lblAnc, 0, "box-label");
+    bankBars.push({ mesh: bar, delay: i * 1.0 + 0.5, targetW: w });
+    cumX += w;
+  }
+
+  // Red zone
+  var redBar = makeBox(3, segH, 0.4, CORAL);
+  redBar.position.set(cumX + 1.5, bankY, 0);
+  redBar.scale.x = 0;
+  sceneGroup.add(redBar);
+  var redAnc = new THREE.Object3D();
+  redAnc.position.set(cumX + 1.5, bankY - 0.8, 0);
+  sceneGroup.add(redAnc);
+  addLabel("RED ZONE — STOP & move on", redAnc, 0, "trap-label");
+  bankBars.push({ mesh: redBar, delay: 3.5, targetW: 3 });
+
+  // ---- GATE TIMELINE (middle) ----
+  var gateY = 3;
+  var gateAnc = new THREE.Object3D();
+  gateAnc.position.set(0, gateY + 1.5, 0);
+  sceneGroup.add(gateAnc);
+  addLabel("GATE: 3-minute question", gateAnc, 0, "box-label");
+
+  var gateSegs = [
+    { label: "Read + Draw (0-1 min)", frac: 1/3, color: TEAL },
+    { label: "Solve (1-2 min)", frac: 1/3, color: GREEN },
+    { label: "Verify (2-3 min)", frac: 1/3, color: AMBER }
+  ];
+
+  var gateBars = [];
+  cumX = -timeW / 2;
+  for (var i = 0; i < gateSegs.length; i++) {
+    var seg = gateSegs[i];
+    var w = timeW * seg.frac;
+    var bar = makeBox(w, segH, 0.4, seg.color);
+    bar.position.set(cumX + w / 2, gateY, 0);
+    bar.scale.x = 0;
+    sceneGroup.add(bar);
+    var lblAnc = new THREE.Object3D();
+    lblAnc.position.set(cumX + w / 2, gateY - 0.8, 0);
+    sceneGroup.add(lblAnc);
+    addLabel(seg.label, lblAnc, 0, "box-label");
+    gateBars.push({ mesh: bar, delay: i * 1.0 + 4.5 });
+    cumX += w;
+  }
+
+  var gateRed = makeBox(3, segH, 0.4, CORAL);
+  gateRed.position.set(cumX + 1.5, gateY, 0);
+  gateRed.scale.x = 0;
+  sceneGroup.add(gateRed);
+  var gateRedAnc = new THREE.Object3D();
+  gateRedAnc.position.set(cumX + 1.5, gateY - 0.8, 0);
+  sceneGroup.add(gateRedAnc);
+  addLabel("Flag it!", gateRedAnc, 0, "trap-label");
+  gateBars.push({ mesh: gateRed, delay: 7.5, targetW: 3 });
+
+  // ---- PRE-SOLVE CHECKLIST (bottom) ----
+  var checkY = -0.5;
+  var checkAnc = new THREE.Object3D();
+  checkAnc.position.set(0, checkY + 1.5, 0);
+  sceneGroup.add(checkAnc);
+  addLabel("PRE-SOLVE CHECKLIST", checkAnc, 0, "highlight-label");
+
+  var checkItems = [
+    "Layout type identified?",
+    "Direction convention noted?",
+    "People count = Seat count?",
+    "Fixed-position clues highlighted?",
+    "Negative clues circled?"
+  ];
+
+  var checkboxes = [];
+  for (var i = 0; i < checkItems.length; i++) {
+    var y = checkY - i * 1.1;
+    // Checkbox (small box)
+    var cb = makeBox(0.6, 0.6, 0.3, LGRAY);
+    cb.position.set(-5, y, 0);
+    sceneGroup.add(cb);
+
+    var txtAnc = new THREE.Object3D();
+    txtAnc.position.set(-1, y, 0);
+    sceneGroup.add(txtAnc);
+    addLabel("☐  " + checkItems[i], txtAnc, 0, "box-label");
+
+    checkboxes.push({ mesh: cb, delay: 8.5 + i * 0.8, labelIdx: labelPool.length - 1,
+                      text: checkItems[i] });
+  }
+
+  animState.data = { bankBars: bankBars, gateBars: gateBars, checkboxes: checkboxes };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // Fill banking bars
+    for (var i = 0; i < d.bankBars.length; i++) {
+      var b = d.bankBars[i];
+      var el = t - b.delay;
+      if (el > 0) {
+        b.mesh.scale.x = easeOut(Math.min(el / 0.6, 1));
+      }
+    }
+
+    // Fill gate bars
+    for (var i = 0; i < d.gateBars.length; i++) {
+      var g = d.gateBars[i];
+      var el = t - g.delay;
+      if (el > 0) {
+        g.mesh.scale.x = easeOut(Math.min(el / 0.6, 1));
+      }
+    }
+
+    // Check checkboxes
+    for (var i = 0; i < d.checkboxes.length; i++) {
+      var cb = d.checkboxes[i];
+      var el = t - cb.delay;
+      if (el > 0) {
+        cb.mesh.material.color.setHex(GREEN);
+        cb.mesh.material.emissive.setHex(0x002200);
+        var p = 0.1 + 0.1 * Math.sin(t * 3);
+        cb.mesh.material.emissive.setRGB(0, p, 0);
+        labelPool[cb.labelIdx].el.textContent = "☑  " + cb.text;
+        labelPool[cb.labelIdx].el.style.color = GREEN_S;
+      }
+    }
+
+    // Pulse red zone bars
+    if (t > 3.5) {
+      var p = 0.15 + 0.1 * Math.sin(t * 5);
+      d.bankBars[3].mesh.material.emissive.setRGB(p, 0, 0);
+    }
+    if (t > 7.5) {
+      var p2 = 0.15 + 0.1 * Math.sin(t * 5);
+      d.gateBars[3].mesh.material.emissive.setRGB(p2, 0, 0);
+    }
+  };
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  var dt = Math.min(clock.getDelta(), 0.1);
+  if (animState.update) animState.update(dt);
+  controls.update();
+  updateLabels();
+  renderer.render(activeScene, camera);
+}
+
+/* ===== INIT ===== */
+initRenderer();
+loadScene(0);
+animate();
+</script>
+</body>
+</html>

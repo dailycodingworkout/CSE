@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 5: Complex and Hybrid Arrangements</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+#title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 48px;
+  background: #1a8a8a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  z-index: 10;
+  letter-spacing: 0.3px;
+}
+#canvas-container {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 70%;
+  height: calc(100vh - 48px);
+  background: #f8f8f8;
+}
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100vh;
+  background: #fff;
+  border-left: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#info-header {
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a8a8a;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+#info-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+}
+#info-body h3 {
+  color: #1a8a8a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+#info-body ul,
+#info-body ol {
+  margin: 8px 0 16px 18px;
+}
+#info-body li {
+  margin-bottom: 4px;
+}
+#info-body .key-point {
+  background: #e8f5f5;
+  border-left: 3px solid #1a8a8a;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#info-body .warn {
+  background: #fff3e0;
+  border-left: 3px solid #e8a317;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#nav-bar {
+  padding: 14px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+}
+#nav-bar .counter {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+#nav-bar button {
+  padding: 7px 18px;
+  border: 1px solid #1a8a8a;
+  background: #fff;
+  color: #1a8a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+#nav-bar button:hover {
+  background: #1a8a8a;
+  color: #fff;
+}
+#nav-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+  color: #1a8a8a;
+}
+#scene-title {
+  position: fixed;
+  top: 56px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid #ddd;
+}
+.label-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.label-overlay.box-label {
+  background: rgba(255, 255, 255, 0.90);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.label-overlay.highlight-label {
+  background: rgba(217, 79, 79, 0.12);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+}
+.label-overlay.trap-label {
+  background: rgba(255, 240, 240, 0.95);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 2px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="title-bar">Chapter 5: Complex and Hybrid Arrangements</div>
+<div id="canvas-container"></div>
+<div id="scene-title"></div>
+
+<div id="info-panel">
+  <div id="info-header">Scene Information</div>
+  <div id="info-body"></div>
+  <div id="nav-bar">
+    <button id="btn-prev" onclick="prevScene()">Previous</button>
+    <span class="counter" id="counter">Scene 1 of 6</span>
+    <button id="btn-next" onclick="nextScene()">Next</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+
+/* ===== COLOR PALETTE ===== */
+var TEAL = 0x1a8a8a, CORAL = 0xd94f4f, AMBER = 0xe8a317;
+var INDIGO = 0x4a5da8, GREEN = 0x2e8b57;
+var DARK = 0x333333, LGRAY = 0xdddddd;
+
+var TEAL_S = "#1a8a8a", CORAL_S = "#d94f4f", AMBER_S = "#e8a317";
+var INDIGO_S = "#4a5da8", GREEN_S = "#2e8b57";
+
+/* ===== GLOBALS ===== */
+var renderer, camera, controls, clock;
+var currentScene = 0, totalScenes = 6;
+var container = document.getElementById("canvas-container");
+var labelPool = [];
+var sceneGroup, activeScene;
+var animState = { time: 0, phase: 0, data: {}, update: null };
+
+/* ===== RENDERER SETUP ===== */
+function initRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0xf8f8f8);
+  container.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(
+    50, container.clientWidth / container.clientHeight, 0.1, 200
+  );
+  camera.position.set(0, 8, 18);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 4;
+  controls.maxDistance = 60;
+  clock = new THREE.Clock();
+}
+
+function onResize() {
+  var w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener("resize", onResize);
+
+/* ===== LABEL SYSTEM ===== */
+function clearLabels() {
+  for (var i = 0; i < labelPool.length; i++) labelPool[i].el.remove();
+  labelPool.length = 0;
+}
+
+function addLabel(text, obj, offsetY, cls) {
+  var el = document.createElement("div");
+  el.className = "label-overlay" + (cls ? " " + cls : "");
+  el.textContent = text;
+  container.appendChild(el);
+  labelPool.push({ el: el, obj: obj, offsetY: offsetY || 0 });
+  return el;
+}
+
+function updateLabels() {
+  var w = container.clientWidth, h = container.clientHeight;
+  var v = new THREE.Vector3();
+  for (var i = 0; i < labelPool.length; i++) {
+    var l = labelPool[i];
+    if (!l.obj || !l.obj.parent) { l.el.style.display = "none"; continue; }
+    l.obj.getWorldPosition(v);
+    v.y += l.offsetY;
+    v.project(camera);
+    if (v.z > 1) { l.el.style.display = "none"; continue; }
+    l.el.style.display = "";
+    l.el.style.left = ((v.x * 0.5 + 0.5) * w) + "px";
+    l.el.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  }
+}
+
+/* ===== GEOMETRY HELPERS ===== */
+function mat(color, em) {
+  return new THREE.MeshPhongMaterial({ color: color, emissive: em || 0, shininess: 60 });
+}
+function matT(color, op) {
+  return new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: op, shininess: 40 });
+}
+function lineMat(color) {
+  return new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+}
+function makeBox(w, h, d, c) {
+  return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+}
+function makeSphere(r, c) {
+  return new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), mat(c));
+}
+function makeCyl(rt, rb, h, c) {
+  return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 24), mat(c));
+}
+function makeLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(g, lineMat(c));
+}
+function makeArrow(from, to, c, hl) {
+  var dir = new THREE.Vector3().subVectors(to, from);
+  var len = dir.length(); dir.normalize();
+  return new THREE.ArrowHelper(dir, from, len, c, hl || 0.4, 0.2);
+}
+
+function makeChair(x, y, z) {
+  var g = new THREE.Group();
+  var seat = makeBox(1.0, 0.12, 0.9, 0xcccccc);
+  g.add(seat);
+  var back = makeBox(1.0, 0.8, 0.1, 0xbbbbbb);
+  back.position.set(0, 0.4, -0.4);
+  g.add(back);
+  var legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+  var legM = mat(0x999999);
+  [[-0.38, -0.31, -0.32], [0.38, -0.31, -0.32],
+   [-0.38, -0.31, 0.32], [0.38, -0.31, 0.32]].forEach(function(o) {
+    var leg = new THREE.Mesh(legGeo, legM);
+    leg.position.set(o[0], o[1], o[2]);
+    g.add(leg);
+  });
+  g.position.set(x, y, z);
+  return g;
+}
+
+/* ===== LIGHTING ===== */
+function addLights(sc) {
+  sc.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var d1 = new THREE.DirectionalLight(0xffffff, 0.65);
+  d1.position.set(8, 12, 10); sc.add(d1);
+  var d2 = new THREE.DirectionalLight(0xffffff, 0.3);
+  d2.position.set(-6, 8, -8); sc.add(d2);
+}
+
+function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
+
+/* ===== SCENE INFO ===== */
+var sceneInfo = [
+  {
+    title: "Scene 1: Complex Types Overview",
+    header: "Beyond Basic Arrangements",
+    body: "<h3>Complex Arrangement Types</h3>" +
+      "<p>Competitive exams go beyond simple linear and circular layouts. " +
+      "Four major complex types appear frequently:</p>" +
+      "<ul>" +
+      "<li><b>Rectangular Table:</b> 8 seats around a rectangle &mdash; corners bridge two sides</li>" +
+      "<li><b>Floor Puzzle:</b> Vertical linear &mdash; floors stacked in a building</li>" +
+      "<li><b>Grid Seating:</b> 2D matrix of rows and columns, like a classroom</li>" +
+      "<li><b>Hybrid:</b> Combines two arrangement types (e.g., circle + row)</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Beyond basic linear and circular &mdash; competitive exams " +
+      "combine multiple types. Recognizing the type is always Step 1.</div>" +
+      "<p>Each type gently rotates in 3D. Observe their structural differences.</p>"
+  },
+  {
+    title: "Scene 2: Rectangular Table Geometry",
+    header: "Rectangular Table &mdash; 8 Seats",
+    body: "<h3>Seat Classification</h3>" +
+      "<p>A rectangular table seats 8 people: 3 on North, 3 on South, 1 on East end, 1 on West end.</p>" +
+      "<ul>" +
+      "<li><span style=\"color:" + CORAL_S + "\"><b>Corner seats (4):</b></span> Bridge two sides &mdash; 2 neighbours each</li>" +
+      "<li><span style=\"color:" + TEAL_S + "\"><b>Side seats (4):</b></span> Middle of long sides + ends &mdash; 2 neighbours, different adjacency</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Corners are special &mdash; they bridge two sides. " +
+      "The last seat on the North side is adjacent to the East end seat.</div>" +
+      "<p>Dashed lines show <b>opposite</b> pairs across the table. " +
+      "Solid lines show <b>adjacent</b> pairs along the edge.</p>" +
+      "<div class=\"warn\"><b>Adjacency wraps around corners!</b> Seat N3 (last on North) " +
+      "is adjacent to E1 (East end). Don't miss corner adjacency.</div>"
+  },
+  {
+    title: "Scene 3: Floor Puzzle — Vertical Linear",
+    header: "Floor Puzzle &mdash; Stacked Floors",
+    body: "<h3>Vertical = Rotated Linear</h3>" +
+      "<p>A building with 7 floors is simply a linear arrangement turned vertical.</p>" +
+      "<ul>" +
+      "<li><b>Immediately above</b> = immediately to the right in linear</li>" +
+      "<li><b>Two floors below</b> = two positions to the left</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Formula: Floor from bottom + Floor from top = n + 1<br>" +
+      "Same as L + R = n + 1 in linear!</div>" +
+      "<p><b>Example:</b> Person on Floor 4 of 7:<br>" +
+      "4th from bottom, 4th from top &rarr; 4 + 4 = 8 = 7 + 1 &#10003;</p>" +
+      "<div class=\"warn\"><b>WARNING:</b> Ground floor = Floor 1 in most problems, " +
+      "but ALWAYS check &mdash; some problems start at Floor 0!</div>"
+  },
+  {
+    title: "Scene 4: Grid Seating — 2D Matrix",
+    header: "Grid Seating &mdash; 3&times;3 Matrix",
+    body: "<h3>Adjacency by Position Type</h3>" +
+      "<p>A 3&times;3 grid of chairs, like a classroom. Each chair is at (row, col).</p>" +
+      "<ul>" +
+      "<li><span style=\"color:" + TEAL_S + "\"><b>Center (1,1):</b></span> 4 neighbours (up, down, left, right)</li>" +
+      "<li><span style=\"color:" + AMBER_S + "\"><b>Edge (0,1):</b></span> 3 neighbours</li>" +
+      "<li><span style=\"color:" + CORAL_S + "\"><b>Corner (0,0):</b></span> 2 neighbours</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Grid = Linear arrangement in 2 dimensions. " +
+      "Same formulas, applied per-row and per-column.</div>" +
+      "<p>\"Between in same row\": two people in row 1 at col 0 and col 2 &rarr; " +
+      "1 person between them at col 1.</p>" +
+      "<p>Adjacency is cardinal only &mdash; <b>no diagonals</b>.</p>"
+  },
+  {
+    title: "Scene 5: Hybrid — Divide and Conquer",
+    header: "Hybrid Arrangement Strategy",
+    body: "<h3>4-Step Strategy</h3>" +
+      "<p>When a problem mixes arrangement types (e.g., circular table + separate row):</p>" +
+      "<ol>" +
+      "<li><b>SEPARATE</b> &mdash; Split into sub-problems by type</li>" +
+      "<li><b>SOLVE EACH</b> &mdash; Solve circular part and linear part independently</li>" +
+      "<li><b>LINK</b> &mdash; Apply cross-type constraints connecting the two</li>" +
+      "<li><b>VERIFY</b> &mdash; Check ALL constraints across both arrangements</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">Hybrid = Multiple simple types combined. " +
+      "ALWAYS separate first, solve independently, then link.</div>" +
+      "<p>Watch each step animate: the arrangement splits, solves, links, and verifies.</p>"
+  },
+  {
+    title: "Scene 6: Solved Example — Rectangular Table",
+    header: "Solved Example: 8-Person Rectangular Table",
+    body: "<h3>Step-by-Step Placement</h3>" +
+      "<ol>" +
+      "<li><b>A sits on a shorter side</b> &rarr; Place A on West end</li>" +
+      "<li><b>E sits diagonally opposite A</b> &rarr; E on East end</li>" +
+      "<li><b>B is to the immediate right of A</b> &rarr; B on North side, seat nearest West</li>" +
+      "<li><b>D is opposite B</b> &rarr; D on South side, seat nearest West</li>" +
+      "<li><b>C sits in the middle of North side</b> &rarr; C at North-center</li>" +
+      "<li><b>F is opposite C</b> &rarr; F at South-center</li>" +
+      "<li><b>G is to the right of F</b> &rarr; G at South, seat nearest East</li>" +
+      "<li><b>H takes the remaining seat</b> &rarr; H at North, seat nearest East</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">Each constraint narrows possibilities. " +
+      "The camera orbits to show the layout from all angles.</div>" +
+      "<p>Watch the step-by-step placement animation.</p>"
+  }
+];
+
+/* ===== NAVIGATION ===== */
+function updateNav() {
+  document.getElementById("counter").textContent =
+    "Scene " + (currentScene + 1) + " of " + totalScenes;
+  document.getElementById("btn-prev").disabled = (currentScene === 0);
+  document.getElementById("btn-next").disabled = (currentScene === totalScenes - 1);
+  var s = sceneInfo[currentScene];
+  document.getElementById("scene-title").textContent = s.title;
+  document.getElementById("info-header").textContent = s.header;
+  document.getElementById("info-body").innerHTML = s.body;
+}
+function nextScene() { if (currentScene < totalScenes - 1) { currentScene++; loadScene(currentScene); } }
+function prevScene() { if (currentScene > 0) { currentScene--; loadScene(currentScene); } }
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextScene();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevScene();
+});
+
+/* ===== SCENE LOADER ===== */
+function loadScene(idx) {
+  clearLabels();
+  activeScene = new THREE.Scene();
+  activeScene.background = new THREE.Color(0xf8f8f8);
+  addLights(activeScene);
+  sceneGroup = new THREE.Group();
+  activeScene.add(sceneGroup);
+  animState = { time: 0, phase: 0, data: {}, update: null };
+  [buildScene1, buildScene2, buildScene3,
+   buildScene4, buildScene5, buildScene6][idx]();
+  updateNav();
+}
+
+/* ===========================================================
+   SCENE 1 -- Complex Types Overview (4 quadrants)
+   =========================================================== */
+function buildScene1() {
+  camera.position.set(0, 10, 22);
+  controls.target.set(0, 2, 0);
+  controls.update();
+
+  var quads = [];
+
+  // --- Top-left: Rectangular table (8 seats) ---
+  var rectGrp = new THREE.Group();
+  rectGrp.position.set(-5.5, 5.5, 0);
+  var table = makeBox(3.2, 0.15, 1.4, AMBER);
+  rectGrp.add(table);
+  var rSeats = [
+    [-1.2, 0, -1.1], [0, 0, -1.1], [1.2, 0, -1.1],
+    [-1.2, 0, 1.1], [0, 0, 1.1], [1.2, 0, 1.1],
+    [-1.9, 0, 0], [1.9, 0, 0]
+  ];
+  rSeats.forEach(function(p) {
+    var s = makeSphere(0.18, INDIGO);
+    s.position.set(p[0], p[1] + 0.2, p[2]);
+    rectGrp.add(s);
+  });
+  sceneGroup.add(rectGrp);
+  addLabel("Rectangular Table", rectGrp, 1.8, "box-label");
+  quads.push(rectGrp);
+
+  // --- Top-right: Floor puzzle (7 stacked planes) ---
+  var floorGrp = new THREE.Group();
+  floorGrp.position.set(5.5, 5.5, 0);
+  for (var f = 0; f < 7; f++) {
+    var colors = [0xef9a9a, 0xffcc80, 0xfff59d, 0xa5d6a7, 0x81d4fa, 0xb39ddb, 0xf48fb1];
+    var fp = makeBox(2.0, 0.18, 1.2, colors[f]);
+    fp.position.set(0, f * 0.4 - 1.2, 0);
+    floorGrp.add(fp);
+  }
+  sceneGroup.add(floorGrp);
+  addLabel("Floor Puzzle", floorGrp, 2.0, "box-label");
+  quads.push(floorGrp);
+
+  // --- Bottom-left: Grid seating (3x3) ---
+  var gridGrp = new THREE.Group();
+  gridGrp.position.set(-5.5, -1.5, 0);
+  for (var gr = 0; gr < 3; gr++) {
+    for (var gc = 0; gc < 3; gc++) {
+      var gs = makeSphere(0.2, TEAL);
+      gs.position.set((gc - 1) * 0.9, (gr - 1) * 0.9, 0);
+      gridGrp.add(gs);
+    }
+  }
+  sceneGroup.add(gridGrp);
+  addLabel("Grid Seating", gridGrp, 1.8, "box-label");
+  quads.push(gridGrp);
+
+  // --- Bottom-right: Hybrid (circle + row) ---
+  var hybGrp = new THREE.Group();
+  hybGrp.position.set(5.5, -1.5, 0);
+  for (var ha = 0; ha < 5; ha++) {
+    var ang = (ha / 5) * Math.PI * 2 - Math.PI / 2;
+    var hs = makeSphere(0.18, CORAL);
+    hs.position.set(Math.cos(ang) * 0.9 - 0.7, Math.sin(ang) * 0.9, 0);
+    hybGrp.add(hs);
+  }
+  var circRing = new THREE.Mesh(
+    new THREE.TorusGeometry(0.9, 0.04, 12, 32),
+    mat(0x999999)
+  );
+  circRing.position.set(-0.7, 0, 0);
+  hybGrp.add(circRing);
+  for (var hr = 0; hr < 3; hr++) {
+    var rl = makeSphere(0.18, GREEN);
+    rl.position.set(1.0 + hr * 0.7, 0, 0);
+    hybGrp.add(rl);
+  }
+  hybGrp.add(makeLine(
+    new THREE.Vector3(0.2, 0, 0),
+    new THREE.Vector3(0.9, 0, 0), 0x999999
+  ));
+  sceneGroup.add(hybGrp);
+  addLabel("Hybrid", hybGrp, 1.8, "box-label");
+  quads.push(hybGrp);
+
+  // title label
+  var titleAnc = new THREE.Object3D();
+  titleAnc.position.set(0, 9, 0);
+  sceneGroup.add(titleAnc);
+  addLabel("Beyond basic linear and circular — competitive exams combine multiple types", titleAnc, 0, "box-label");
+
+  animState.data = { quads: quads };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time;
+    for (var i = 0; i < quads.length; i++) {
+      quads[i].rotation.y = Math.sin(t * 0.6 + i * 1.5) * 0.35;
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 2 -- Rectangular Table Geometry
+   =========================================================== */
+function buildScene2() {
+  camera.position.set(0, 12, 14);
+  controls.target.set(0, 0.5, 0);
+  controls.update();
+
+  // table
+  var table = makeBox(10, 0.25, 4, 0xc9a96e);
+  table.position.set(0, 0, 0);
+  sceneGroup.add(table);
+
+  // seat positions: North side (3), East end (1), South side (3), West end (1)
+  // Seated facing inward. Numbering 1-8 clockwise from West-North corner.
+  var seatData = [
+    // North side (facing south, z = -3) seats left to right when viewed from above
+    { x: -3,  z: -3,  label: "1", side: "corner", rotY: 0 },
+    { x:  0,  z: -3,  label: "2", side: "side",   rotY: 0 },
+    { x:  3,  z: -3,  label: "3", side: "corner", rotY: 0 },
+    // East end
+    { x:  5.8, z: 0,  label: "4", side: "side",   rotY: -Math.PI/2 },
+    // South side (facing north, z = 3) right to left
+    { x:  3,  z: 3,   label: "5", side: "corner", rotY: Math.PI },
+    { x:  0,  z: 3,   label: "6", side: "side",   rotY: Math.PI },
+    { x: -3,  z: 3,   label: "7", side: "corner", rotY: Math.PI },
+    // West end
+    { x: -5.8, z: 0,  label: "8", side: "side",   rotY: Math.PI/2 }
+  ];
+
+  var chairs = [], spheres = [];
+  for (var i = 0; i < seatData.length; i++) {
+    var sd = seatData[i];
+    var ch = makeChair(sd.x, 0.15, sd.z);
+    ch.rotation.y = sd.rotY;
+    sceneGroup.add(ch);
+    chairs.push(ch);
+
+    var color = sd.side === "corner" ? CORAL : TEAL;
+    var sp = makeSphere(0.35, color);
+    sp.position.set(sd.x, 1.0, sd.z);
+    sceneGroup.add(sp);
+    spheres.push(sp);
+
+    addLabel(sd.label, sp, 0.6, "box-label");
+  }
+
+  // compass labels
+  var compassData = [
+    { t: "NORTH", x: 0, z: -5.5 }, { t: "SOUTH", x: 0, z: 5.5 },
+    { t: "WEST", x: -8, z: 0 }, { t: "EAST", x: 8, z: 0 }
+  ];
+  compassData.forEach(function(cp) {
+    var a = new THREE.Object3D();
+    a.position.set(cp.x, 0.2, cp.z);
+    sceneGroup.add(a);
+    addLabel(cp.t, a, 0, "box-label");
+  });
+
+  // corner vs side legend
+  var legAnc1 = new THREE.Object3D();
+  legAnc1.position.set(-7, 4, -3);
+  sceneGroup.add(legAnc1);
+  var l1 = addLabel("Corner: 2 neighbours (bridges two sides)", legAnc1, 0, "box-label");
+  l1.style.color = CORAL_S;
+
+  var legAnc2 = new THREE.Object3D();
+  legAnc2.position.set(-7, 3, -3);
+  sceneGroup.add(legAnc2);
+  var l2 = addLabel("Side: 2 neighbours (different adjacency pattern)", legAnc2, 0, "box-label");
+  l2.style.color = TEAL_S;
+
+  // opposite pairs: 1-6, 2-5 (wait, let me think about actual opposites on a rect table)
+  // Across the table: 1<->7, 2<->6, 3<->5, 4<->8
+  var oppPairs = [[0,6], [1,5], [2,4], [3,7]];
+  for (var op = 0; op < oppPairs.length; op++) {
+    var a1 = seatData[oppPairs[op][0]], b1 = seatData[oppPairs[op][1]];
+    var oppLine = makeLine(
+      new THREE.Vector3(a1.x, 1.0, a1.z),
+      new THREE.Vector3(b1.x, 1.0, b1.z),
+      AMBER
+    );
+    sceneGroup.add(oppLine);
+  }
+
+  // adjacent pairs along edge: 1-2, 2-3, 3-4, 4-5, 5-6, 6-7, 7-8, 8-1
+  var adjPairs = [[0,1],[1,2],[2,3],[3,4],[4,5],[5,6],[6,7],[7,0]];
+  for (var aj = 0; aj < adjPairs.length; aj++) {
+    var a2 = seatData[adjPairs[aj][0]], b2 = seatData[adjPairs[aj][1]];
+    var adjLine = makeLine(
+      new THREE.Vector3(a2.x, 0.5, a2.z),
+      new THREE.Vector3(b2.x, 0.5, b2.z),
+      GREEN
+    );
+    sceneGroup.add(adjLine);
+  }
+
+  // adjacency wrap note
+  var wrapAnc = new THREE.Object3D();
+  wrapAnc.position.set(5, 4, -3);
+  sceneGroup.add(wrapAnc);
+  addLabel("Corners bridge two sides!", wrapAnc, 0, "highlight-label");
+
+  // floor
+  var floor = makeBox(20, 0.05, 14, 0xf0f0f0);
+  floor.position.set(0, -0.6, 0);
+  sceneGroup.add(floor);
+
+  animState.data = { spheres: spheres, seatData: seatData };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time;
+    for (var i = 0; i < spheres.length; i++) {
+      var pulse = 0.5 + 0.5 * Math.sin(t * 3 + i * 0.8);
+      var em = seatData[i].side === "corner" ? 0.2 * pulse : 0.1 * pulse;
+      spheres[i].material.emissive.setRGB(em, em * 0.3, em * 0.1);
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 3 -- Floor Puzzle (Vertical Linear)
+   =========================================================== */
+function buildScene3() {
+  camera.position.set(8, 8, 14);
+  controls.target.set(0, 4, 0);
+  controls.update();
+
+  var numFloors = 7;
+  var floorH = 1.2;
+  var floors = [];
+  var floorColors = [0xef9a9a, 0xffcc80, 0xfff59d, 0xa5d6a7, 0x81d4fa, 0xb39ddb, 0xf48fb1];
+
+  // building walls (transparent)
+  var wallL = new THREE.Mesh(
+    new THREE.BoxGeometry(0.1, numFloors * floorH + 0.5, 3),
+    matT(0x888888, 0.15)
+  );
+  wallL.position.set(-2.5, numFloors * floorH / 2, 0);
+  sceneGroup.add(wallL);
+
+  var wallR = new THREE.Mesh(
+    new THREE.BoxGeometry(0.1, numFloors * floorH + 0.5, 3),
+    matT(0x888888, 0.15)
+  );
+  wallR.position.set(2.5, numFloors * floorH / 2, 0);
+  sceneGroup.add(wallR);
+
+  for (var i = 0; i < numFloors; i++) {
+    var fy = i * floorH + 0.5;
+    var fp = makeBox(5, 0.15, 3, floorColors[i]);
+    fp.position.set(0, fy, 0);
+    sceneGroup.add(fp);
+    floors.push(fp);
+
+    addLabel("Floor " + (i + 1), fp, 0.5, "box-label");
+  }
+
+  // "This is LINEAR turned VERTICAL" label
+  var linAnc = new THREE.Object3D();
+  linAnc.position.set(5, 8, 0);
+  sceneGroup.add(linAnc);
+  addLabel("LINEAR turned VERTICAL", linAnc, 0, "highlight-label");
+
+  // Formula label
+  var fmAnc = new THREE.Object3D();
+  fmAnc.position.set(5, 6.5, 0);
+  sceneGroup.add(fmAnc);
+  addLabel("Floor from bottom + Floor from top = n + 1", fmAnc, 0, "box-label");
+
+  // Person on floor 4
+  var person = makeSphere(0.35, CORAL);
+  person.position.set(0, 3 * floorH + 0.5 + 0.4, 0);
+  sceneGroup.add(person);
+  addLabel("Person", person, 0.6, "box-label");
+
+  // arrows for "immediately above" and "two floors below"
+  var arrowUp = makeArrow(
+    new THREE.Vector3(-3.5, 3 * floorH + 0.5, 0),
+    new THREE.Vector3(-3.5, 4 * floorH + 0.5, 0),
+    GREEN, 0.3
+  );
+  sceneGroup.add(arrowUp);
+  var upAnc = new THREE.Object3D();
+  upAnc.position.set(-5, 4 * floorH + 0.5, 0);
+  sceneGroup.add(upAnc);
+  addLabel("Immediately above", upAnc, 0, "box-label");
+
+  var arrowDown = makeArrow(
+    new THREE.Vector3(3.5, 3 * floorH + 0.5, 0),
+    new THREE.Vector3(3.5, 1 * floorH + 0.5, 0),
+    CORAL, 0.3
+  );
+  sceneGroup.add(arrowDown);
+  var dnAnc = new THREE.Object3D();
+  dnAnc.position.set(5.5, 1 * floorH + 0.5, 0);
+  sceneGroup.add(dnAnc);
+  addLabel("Two floors below", dnAnc, 0, "box-label");
+
+  // verification label
+  var verAnc = new THREE.Object3D();
+  verAnc.position.set(0, -0.8, 0);
+  sceneGroup.add(verAnc);
+  var verLabel = addLabel("", verAnc, 0, "box-label");
+  verLabel.style.color = GREEN_S;
+  verLabel.style.fontSize = "13px";
+
+  // warning label
+  var warnAnc = new THREE.Object3D();
+  warnAnc.position.set(0, -1.8, 0);
+  sceneGroup.add(warnAnc);
+  addLabel("WARNING: Ground floor = Floor 1 usually — ALWAYS check!", warnAnc, 0, "trap-label");
+
+  animState.data = { floors: floors, person: person, verLabel: verLabel };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time;
+    var cycle = t % 10;
+
+    // bounce person on floor 4
+    var bounce = Math.abs(Math.sin(t * 2)) * 0.15;
+    animState.data.person.position.y = 3 * floorH + 0.5 + 0.4 + bounce;
+
+    // cycle verification text
+    if (cycle < 5) {
+      animState.data.verLabel.textContent =
+        "Floor 4: 4th from bottom, 4th from top → 4 + 4 = 8 = 7 + 1 ✓";
+      animState.data.verLabel.style.color = GREEN_S;
+    } else {
+      animState.data.verLabel.textContent =
+        "Formula: position_from_bottom + position_from_top = n + 1";
+      animState.data.verLabel.style.color = TEAL_S;
+    }
+
+    // gentle glow on floors
+    for (var i = 0; i < floors.length; i++) {
+      var glow = (i === 3) ? 0.15 * (0.5 + 0.5 * Math.sin(t * 4)) : 0;
+      floors[i].material.emissive.setRGB(glow, glow * 0.3, glow * 0.1);
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 4 -- Grid Seating (3x3 Matrix)
+   =========================================================== */
+function buildScene4() {
+  camera.position.set(0, 10, 12);
+  controls.target.set(0, 0.5, 0);
+  controls.update();
+
+  var gridSize = 3;
+  var spacing = 2.8;
+  var chairs = [], spheres = [], coordLabels = [];
+
+  // adjacency types: center=4, edge=3, corner=2
+  function adjCount(r, c) {
+    var count = 0;
+    if (r > 0) count++;
+    if (r < gridSize - 1) count++;
+    if (c > 0) count++;
+    if (c < gridSize - 1) count++;
+    return count;
+  }
+
+  function adjType(r, c) {
+    var n = adjCount(r, c);
+    if (n === 4) return "center";
+    if (n === 3) return "edge";
+    return "corner";
+  }
+
+  for (var r = 0; r < gridSize; r++) {
+    for (var c = 0; c < gridSize; c++) {
+      var x = (c - 1) * spacing;
+      var z = (r - 1) * spacing;
+
+      var ch = makeChair(x, 0, z);
+      sceneGroup.add(ch);
+      chairs.push(ch);
+
+      var type = adjType(r, c);
+      var color = type === "center" ? TEAL : (type === "edge" ? AMBER : CORAL);
+      var sp = makeSphere(0.3, color);
+      sp.position.set(x, 1.0, z);
+      sceneGroup.add(sp);
+      spheres.push({ mesh: sp, row: r, col: c, type: type });
+
+      addLabel("(" + r + "," + c + ")", sp, 0.55, "box-label");
+    }
+  }
+
+  // floor
+  var floor = makeBox(12, 0.05, 12, 0xf0f0f0);
+  floor.position.set(0, -0.6, 0);
+  sceneGroup.add(floor);
+
+  // adjacency type legend
+  var legData = [
+    { label: "Center (1,1): 4 neighbours", color: TEAL_S, y: 6.5 },
+    { label: "Edge (0,1): 3 neighbours", color: AMBER_S, y: 5.5 },
+    { label: "Corner (0,0): 2 neighbours", color: CORAL_S, y: 4.5 }
+  ];
+  legData.forEach(function(ld) {
+    var a = new THREE.Object3D();
+    a.position.set(0, ld.y, -4);
+    sceneGroup.add(a);
+    var el = addLabel(ld.label, a, 0, "box-label");
+    el.style.color = ld.color;
+  });
+
+  // "between in same row" demonstration lines
+  // row 1, col 0 to col 2 with col 1 between
+  var betweenAnc = new THREE.Object3D();
+  betweenAnc.position.set(0, 3.5, -4);
+  sceneGroup.add(betweenAnc);
+  var betLabel = addLabel("", betweenAnc, 0, "box-label");
+
+  // bottom label
+  var botAnc = new THREE.Object3D();
+  botAnc.position.set(0, -1.5, 0);
+  sceneGroup.add(botAnc);
+  addLabel("Grid = Linear in 2D. Same formulas, per-row and per-column.", botAnc, 0, "box-label");
+
+  animState.data = {
+    spheres: spheres, betLabel: betLabel, adjPhase: 0, phaseTime: 0
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data;
+    d.phaseTime += dt;
+
+    // cycle through highlighting different adjacency types
+    var cycleDur = 4;
+    if (d.phaseTime > cycleDur) {
+      d.phaseTime = 0;
+      d.adjPhase = (d.adjPhase + 1) % 4;
+    }
+
+    var highlightType, desc;
+    if (d.adjPhase === 0) {
+      highlightType = "center";
+      desc = "CENTER (1,1): 4 neighbours highlighted";
+    } else if (d.adjPhase === 1) {
+      highlightType = "edge";
+      desc = "EDGE positions: 3 neighbours each";
+    } else if (d.adjPhase === 2) {
+      highlightType = "corner";
+      desc = "CORNER positions: 2 neighbours each";
+    } else {
+      highlightType = "between";
+      desc = "Between: row 1, col 0 & col 2 → 1 person at col 1";
+    }
+    d.betLabel.textContent = desc;
+
+    var pulse = 0.5 + 0.5 * Math.sin(animState.time * 5);
+    for (var i = 0; i < d.spheres.length; i++) {
+      var sp = d.spheres[i];
+      var baseColor = sp.type === "center" ? TEAL : (sp.type === "edge" ? AMBER : CORAL);
+      sp.mesh.material.color.setHex(baseColor);
+      sp.mesh.material.emissive.setHex(0x000000);
+
+      if (d.adjPhase === 3) {
+        // highlight "between" demo: row 1 (middle row), all cols
+        if (sp.row === 1) {
+          if (sp.col === 0 || sp.col === 2) {
+            sp.mesh.material.emissive.setRGB(0.2 * pulse, 0.05 * pulse, 0.05 * pulse);
+          } else if (sp.col === 1) {
+            sp.mesh.material.color.setHex(GREEN);
+            sp.mesh.material.emissive.setRGB(0.05 * pulse, 0.2 * pulse, 0.05 * pulse);
+          }
+        }
+      } else if (sp.type === highlightType) {
+        var em = 0.25 * pulse;
+        if (sp.type === "center") sp.mesh.material.emissive.setRGB(0, em, em);
+        else if (sp.type === "edge") sp.mesh.material.emissive.setRGB(em, em * 0.7, 0);
+        else sp.mesh.material.emissive.setRGB(em, em * 0.2, em * 0.2);
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 5 -- Hybrid Arrangement (Divide and Conquer)
+   =========================================================== */
+function buildScene5() {
+  camera.position.set(0, 8, 18);
+  controls.target.set(0, 2, 0);
+  controls.update();
+
+  // Step boxes at top
+  var stepLabels = ["1. SEPARATE", "2. SOLVE EACH", "3. LINK", "4. VERIFY"];
+  var stepColors = [TEAL, GREEN, AMBER, CORAL];
+  var stepMeshes = [];
+  for (var si = 0; si < 4; si++) {
+    var sx = (si - 1.5) * 4.2;
+    var box = makeBox(3.4, 1.1, 1.1, stepColors[si]);
+    box.position.set(sx, 7.5, 0);
+    box.scale.set(0, 0, 0);
+    sceneGroup.add(box);
+    addLabel(stepLabels[si], box, 0.9, "box-label");
+    stepMeshes.push(box);
+  }
+
+  // Combined arrangement (circle + row)
+  var circGroup = new THREE.Group();
+  circGroup.position.set(-3.5, 2, 0);
+  var circRing = new THREE.Mesh(
+    new THREE.TorusGeometry(2.0, 0.06, 16, 48),
+    mat(0x999999)
+  );
+  circRing.rotation.x = Math.PI / 2;
+  circGroup.add(circRing);
+  var circNames = ["V1", "V2", "V3", "V4", "V5"];
+  var circSpheres = [];
+  for (var ci = 0; ci < 5; ci++) {
+    var ca = (ci / 5) * Math.PI * 2 - Math.PI / 2;
+    var cs = makeSphere(0.3, CORAL);
+    cs.position.set(Math.cos(ca) * 2, 0, Math.sin(ca) * 2);
+    circGroup.add(cs);
+    circSpheres.push(cs);
+    addLabel(circNames[ci], cs, 0.55, "box-label");
+  }
+  sceneGroup.add(circGroup);
+  addLabel("VIP (Circular)", circGroup, 3, "box-label");
+
+  var rowGroup = new THREE.Group();
+  rowGroup.position.set(4.5, 2, 0);
+  var rowNames = ["R1", "R2", "R3", "R4"];
+  var rowSpheres = [];
+  for (var ri = 0; ri < 4; ri++) {
+    var rx = (ri - 1.5) * 1.8;
+    var rch = makeChair(rx, -0.8, 0);
+    rowGroup.add(rch);
+    var rs = makeSphere(0.3, GREEN);
+    rs.position.set(rx, 0, 0);
+    rowGroup.add(rs);
+    rowSpheres.push(rs);
+    addLabel(rowNames[ri], rs, 0.55, "box-label");
+  }
+  sceneGroup.add(rowGroup);
+  addLabel("Regular (Linear)", rowGroup, 2, "box-label");
+
+  // link line (hidden initially)
+  var linkLine = makeLine(
+    new THREE.Vector3(-1.5, 2, 0),
+    new THREE.Vector3(1.8, 2, 0),
+    AMBER
+  );
+  linkLine.visible = false;
+  sceneGroup.add(linkLine);
+  var linkAnc = new THREE.Object3D();
+  linkAnc.position.set(0.2, 2.6, 0);
+  sceneGroup.add(linkAnc);
+  var linkLabel = addLabel("", linkAnc, 0, "box-label");
+  linkLabel.style.color = AMBER_S;
+
+  // status label
+  var statusAnc = new THREE.Object3D();
+  statusAnc.position.set(0, -1.5, 0);
+  sceneGroup.add(statusAnc);
+  var statusLabel = addLabel("", statusAnc, 0, "highlight-label");
+
+  // floor
+  var floor = makeBox(20, 0.05, 8, 0xf0f0f0);
+  floor.position.set(0, -0.8, 0);
+  sceneGroup.add(floor);
+
+  animState.data = {
+    stepMeshes: stepMeshes, circGroup: circGroup, rowGroup: rowGroup,
+    circSpheres: circSpheres, rowSpheres: rowSpheres,
+    linkLine: linkLine, linkLabel: linkLabel, statusLabel: statusLabel
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // step boxes appear sequentially
+    for (var i = 0; i < d.stepMeshes.length; i++) {
+      var delay = i * 2.5;
+      var el = t - delay;
+      if (el > 0) {
+        var s = easeOut(el / 0.6);
+        d.stepMeshes[i].scale.set(s, s, s);
+      }
+    }
+
+    // determine current phase based on time cycle
+    var cycle = t % 16;
+    var phase;
+    if (cycle < 4) phase = 0;       // SEPARATE
+    else if (cycle < 8) phase = 1;  // SOLVE EACH
+    else if (cycle < 12) phase = 2; // LINK
+    else phase = 3;                  // VERIFY
+
+    // pulse active step
+    for (var m = 0; m < d.stepMeshes.length; m++) {
+      if (m === phase && d.stepMeshes[m].scale.x >= 0.9) {
+        var p = 1 + 0.08 * Math.sin(t * 5);
+        d.stepMeshes[m].scale.set(p, p, p);
+        d.stepMeshes[m].material.emissive.setHex(0x222222);
+      } else if (d.stepMeshes[m].scale.x >= 1) {
+        d.stepMeshes[m].scale.set(1, 1, 1);
+        d.stepMeshes[m].material.emissive.setHex(0x000000);
+      }
+    }
+
+    // SEPARATE: spread groups apart
+    if (phase === 0) {
+      var sep = easeOut((cycle) / 2) * 1.5;
+      d.circGroup.position.x = -3.5 - sep;
+      d.rowGroup.position.x = 4.5 + sep;
+      d.linkLine.visible = false;
+      d.linkLabel.textContent = "";
+      d.statusLabel.textContent = "Step 1: SEPARATE into sub-problems";
+    }
+    // SOLVE EACH: glow each group independently
+    else if (phase === 1) {
+      var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+      for (var ci = 0; ci < d.circSpheres.length; ci++) {
+        d.circSpheres[ci].material.emissive.setRGB(pulse * 0.2, 0.02, 0.02);
+      }
+      for (var ri = 0; ri < d.rowSpheres.length; ri++) {
+        d.rowSpheres[ri].material.emissive.setRGB(0.02, pulse * 0.2, 0.02);
+      }
+      d.linkLine.visible = false;
+      d.linkLabel.textContent = "";
+      d.statusLabel.textContent = "Step 2: SOLVE EACH independently";
+    }
+    // LINK: bring together and show connection
+    else if (phase === 2) {
+      var approach = easeOut((cycle - 8) / 2);
+      d.circGroup.position.x = -3.5 - 1.5 + approach * 1.5;
+      d.rowGroup.position.x = 4.5 + 1.5 - approach * 1.5;
+      d.linkLine.visible = approach > 0.5;
+      d.linkLabel.textContent = approach > 0.5 ? "Cross-type constraint" : "";
+      d.statusLabel.textContent = "Step 3: LINK cross-type constraints";
+      // reset emissive
+      for (var j = 0; j < d.circSpheres.length; j++)
+        d.circSpheres[j].material.emissive.setHex(0x000000);
+      for (var k = 0; k < d.rowSpheres.length; k++)
+        d.rowSpheres[k].material.emissive.setHex(0x000000);
+    }
+    // VERIFY: everything glows green
+    else {
+      d.linkLine.visible = true;
+      d.linkLabel.textContent = "Cross-type constraint";
+      var vp = 0.5 + 0.5 * Math.sin(t * 3);
+      for (var vi = 0; vi < d.circSpheres.length; vi++)
+        d.circSpheres[vi].material.emissive.setRGB(0.02, vp * 0.15, 0.02);
+      for (var vr = 0; vr < d.rowSpheres.length; vr++)
+        d.rowSpheres[vr].material.emissive.setRGB(0.02, vp * 0.15, 0.02);
+      d.statusLabel.textContent = "Step 4: VERIFY all constraints ✓";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 6 -- Solved Example: Rectangular Table
+   =========================================================== */
+function buildScene6() {
+  camera.position.set(0, 14, 12);
+  controls.target.set(0, 0.5, 0);
+  controls.update();
+
+  // table
+  var table = makeBox(9, 0.25, 3.5, 0xc9a96e);
+  table.position.set(0, 0, 0);
+  sceneGroup.add(table);
+
+  // 8 seat positions around rectangular table:
+  // North side: 3 seats, South side: 3 seats, West end: 1, East end: 1
+  // Final arrangement: A=West, B=N1, C=N2, H=N3, E=East, G=S3, F=S2, D=S1
+  var seatPositions = [
+    { x: -5.2, z: 0,    facing: "East",  rotY: Math.PI/2 },   // 0: West end → A
+    { x: -2.5, z: -2.5, facing: "South", rotY: 0 },            // 1: North-W → B
+    { x:  0,   z: -2.5, facing: "South", rotY: 0 },            // 2: North-C → C
+    { x:  2.5, z: -2.5, facing: "South", rotY: 0 },            // 3: North-E → H
+    { x:  5.2, z: 0,    facing: "West",  rotY: -Math.PI/2 },   // 4: East end → E
+    { x:  2.5, z: 2.5,  facing: "North", rotY: Math.PI },       // 5: South-E → G
+    { x:  0,   z: 2.5,  facing: "North", rotY: Math.PI },       // 6: South-C → F
+    { x: -2.5, z: 2.5,  facing: "North", rotY: Math.PI }        // 7: South-W → D
+  ];
+
+  var personNames = ["A", "B", "C", "H", "E", "G", "F", "D"];
+  var stepOrder =   [ 0,   1,   2,   7,   4,   6,   5,   3 ];
+  // step descriptions for each person placed
+  var stepDescs = [
+    "Step 1: A sits on a shorter side → West end",
+    "Step 2: B is to the immediate right of A → North, near West",
+    "Step 3: C sits in the middle of North side → North-center",
+    "Step 4: D is opposite B → South, near West",
+    "Step 5: E sits diagonally opposite A → East end",
+    "Step 6: F is opposite C → South-center",
+    "Step 7: G is to the right of F → South, near East",
+    "Step 8: H takes the remaining seat → North, near East"
+  ];
+
+  // place order maps person index to step
+  var placeTimes = [];
+  for (var pi = 0; pi < 8; pi++) placeTimes.push(pi * 3 + 1);
+
+  // chairs
+  for (var ci = 0; ci < seatPositions.length; ci++) {
+    var sp = seatPositions[ci];
+    var ch = makeChair(sp.x, 0.15, sp.z);
+    ch.rotation.y = sp.rotY;
+    sceneGroup.add(ch);
+  }
+
+  // person spheres (initially hidden)
+  var personSpheres = [];
+  var personColors = [CORAL, TEAL, INDIGO, AMBER, GREEN, 0x9c27b0, 0x00897b, 0x5d4037];
+  for (var si = 0; si < seatPositions.length; si++) {
+    var ps = makeSphere(0.35, personColors[si]);
+    ps.position.set(seatPositions[si].x, 1.0, seatPositions[si].z);
+    ps.visible = false;
+    sceneGroup.add(ps);
+    personSpheres.push(ps);
+    var labelEl = addLabel(personNames[si], ps, 0.6, "box-label");
+    labelEl.style.display = "none";
+    labelEl.dataset.personIdx = si;
+  }
+
+  // compass labels
+  var compassData = [
+    { t: "NORTH", x: 0, z: -4.5 }, { t: "SOUTH", x: 0, z: 4.5 },
+    { t: "WEST", x: -7.5, z: 0 }, { t: "EAST", x: 7.5, z: 0 }
+  ];
+  compassData.forEach(function(cp) {
+    var a = new THREE.Object3D();
+    a.position.set(cp.x, 0.2, cp.z);
+    sceneGroup.add(a);
+    addLabel(cp.t, a, 0, "box-label");
+  });
+
+  // floor
+  var floor = makeBox(20, 0.05, 14, 0xf0f0f0);
+  floor.position.set(0, -0.6, 0);
+  sceneGroup.add(floor);
+
+  // step indicator
+  var stepAnc = new THREE.Object3D();
+  stepAnc.position.set(0, 6, 0);
+  sceneGroup.add(stepAnc);
+  var stepLabel = addLabel("", stepAnc, 0, "highlight-label");
+
+  // constraint label
+  var constAnc = new THREE.Object3D();
+  constAnc.position.set(0, 5, 0);
+  sceneGroup.add(constAnc);
+  var constLabel = addLabel("", constAnc, 0, "box-label");
+
+  animState.data = {
+    personSpheres: personSpheres,
+    stepOrder: stepOrder,
+    placeTimes: placeTimes,
+    stepDescs: stepDescs,
+    stepLabel: stepLabel,
+    constLabel: constLabel,
+    personNames: personNames,
+    personColors: personColors,
+    revealed: new Array(8).fill(false)
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // reveal persons step by step
+    var currentStep = -1;
+    for (var i = 0; i < 8; i++) {
+      var pt = d.placeTimes[i];
+      var seatIdx = d.stepOrder[i];
+      if (t > pt) {
+        if (!d.revealed[i]) {
+          d.personSpheres[seatIdx].visible = true;
+          d.revealed[i] = true;
+        }
+        var elapsed = t - pt;
+        var sc = easeOut(elapsed / 0.5);
+        d.personSpheres[seatIdx].scale.set(sc, sc, sc);
+        currentStep = i;
+
+        // show label for this person
+        for (var li = 0; li < labelPool.length; li++) {
+          if (labelPool[li].el.dataset && labelPool[li].el.dataset.personIdx == seatIdx) {
+            labelPool[li].el.style.display = "";
+          }
+        }
+      }
+    }
+
+    // update step text
+    if (currentStep >= 0 && currentStep < d.stepDescs.length) {
+      d.stepLabel.textContent = d.stepDescs[currentStep];
+    }
+
+    // pulse the latest placed person
+    if (currentStep >= 0) {
+      var latestIdx = d.stepOrder[currentStep];
+      var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+      d.personSpheres[latestIdx].material.emissive.setRGB(
+        0.2 * pulse, 0.1 * pulse, 0.05 * pulse
+      );
+      // dim previous emissives
+      for (var j = 0; j < 8; j++) {
+        var si = d.stepOrder[j];
+        if (si !== latestIdx && d.personSpheres[si].visible) {
+          d.personSpheres[si].material.emissive.setHex(0x000000);
+        }
+      }
+    }
+
+    // orbit camera after all placed
+    if (t > 26) {
+      var orbitT = (t - 26) * 0.15;
+      var radius = 16;
+      camera.position.x = Math.sin(orbitT) * radius;
+      camera.position.z = Math.cos(orbitT) * radius;
+      camera.position.y = 10 + Math.sin(t * 0.2) * 2;
+      controls.target.set(0, 0.5, 0);
+      controls.update();
+      d.constLabel.textContent = "All 8 placed — orbiting to verify layout";
+    } else if (currentStep >= 0) {
+      d.constLabel.textContent =
+        "Placed: " + d.stepOrder.slice(0, currentStep + 1).map(function(idx) {
+          return d.personNames[idx];
+        }).join(", ");
+    }
+  };
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  var dt = Math.min(clock.getDelta(), 0.1);
+  if (animState.update) animState.update(dt);
+  controls.update();
+  updateLabels();
+  renderer.render(activeScene, camera);
+}
+
+/* ===== INIT ===== */
+initRenderer();
+loadScene(0);
+animate();
+</script>
+</body>
+</html>

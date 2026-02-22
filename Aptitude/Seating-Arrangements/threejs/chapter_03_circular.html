@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 3: Circular Seating Arrangements</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+#title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 48px;
+  background: #1a8a8a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  z-index: 10;
+  letter-spacing: 0.3px;
+}
+#canvas-container {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 70%;
+  height: calc(100vh - 48px);
+  background: #f8f8f8;
+}
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100vh;
+  background: #fff;
+  border-left: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#info-header {
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a8a8a;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+#info-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+}
+#info-body h3 {
+  color: #1a8a8a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+#info-body ul,
+#info-body ol {
+  margin: 8px 0 16px 18px;
+}
+#info-body li {
+  margin-bottom: 4px;
+}
+#info-body .key-point {
+  background: #e8f5f5;
+  border-left: 3px solid #1a8a8a;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#info-body .warn {
+  background: #fff3e0;
+  border-left: 3px solid #e8a317;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#nav-bar {
+  padding: 14px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+}
+#nav-bar .counter {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+#nav-bar button {
+  padding: 7px 18px;
+  border: 1px solid #1a8a8a;
+  background: #fff;
+  color: #1a8a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+#nav-bar button:hover {
+  background: #1a8a8a;
+  color: #fff;
+}
+#nav-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+  color: #1a8a8a;
+}
+#scene-title {
+  position: fixed;
+  top: 56px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid #ddd;
+}
+.label-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.label-overlay.box-label {
+  background: rgba(255, 255, 255, 0.90);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.label-overlay.highlight-label {
+  background: rgba(217, 79, 79, 0.12);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+}
+.label-overlay.trap-label {
+  background: rgba(255, 240, 240, 0.95);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 2px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="title-bar">Chapter 3: Circular Seating Arrangements</div>
+<div id="canvas-container"></div>
+<div id="scene-title"></div>
+
+<div id="info-panel">
+  <div id="info-header">Scene Information</div>
+  <div id="info-body"></div>
+  <div id="nav-bar">
+    <button id="btn-prev" onclick="prevScene()">Previous</button>
+    <span class="counter" id="counter">Scene 1 of 7</span>
+    <button id="btn-next" onclick="nextScene()">Next</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+
+/* ===== COLOR PALETTE ===== */
+var TEAL = 0x1a8a8a, CORAL = 0xd94f4f, AMBER = 0xe8a317;
+var INDIGO = 0x4a5da8, GREEN = 0x2e8b57;
+var DARK = 0x333333, LGRAY = 0xdddddd;
+
+var TEAL_S = "#1a8a8a", CORAL_S = "#d94f4f", AMBER_S = "#e8a317";
+var INDIGO_S = "#4a5da8", GREEN_S = "#2e8b57";
+
+/* ===== GLOBALS ===== */
+var renderer, camera, controls, clock;
+var currentScene = 0, totalScenes = 7;
+var container = document.getElementById("canvas-container");
+var labelPool = [];
+var sceneGroup, activeScene;
+var animState = { time: 0, phase: 0, data: {}, update: null };
+
+/* ===== RENDERER SETUP ===== */
+function initRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0xf8f8f8);
+  container.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(
+    50, container.clientWidth / container.clientHeight, 0.1, 200
+  );
+  camera.position.set(0, 8, 18);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 4;
+  controls.maxDistance = 60;
+  clock = new THREE.Clock();
+}
+
+function onResize() {
+  var w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener("resize", onResize);
+
+/* ===== LABEL SYSTEM ===== */
+function clearLabels() {
+  for (var i = 0; i < labelPool.length; i++) labelPool[i].el.remove();
+  labelPool.length = 0;
+}
+
+function addLabel(text, obj, offsetY, cls) {
+  var el = document.createElement("div");
+  el.className = "label-overlay" + (cls ? " " + cls : "");
+  el.textContent = text;
+  container.appendChild(el);
+  labelPool.push({ el: el, obj: obj, offsetY: offsetY || 0 });
+  return el;
+}
+
+function updateLabels() {
+  var w = container.clientWidth, h = container.clientHeight;
+  var v = new THREE.Vector3();
+  for (var i = 0; i < labelPool.length; i++) {
+    var l = labelPool[i];
+    if (!l.obj || !l.obj.parent) { l.el.style.display = "none"; continue; }
+    l.obj.getWorldPosition(v);
+    v.y += l.offsetY;
+    v.project(camera);
+    if (v.z > 1) { l.el.style.display = "none"; continue; }
+    l.el.style.display = "";
+    l.el.style.left = ((v.x * 0.5 + 0.5) * w) + "px";
+    l.el.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  }
+}
+
+/* ===== GEOMETRY HELPERS ===== */
+function mat(color, em) {
+  return new THREE.MeshPhongMaterial({ color: color, emissive: em || 0, shininess: 60 });
+}
+function matT(color, op) {
+  return new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: op, shininess: 40 });
+}
+function lineMat(color) {
+  return new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+}
+function makeBox(w, h, d, c) {
+  return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+}
+function makeSphere(r, c) {
+  return new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), mat(c));
+}
+function makeCyl(rt, rb, h, c) {
+  return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 24), mat(c));
+}
+function makeLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(g, lineMat(c));
+}
+function makeArrow(from, to, c, hl) {
+  var dir = new THREE.Vector3().subVectors(to, from);
+  var len = dir.length(); dir.normalize();
+  return new THREE.ArrowHelper(dir, from, len, c, hl || 0.4, 0.2);
+}
+
+function makeChair(x, y, z) {
+  var g = new THREE.Group();
+  var seat = makeBox(1.0, 0.12, 0.9, 0xcccccc);
+  g.add(seat);
+  var back = makeBox(1.0, 0.8, 0.1, 0xbbbbbb);
+  back.position.set(0, 0.4, -0.4);
+  g.add(back);
+  var legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+  var legM = mat(0x999999);
+  [[-0.38, -0.31, -0.32], [0.38, -0.31, -0.32],
+   [-0.38, -0.31, 0.32], [0.38, -0.31, 0.32]].forEach(function(o) {
+    var leg = new THREE.Mesh(legGeo, legM);
+    leg.position.set(o[0], o[1], o[2]);
+    g.add(leg);
+  });
+  g.position.set(x, y, z);
+  return g;
+}
+
+/* ===== LIGHTING ===== */
+function addLights(sc) {
+  sc.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var d1 = new THREE.DirectionalLight(0xffffff, 0.65);
+  d1.position.set(8, 12, 10); sc.add(d1);
+  var d2 = new THREE.DirectionalLight(0xffffff, 0.3);
+  d2.position.set(-6, 8, -8); sc.add(d2);
+}
+
+function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
+
+/* ===== CIRCULAR HELPERS ===== */
+var CR = 5; // default circle radius
+
+function circX(i, n, r) { return Math.sin(2 * Math.PI * i / n) * (r || CR); }
+function circZ(i, n, r) { return -Math.cos(2 * Math.PI * i / n) * (r || CR); }
+function circAngle(i, n) { return 2 * Math.PI * i / n; }
+
+function makeCircularTable(r) {
+  return makeCyl(r || CR, r || CR, 0.15, 0xdec89a);
+}
+
+function placeChairCircle(i, n, r) {
+  var rad = r || CR;
+  var ch = makeChair(0, 0, 0);
+  var angle = circAngle(i, n);
+  ch.position.set(Math.sin(angle) * (rad + 1), 0, -Math.cos(angle) * (rad + 1));
+  ch.rotation.y = angle + Math.PI; // face inward
+  return ch;
+}
+
+function makePersonSphere(i, n, r, color) {
+  var rad = r || CR;
+  var angle = circAngle(i, n);
+  var s = makeSphere(0.35, color || INDIGO);
+  s.position.set(Math.sin(angle) * (rad + 1), 0.85, -Math.cos(angle) * (rad + 1));
+  return s;
+}
+
+/* ===== SCENE INFO ===== */
+var sceneInfo = [
+  {
+    title: "Scene 1: Line to Circle Morph",
+    header: "From Linear to Circular",
+    body: "<h3>The Circle Transformation</h3>" +
+      "<p>A circular arrangement is formed by bending a linear row until the two ends meet. " +
+      "Watch 8 chairs morph from a straight line into a circle.</p>" +
+      "<div class=\"key-point\">Key Difference: In a line, end positions have only 1 neighbour. " +
+      "In a circle, EVERY position has exactly 2 neighbours. Endpoints disappear!</div>" +
+      "<ul>" +
+      "<li>Positions 1 and 8 become neighbours in the circle</li>" +
+      "<li>No more \"end positions\" — the concept vanishes</li>" +
+      "<li>The circular table is shown as a flat disc</li>" +
+      "</ul>" +
+      "<p>This fundamental difference changes how we count and solve arrangements.</p>"
+  },
+  {
+    title: "Scene 2: CW & ACW Navigation",
+    header: "Clockwise & Anticlockwise",
+    body: "<h3>Navigating the Circle</h3>" +
+      "<p>In circular arrangements, direction is described as Clockwise (CW) or Anticlockwise (ACW).</p>" +
+      "<ul>" +
+      "<li><b>CW:</b> 1 → 2 → 3 → ... → 8 → 1 (like a clock)</li>" +
+      "<li><b>ACW:</b> 1 → 8 → 7 → ... → 2 → 1 (opposite)</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Example: \"3 positions CW from seat 2\" → 2→3→4→5 → Answer: Seat 5</div>" +
+      "<div class=\"key-point\">Example: \"3 positions ACW from seat 2\" → 2→1→8→7 → Answer: Seat 7</div>" +
+      "<p>CW and ACW are the compass of circular arrangements — master them.</p>"
+  },
+  {
+    title: "Scene 3: Opposite Position Formula",
+    header: "Opposite Positions",
+    body: "<h3>Finding the Opposite Seat</h3>" +
+      "<p>In a circle of n seats, the seat directly opposite position p is:</p>" +
+      "<div class=\"key-point\">Opposite of p = p + n/2 (mod n)<br>For 8 seats: Opposite of 1 = 1 + 4 = 5</div>" +
+      "<ul>" +
+      "<li>Pairs: (1,5), (2,6), (3,7), (4,8)</li>" +
+      "<li>All diameter lines pass through the center</li>" +
+      "</ul>" +
+      "<div class=\"warn\"><b>WARNING:</b> Opposite seats only exist when n is EVEN. " +
+      "For odd n, there is NO exact opposite — this is a common trick question!</div>"
+  },
+  {
+    title: "Scene 4: Facing Center vs Outward",
+    header: "The Direction Flip",
+    body: "<h3>Facing Direction Changes Everything</h3>" +
+      "<p>The most critical concept in circular arrangements:</p>" +
+      "<div class=\"key-point\"><b>Facing Center:</b> Left = Clockwise, Right = Anticlockwise</div>" +
+      "<div class=\"key-point\"><b>Facing Outward:</b> Left = Anticlockwise, Right = Clockwise</div>" +
+      "<div class=\"warn\"><b>BIG WARNING:</b> EVERYTHING REVERSES when facing direction changes! " +
+      "A person rotated 180° has their left and right hands pointing in opposite circular directions.</div>" +
+      "<ul>" +
+      "<li>Phase 1: All face center — observe left = CW</li>" +
+      "<li>Phase 2: All face outward — observe left = ACW</li>" +
+      "<li>Always determine facing direction BEFORE applying left/right</li>" +
+      "</ul>"
+  },
+  {
+    title: "Scene 5: Rotation Principle — (n-1)!",
+    header: "Why (n-1)! Not n!",
+    body: "<h3>Fixing the Anchor</h3>" +
+      "<p>In a circle, rotations of the same arrangement are considered identical.</p>" +
+      "<ul>" +
+      "<li>A,B,C,D at positions 1,2,3,4 is the SAME as at 2,3,4,1</li>" +
+      "<li>There are n such rotations for any arrangement</li>" +
+      "<li>So we divide by n: n!/n = (n-1)!</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Fix one person as an anchor → arrange remaining (n-1) people → (n-1)! unique arrangements</div>" +
+      "<p>For n=4: Fix A at position 1 → B,C,D in 3! = 6 ways.</p>" +
+      "<p>Watch the rotation: all 4 positions shift but the relative order stays the same.</p>"
+  },
+  {
+    title: "Scene 6: Solved Example (8 People)",
+    header: "Step-by-Step: 8 People Facing Center",
+    body: "<h3>Placing A through H</h3>" +
+      "<ol>" +
+      "<li><b>A opposite E:</b> A at pos 1, E at pos 5</li>" +
+      "<li><b>B immediate left of A:</b> Left = CW → B at pos 2</li>" +
+      "<li><b>H third to left of E:</b> CW from 5: 6→7→8 → H at pos 8</li>" +
+      "<li><b>D opposite B:</b> B at 2 → D at pos 6</li>" +
+      "<li><b>F immediate right of E:</b> Right = ACW → F at pos 4</li>" +
+      "<li><b>C not adjacent to D:</b> Remaining: C,G for 3,7. C≠adj D(6) → C at 3, G at 7</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">Final answer: H (pos 8) is opposite F (pos 4) ✓</div>" +
+      "<p>Each step animates the person appearing with constraint lines glowing.</p>"
+  },
+  {
+    title: "Scene 7: Mixed Facing Arrangement",
+    header: "Mixed Facing Directions",
+    body: "<h3>The Hardest Type</h3>" +
+      "<p>6 people: P, R, T face CENTER; Q, S, U face OUTWARD.</p>" +
+      "<ul>" +
+      "<li>For P (center): left = CW, right = ACW</li>" +
+      "<li>For Q (outward): left = ACW, right = CW</li>" +
+      "</ul>" +
+      "<p>Step-by-step placement:</p>" +
+      "<ol>" +
+      "<li><b>P opposite S</b> → P at 1, S at 4</li>" +
+      "<li><b>Q to the right of P</b> → P faces center, right = ACW → Q at pos 6</li>" +
+      "<li><b>R adjacent to P</b> → R at pos 2</li>" +
+      "<li><b>T opposite Q</b> → Q at 6, T at 3</li>" +
+      "<li><b>U in remaining</b> → U at pos 5</li>" +
+      "</ol>" +
+      "<div class=\"warn\"><b>CRITICAL:</b> Mixed facing is the hardest type — always check " +
+      "EACH person's facing direction before applying left/right rules.</div>"
+  }
+];
+
+/* ===== NAVIGATION ===== */
+function updateNav() {
+  document.getElementById("counter").textContent =
+    "Scene " + (currentScene + 1) + " of " + totalScenes;
+  document.getElementById("btn-prev").disabled = (currentScene === 0);
+  document.getElementById("btn-next").disabled = (currentScene === totalScenes - 1);
+  var s = sceneInfo[currentScene];
+  document.getElementById("scene-title").textContent = s.title;
+  document.getElementById("info-header").textContent = s.header;
+  document.getElementById("info-body").innerHTML = s.body;
+}
+function nextScene() { if (currentScene < totalScenes - 1) { currentScene++; loadScene(currentScene); } }
+function prevScene() { if (currentScene > 0) { currentScene--; loadScene(currentScene); } }
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextScene();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevScene();
+});
+
+/* ===== SCENE LOADER ===== */
+function loadScene(idx) {
+  clearLabels();
+  activeScene = new THREE.Scene();
+  activeScene.background = new THREE.Color(0xf8f8f8);
+  addLights(activeScene);
+  sceneGroup = new THREE.Group();
+  activeScene.add(sceneGroup);
+  animState = { time: 0, phase: 0, data: {}, update: null };
+  [buildScene1, buildScene2, buildScene3,
+   buildScene4, buildScene5, buildScene6, buildScene7][idx]();
+  updateNav();
+}
+
+/* ===========================================================
+   SCENE 1 — Line to Circle Morph
+   =========================================================== */
+function buildScene1() {
+  camera.position.set(0, 10, 16);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var N = 8, R = 4.5;
+  var chairs = [], spheres = [];
+  var lineX = [], lineZ = [];
+  var circXArr = [], circZArr = [];
+
+  for (var i = 0; i < N; i++) {
+    lineX[i] = (i - 3.5) * 2.2;
+    lineZ[i] = 0;
+    circXArr[i] = Math.sin(circAngle(i, N)) * (R + 1);
+    circZArr[i] = -Math.cos(circAngle(i, N)) * (R + 1);
+
+    var ch = makeChair(lineX[i], 0, 0);
+    sceneGroup.add(ch);
+    chairs.push(ch);
+
+    var s = makeSphere(0.3, INDIGO);
+    s.position.set(lineX[i], 0.85, 0);
+    sceneGroup.add(s);
+    addLabel("" + (i + 1), s, 0.55, "box-label");
+    spheres.push(s);
+  }
+
+  // circular table (hidden initially)
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  table.visible = false;
+  sceneGroup.add(table);
+
+  // info anchors
+  var morphAnc = new THREE.Object3D();
+  morphAnc.position.set(0, 4.5, 0);
+  sceneGroup.add(morphAnc);
+  var morphLabel = addLabel("Linear arrangement — positions 1 and 8 are far apart", morphAnc, 0, "box-label");
+
+  var keyAnc = new THREE.Object3D();
+  keyAnc.position.set(0, 3.2, 0);
+  sceneGroup.add(keyAnc);
+  var keyLabel = addLabel("", keyAnc, 0, "highlight-label");
+
+  animState.data = {
+    chairs: chairs, spheres: spheres, table: table,
+    lineX: lineX, lineZ: lineZ, circXArr: circXArr, circZArr: circZArr,
+    morphLabel: morphLabel, keyLabel: keyLabel, N: N, R: R
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var morphStart = 2, morphDur = 3;
+
+    if (t < morphStart) {
+      // static line phase
+      d.keyLabel.textContent = "";
+    } else if (t < morphStart + morphDur) {
+      // morphing
+      var p = easeOut((t - morphStart) / morphDur);
+      d.table.visible = (p > 0.3);
+      for (var i = 0; i < d.N; i++) {
+        var mx = d.lineX[i] + (d.circXArr[i] - d.lineX[i]) * p;
+        var mz = d.lineZ[i] + (d.circZArr[i] - d.lineZ[i]) * p;
+        var angle = circAngle(i, d.N) + Math.PI;
+        d.chairs[i].position.set(mx, 0, mz);
+        d.chairs[i].rotation.y = angle * p;
+        d.spheres[i].position.set(mx, 0.85, mz);
+      }
+      d.morphLabel.textContent = "Bending the line into a circle...";
+      d.keyLabel.textContent = "";
+    } else {
+      // circle complete
+      for (var j = 0; j < d.N; j++) {
+        d.chairs[j].position.set(d.circXArr[j], 0, d.circZArr[j]);
+        d.chairs[j].rotation.y = circAngle(j, d.N) + Math.PI;
+        d.spheres[j].position.set(d.circXArr[j], 0.85, d.circZArr[j]);
+      }
+      d.table.visible = true;
+      d.morphLabel.textContent = "Endpoints DISAPPEAR — positions 1 and 8 are now neighbours!";
+
+      // pulse positions 1 and 8
+      var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+      d.spheres[0].material.color.setHex(CORAL);
+      d.spheres[0].material.emissive.setRGB(0.25 * pulse, 0.05 * pulse, 0.05 * pulse);
+      d.spheres[7].material.color.setHex(CORAL);
+      d.spheres[7].material.emissive.setRGB(0.25 * pulse, 0.05 * pulse, 0.05 * pulse);
+
+      d.keyLabel.textContent = "Key: In a circle, EVERY position has exactly 2 neighbours";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 2 — Clockwise and Anticlockwise Navigation
+   =========================================================== */
+function buildScene2() {
+  camera.position.set(0, 14, 10);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  var N = 8, R = 4.5;
+
+  // table
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  sceneGroup.add(table);
+
+  var spheres = [];
+  for (var i = 0; i < N; i++) {
+    var ch = placeChairCircle(i, N, R);
+    sceneGroup.add(ch);
+    var s = makePersonSphere(i, N, R, INDIGO);
+    sceneGroup.add(s);
+    addLabel("" + (i + 1), s, 0.55, "box-label");
+    spheres.push(s);
+  }
+
+  // animated tracer sphere
+  var tracer = makeSphere(0.25, GREEN);
+  tracer.position.set(0, 1.5, 0);
+  sceneGroup.add(tracer);
+
+  // status label
+  var stAnc = new THREE.Object3D();
+  stAnc.position.set(0, 4.5, 0);
+  sceneGroup.add(stAnc);
+  var stLabel = addLabel("", stAnc, 0, "box-label");
+  stLabel.style.fontSize = "14px";
+
+  var ruleAnc = new THREE.Object3D();
+  ruleAnc.position.set(0, 3.3, 0);
+  sceneGroup.add(ruleAnc);
+  var ruleLabel = addLabel("CW and ACW are the compass of circular arrangements", ruleAnc, 0, "highlight-label");
+
+  // phases: CW full, ACW full, CW counting, ACW counting
+  var phases = [
+    { label: "Clockwise: 1→2→3→4→5→6→7→8→1", dir: 1, start: 0, steps: 8, from: 0, counting: false },
+    { label: "Anticlockwise: 1→8→7→6→5→4→3→2→1", dir: -1, start: 0, steps: 8, from: 0, counting: false },
+    { label: "3 positions CW from seat 2 → 2→3→4→5", dir: 1, start: 1, steps: 3, from: 1, counting: true },
+    { label: "3 positions ACW from seat 2 → 2→1→8→7", dir: -1, start: 1, steps: 3, from: 1, counting: true }
+  ];
+
+  animState.data = { spheres: spheres, tracer: tracer, stLabel: stLabel, phases: phases, N: N, R: R, phaseIdx: 0, stepTime: 0 };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var phaseDur = 5;
+    var pi = Math.floor(t / phaseDur) % d.phases.length;
+    var pt = t - pi * phaseDur;
+    var ph = d.phases[pi];
+
+    d.stLabel.textContent = ph.label;
+
+    // reset colors
+    for (var i = 0; i < d.N; i++) {
+      d.spheres[i].material.color.setHex(INDIGO);
+      d.spheres[i].material.emissive.setHex(0x000000);
+    }
+
+    var stepInterval = phaseDur / (ph.steps + 1.5);
+    var currentStep = Math.min(Math.floor(pt / stepInterval), ph.steps);
+    var curIdx = ((ph.start + ph.dir * currentStep) % d.N + d.N) % d.N;
+
+    // highlight start
+    d.spheres[ph.start].material.color.setHex(GREEN);
+    // highlight current
+    d.spheres[curIdx].material.color.setHex(CORAL);
+    var pulse = 0.5 + 0.5 * Math.sin(t * 6);
+    d.spheres[curIdx].material.emissive.setRGB(0.2 * pulse, 0.05 * pulse, 0.05 * pulse);
+
+    // move tracer
+    var angle = circAngle(curIdx, d.N);
+    d.tracer.position.set(Math.sin(angle) * (d.R + 1), 1.5, -Math.cos(angle) * (d.R + 1));
+    d.tracer.material.color.setHex(ph.dir === 1 ? GREEN : CORAL);
+
+    // highlight path
+    if (ph.counting) {
+      var dest = ((ph.start + ph.dir * ph.steps) % d.N + d.N) % d.N;
+      if (currentStep >= ph.steps) {
+        d.spheres[dest].material.color.setHex(AMBER);
+        d.spheres[dest].material.emissive.setRGB(0.3, 0.2, 0.0);
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 3 — Opposite Position Formula
+   =========================================================== */
+function buildScene3() {
+  camera.position.set(0, 12, 12);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  var N = 8, R = 4.5;
+
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  sceneGroup.add(table);
+
+  var spheres = [];
+  for (var i = 0; i < N; i++) {
+    var ch = placeChairCircle(i, N, R);
+    sceneGroup.add(ch);
+    var s = makePersonSphere(i, N, R, INDIGO);
+    sceneGroup.add(s);
+    addLabel("" + (i + 1), s, 0.55, "box-label");
+    spheres.push(s);
+  }
+
+  // diameter lines (initially hidden)
+  var pairs = [[0,4],[1,5],[2,6],[3,7]];
+  var dLines = [];
+  for (var p = 0; p < pairs.length; p++) {
+    var a = pairs[p][0], b = pairs[p][1];
+    var ax = Math.sin(circAngle(a, N)) * (R + 1);
+    var az = -Math.cos(circAngle(a, N)) * (R + 1);
+    var bx = Math.sin(circAngle(b, N)) * (R + 1);
+    var bz = -Math.cos(circAngle(b, N)) * (R + 1);
+    var ln = makeLine(
+      new THREE.Vector3(ax, 0.5, az),
+      new THREE.Vector3(bx, 0.5, bz), AMBER
+    );
+    ln.visible = false;
+    sceneGroup.add(ln);
+    dLines.push(ln);
+  }
+
+  // center dot
+  var center = makeSphere(0.15, CORAL);
+  center.position.set(0, 0.5, 0);
+  sceneGroup.add(center);
+  addLabel("Center", center, 0.4, "box-label");
+
+  // formula label
+  var fAnc = new THREE.Object3D();
+  fAnc.position.set(0, 4.5, 0);
+  sceneGroup.add(fAnc);
+  var fLabel = addLabel("Opposite of p = (p + n/2) mod n", fAnc, 0, "highlight-label");
+
+  // warning label
+  var wAnc = new THREE.Object3D();
+  wAnc.position.set(0, 3.2, 0);
+  sceneGroup.add(wAnc);
+  var wLabel = addLabel("", wAnc, 0, "trap-label");
+
+  animState.data = {
+    spheres: spheres, dLines: dLines, pairs: pairs,
+    fLabel: fLabel, wLabel: wLabel, N: N, R: R
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // reset
+    for (var i = 0; i < d.N; i++) {
+      d.spheres[i].material.color.setHex(INDIGO);
+      d.spheres[i].material.emissive.setHex(0x000000);
+    }
+
+    var cycleDur = 16;
+    var ct = t % cycleDur;
+
+    if (ct < 12) {
+      // cycle through pairs one at a time, then show all
+      var pairIdx = Math.min(Math.floor(ct / 3), 3);
+
+      for (var j = 0; j < d.dLines.length; j++) {
+        d.dLines[j].visible = (j <= pairIdx);
+      }
+
+      // highlight current pair
+      var ca = d.pairs[pairIdx][0], cb = d.pairs[pairIdx][1];
+      var pulse = 0.5 + 0.5 * Math.sin(t * 5);
+      d.spheres[ca].material.color.setHex(TEAL);
+      d.spheres[ca].material.emissive.setRGB(0.15 * pulse, 0.15 * pulse, 0.1 * pulse);
+      d.spheres[cb].material.color.setHex(CORAL);
+      d.spheres[cb].material.emissive.setRGB(0.2 * pulse, 0.05 * pulse, 0.05 * pulse);
+
+      d.fLabel.textContent = "Opposite of " + (ca + 1) + " = " + (ca + 1) + " + " + (d.N / 2) + " = " + (cb + 1);
+      d.wLabel.textContent = "";
+    } else {
+      // show all lines
+      for (var k = 0; k < d.dLines.length; k++) d.dLines[k].visible = true;
+
+      // highlight all pairs
+      for (var m = 0; m < d.pairs.length; m++) {
+        d.spheres[d.pairs[m][0]].material.color.setHex(TEAL);
+        d.spheres[d.pairs[m][1]].material.color.setHex(CORAL);
+      }
+      d.fLabel.textContent = "All 4 diameter lines pass through the center";
+      d.wLabel.textContent = "WARNING: Opposite only exists when n is EVEN. For odd n, NO exact opposite!";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 4 — Facing Center vs Facing Outward
+   =========================================================== */
+function buildScene4() {
+  camera.position.set(0, 12, 14);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  var N = 8, R = 4.5;
+
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  sceneGroup.add(table);
+
+  // person markers as cones (pointing inward = facing center)
+  var persons = [], noses = [];
+  for (var i = 0; i < N; i++) {
+    var angle = circAngle(i, N);
+    var px = Math.sin(angle) * (R + 1);
+    var pz = -Math.cos(angle) * (R + 1);
+    var body = makeCyl(0.3, 0.3, 0.9, INDIGO);
+    body.position.set(px, 0.5, pz);
+    sceneGroup.add(body);
+
+    // nose cone to show facing direction
+    var nose = makeCyl(0.1, 0.02, 0.4, CORAL);
+    nose.rotation.x = Math.PI / 2;
+    var noseAngle = angle + Math.PI; // facing center
+    nose.position.set(
+      px + Math.sin(noseAngle) * 0.4,
+      0.7,
+      pz - Math.cos(noseAngle) * 0.4
+    );
+    nose.rotation.y = noseAngle;
+    sceneGroup.add(nose);
+    noses.push({ mesh: nose, baseAngle: angle });
+
+    addLabel("" + (i + 1), body, 0.8, "box-label");
+    persons.push({ body: body, angle: angle, px: px, pz: pz });
+  }
+
+  // arrows for person at position 1 (index 0)
+  var p1Angle = circAngle(0, N);
+  var p1x = Math.sin(p1Angle) * (R + 1);
+  var p1z = -Math.cos(p1Angle) * (R + 1);
+
+  // CW arrow (left when facing center)
+  var cwArrow = makeArrow(
+    new THREE.Vector3(p1x, 1.3, p1z),
+    new THREE.Vector3(p1x + 2.5, 1.3, p1z + 0.5), GREEN, 0.35
+  );
+  sceneGroup.add(cwArrow);
+  var cwAnc = new THREE.Object3D();
+  cwAnc.position.set(p1x + 3, 1.6, p1z);
+  sceneGroup.add(cwAnc);
+  var cwLabel = addLabel("Left → CW", cwAnc, 0, "box-label");
+  cwLabel.style.color = GREEN_S;
+
+  // ACW arrow (right when facing center)
+  var acwArrow = makeArrow(
+    new THREE.Vector3(p1x, 1.3, p1z),
+    new THREE.Vector3(p1x - 2.5, 1.3, p1z + 0.5), CORAL, 0.35
+  );
+  sceneGroup.add(acwArrow);
+  var acwAnc = new THREE.Object3D();
+  acwAnc.position.set(p1x - 3, 1.6, p1z);
+  sceneGroup.add(acwAnc);
+  var acwLabel = addLabel("Right → ACW", acwAnc, 0, "box-label");
+  acwLabel.style.color = CORAL_S;
+
+  // phase label
+  var phAnc = new THREE.Object3D();
+  phAnc.position.set(0, 5, 0);
+  sceneGroup.add(phAnc);
+  var phLabel = addLabel("FACING CENTER: Left = CW, Right = ACW", phAnc, 0, "highlight-label");
+
+  // warning label
+  var warnAnc = new THREE.Object3D();
+  warnAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(warnAnc);
+  var warnLabel = addLabel("", warnAnc, 0, "trap-label");
+
+  animState.data = {
+    persons: persons, noses: noses, phLabel: phLabel, warnLabel: warnLabel,
+    cwLabel: cwLabel, acwLabel: acwLabel,
+    cwArrow: cwArrow, acwArrow: acwArrow,
+    N: N, R: R
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var halfCycle = 8;
+    var facingCenter = (Math.floor(t / halfCycle) % 2 === 0);
+
+    for (var i = 0; i < d.N; i++) {
+      var a = d.persons[i].angle;
+      var noseDir = facingCenter ? (a + Math.PI) : a; // center or outward
+      var nx = d.persons[i].px + Math.sin(noseDir) * 0.4;
+      var nz = d.persons[i].pz - Math.cos(noseDir) * 0.4;
+      d.noses[i].mesh.position.set(nx, 0.7, nz);
+      d.noses[i].mesh.rotation.y = noseDir;
+    }
+
+    if (facingCenter) {
+      d.phLabel.textContent = "FACING CENTER: Left = CW, Right = ACW";
+      d.cwLabel.textContent = "Left → CW";
+      d.cwLabel.style.color = GREEN_S;
+      d.acwLabel.textContent = "Right → ACW";
+      d.acwLabel.style.color = CORAL_S;
+      d.warnLabel.textContent = "";
+      for (var j = 0; j < d.N; j++) d.persons[j].body.material.color.setHex(INDIGO);
+    } else {
+      d.phLabel.textContent = "FACING OUTWARD: Left = ACW, Right = CW";
+      d.cwLabel.textContent = "Right → CW";
+      d.cwLabel.style.color = CORAL_S;
+      d.acwLabel.textContent = "Left → ACW";
+      d.acwLabel.style.color = GREEN_S;
+      d.warnLabel.textContent = "EVERYTHING REVERSES when facing direction changes!";
+      for (var k = 0; k < d.N; k++) d.persons[k].body.material.color.setHex(AMBER);
+    }
+
+    // pulse person 1
+    var pulse = 0.5 + 0.5 * Math.sin(t * 5);
+    d.persons[0].body.material.emissive.setRGB(0.15 * pulse, 0.1 * pulse, 0.05 * pulse);
+  };
+}
+
+/* ===========================================================
+   SCENE 5 — Rotation Principle (n-1)!
+   =========================================================== */
+function buildScene5() {
+  camera.position.set(0, 12, 14);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  var N = 4, R = 3.5;
+  var names = ["A", "B", "C", "D"];
+  var colors = [TEAL, CORAL, AMBER, GREEN];
+
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  sceneGroup.add(table);
+
+  var spheres = [];
+  for (var i = 0; i < N; i++) {
+    var ch = placeChairCircle(i, N, R);
+    sceneGroup.add(ch);
+    var s = makePersonSphere(i, N, R, colors[i]);
+    sceneGroup.add(s);
+    addLabel(names[i], s, 0.55, "box-label");
+    spheres.push(s);
+  }
+
+  // position number labels at inner edge
+  for (var p = 0; p < N; p++) {
+    var pa = circAngle(p, N);
+    var posAnc = new THREE.Object3D();
+    posAnc.position.set(Math.sin(pa) * (R - 0.5), 0.15, -Math.cos(pa) * (R - 0.5));
+    sceneGroup.add(posAnc);
+    addLabel("pos " + (p + 1), posAnc, 0, "box-label");
+  }
+
+  // info labels
+  var topAnc = new THREE.Object3D();
+  topAnc.position.set(0, 5.5, 0);
+  sceneGroup.add(topAnc);
+  var topLabel = addLabel("", topAnc, 0, "box-label");
+  topLabel.style.fontSize = "14px";
+
+  var formulaAnc = new THREE.Object3D();
+  formulaAnc.position.set(0, 4.2, 0);
+  sceneGroup.add(formulaAnc);
+  var formulaLabel = addLabel("Fix A at pos 1 → remaining 3! = 6 unique arrangements", formulaAnc, 0, "highlight-label");
+
+  // all 6 permutations of B,C,D shown as text
+  var perms = ["BCD", "BDC", "CBD", "CDB", "DBC", "DCB"];
+  var permAnc = new THREE.Object3D();
+  permAnc.position.set(0, -3, 0);
+  sceneGroup.add(permAnc);
+  addLabel("A fixed | Perms: " + perms.join(", ") + " = 3! = 6", permAnc, 0, "box-label");
+
+  animState.data = {
+    spheres: spheres, N: N, R: R, names: names, colors: colors,
+    topLabel: topLabel, rotOffset: 0
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // rotate all people to demonstrate equivalent arrangements
+    var rotateDur = 4;
+    var cycleDur = 6;
+    var ct = t % cycleDur;
+    var rotTarget = Math.floor(t / cycleDur) % d.N;
+
+    var rotAngle = (2 * Math.PI / d.N) * rotTarget;
+    // smooth rotation
+    var smoothRot = rotAngle;
+    if (ct < 1.5) {
+      var prevRot = (2 * Math.PI / d.N) * ((rotTarget - 1 + d.N) % d.N);
+      var p = easeOut(ct / 1.5);
+      smoothRot = prevRot + (rotAngle - prevRot + 2 * Math.PI) % (2 * Math.PI) * p;
+      if (rotTarget === 0 && ct < 1.5) smoothRot = prevRot * (1 - p);
+    }
+
+    for (var i = 0; i < d.N; i++) {
+      var a = circAngle(i, d.N) + smoothRot;
+      d.spheres[i].position.set(
+        Math.sin(a) * (d.R + 1), 0.85, -Math.cos(a) * (d.R + 1)
+      );
+    }
+
+    if (rotTarget === 0) {
+      d.topLabel.textContent = "Original: A(1), B(2), C(3), D(4)";
+    } else {
+      d.topLabel.textContent = "Rotated by " + rotTarget + ": SAME relative arrangement! Not a new permutation.";
+    }
+    d.topLabel.style.color = (rotTarget === 0) ? TEAL_S : CORAL_S;
+  };
+}
+
+/* ===========================================================
+   SCENE 6 — Solved Example: 8 People Facing Center
+   =========================================================== */
+function buildScene6() {
+  camera.position.set(0, 14, 12);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  var N = 8, R = 4.5;
+  var names = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  var posColors = [TEAL, GREEN, AMBER, INDIGO, CORAL, 0x8b5cf6, 0xd97706, 0x0891b2];
+  // final arrangement: A=0, B=1, C=2, D=5, E=4, F=3, G=6, H=7
+  var finalPos = [0, 1, 2, 5, 4, 3, 6, 7]; // person index -> position index
+
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  sceneGroup.add(table);
+
+  // chairs at all positions
+  for (var c = 0; c < N; c++) {
+    var ch = placeChairCircle(c, N, R);
+    sceneGroup.add(ch);
+    // position labels
+    var posAngle = circAngle(c, N);
+    var posAnc = new THREE.Object3D();
+    posAnc.position.set(Math.sin(posAngle) * (R - 0.3), 0.1, -Math.cos(posAngle) * (R - 0.3));
+    sceneGroup.add(posAnc);
+    addLabel("P" + (c + 1), posAnc, 0, "box-label");
+  }
+
+  // person spheres (hidden initially)
+  var spheres = [], personLabels = [];
+  for (var i = 0; i < N; i++) {
+    var s = makeSphere(0.35, posColors[i]);
+    s.visible = false;
+    var fi = finalPos[i];
+    var fa = circAngle(fi, N);
+    s.position.set(Math.sin(fa) * (R + 1), 0.85, -Math.cos(fa) * (R + 1));
+    sceneGroup.add(s);
+    spheres.push(s);
+
+    var lAnc = new THREE.Object3D();
+    lAnc.position.copy(s.position);
+    sceneGroup.add(lAnc);
+    var pl = addLabel(names[i], lAnc, 0.55, "box-label");
+    pl.style.display = "none";
+    personLabels.push({ anc: lAnc, el: pl });
+  }
+
+  // step labels
+  var steps = [
+    "Step 1: A sits opposite E → A at pos 1, E at pos 5",
+    "Step 2: B is immediate left of A → Left=CW → B at pos 2",
+    "Step 3: H is 3rd to left of E → CW from 5: 6→7→8 → H at pos 8",
+    "Step 4: D sits opposite B → B at 2 → D at pos 6",
+    "Step 5: F is immediate right of E → Right=ACW → F at pos 4",
+    "Step 6: C not adjacent to D → C at pos 3, G at pos 7",
+    "Result: H(pos 8) is opposite F(pos 4) ✓"
+  ];
+  // which persons appear at each step
+  var stepPersons = [
+    [0, 4],       // A, E
+    [1],          // B
+    [7],          // H
+    [3],          // D
+    [5],          // F
+    [2, 6],       // C, G
+    []            // result — no new people
+  ];
+
+  var stepAnc = new THREE.Object3D();
+  stepAnc.position.set(0, 5.5, 0);
+  sceneGroup.add(stepAnc);
+  var stepLabel = addLabel("", stepAnc, 0, "box-label");
+  stepLabel.style.fontSize = "14px";
+
+  var resultAnc = new THREE.Object3D();
+  resultAnc.position.set(0, 4, 0);
+  sceneGroup.add(resultAnc);
+  var resultLabel = addLabel("", resultAnc, 0, "highlight-label");
+
+  // diameter line for A-E
+  var dLine = makeLine(
+    new THREE.Vector3(Math.sin(circAngle(0, N)) * (R + 1), 0.5, -Math.cos(circAngle(0, N)) * (R + 1)),
+    new THREE.Vector3(Math.sin(circAngle(4, N)) * (R + 1), 0.5, -Math.cos(circAngle(4, N)) * (R + 1)),
+    AMBER
+  );
+  dLine.visible = false;
+  sceneGroup.add(dLine);
+
+  animState.data = {
+    spheres: spheres, personLabels: personLabels, stepLabel: stepLabel,
+    resultLabel: resultLabel, steps: steps, stepPersons: stepPersons,
+    dLine: dLine, N: N, revealed: []
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var stepDur = 3.5;
+    var si = Math.min(Math.floor(t / stepDur), d.steps.length - 1);
+
+    d.stepLabel.textContent = d.steps[si];
+
+    // reveal persons up to current step
+    for (var st = 0; st <= si && st < d.stepPersons.length; st++) {
+      for (var j = 0; j < d.stepPersons[st].length; j++) {
+        var pi = d.stepPersons[st][j];
+        if (d.revealed.indexOf(pi) === -1) {
+          d.revealed.push(pi);
+          d.spheres[pi].visible = true;
+          d.personLabels[pi].el.style.display = "";
+        }
+      }
+    }
+
+    // animate appearing
+    for (var r = 0; r < d.revealed.length; r++) {
+      var ri = d.revealed[r];
+      var sc = d.spheres[ri].scale.x;
+      if (sc < 1) {
+        var ns = Math.min(sc + dt * 3, 1);
+        d.spheres[ri].scale.set(ns, ns, ns);
+      }
+    }
+
+    // show diameter line from step 1
+    d.dLine.visible = (si >= 0);
+
+    // result highlight
+    if (si >= d.steps.length - 1) {
+      d.resultLabel.textContent = "Answer: H is opposite F!";
+      var pulse = 0.5 + 0.5 * Math.sin(t * 5);
+      // pulse H and F
+      d.spheres[7].material.emissive.setRGB(0.2 * pulse, 0.15 * pulse, 0.1 * pulse);
+      d.spheres[5].material.emissive.setRGB(0.2 * pulse, 0.15 * pulse, 0.1 * pulse);
+    } else {
+      d.resultLabel.textContent = "";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 7 — Mixed Facing Arrangement
+   =========================================================== */
+function buildScene7() {
+  camera.position.set(0, 14, 12);
+  controls.target.set(0, 0, 0);
+  controls.update();
+
+  var N = 6, R = 4;
+  var names = ["P", "R", "T", "S", "U", "Q"];
+  // P=0(center), R=1(center), T=2(center), S=3(outward), U=4(outward), Q=5(outward)
+  var facingCenter = [true, true, true, false, false, false];
+  var personColors = [TEAL, GREEN, AMBER, CORAL, INDIGO, 0x8b5cf6];
+
+  var table = makeCircularTable(R);
+  table.position.set(0, -0.1, 0);
+  sceneGroup.add(table);
+
+  var persons = [], arrows = [];
+  for (var i = 0; i < N; i++) {
+    var ch = placeChairCircle(i, N, R);
+    sceneGroup.add(ch);
+
+    var angle = circAngle(i, N);
+    var px = Math.sin(angle) * (R + 1);
+    var pz = -Math.cos(angle) * (R + 1);
+
+    // body
+    var body = makeCyl(0.3, 0.3, 0.9, personColors[i]);
+    body.position.set(px, 0.5, pz);
+    sceneGroup.add(body);
+
+    // nose showing direction
+    var noseDir = facingCenter[i] ? (angle + Math.PI) : angle;
+    var nose = makeCyl(0.1, 0.02, 0.4, facingCenter[i] ? GREEN : CORAL);
+    nose.rotation.x = Math.PI / 2;
+    nose.position.set(px + Math.sin(noseDir) * 0.45, 0.7, pz - Math.cos(noseDir) * 0.45);
+    nose.rotation.y = noseDir;
+    sceneGroup.add(nose);
+
+    addLabel(names[i] + (facingCenter[i] ? " (in)" : " (out)"), body, 0.9, "box-label");
+    persons.push({ body: body, px: px, pz: pz, angle: angle, fc: facingCenter[i] });
+  }
+
+  // position labels
+  for (var p = 0; p < N; p++) {
+    var pa = circAngle(p, N);
+    var posAnc = new THREE.Object3D();
+    posAnc.position.set(Math.sin(pa) * (R - 0.3), 0.1, -Math.cos(pa) * (R - 0.3));
+    sceneGroup.add(posAnc);
+    addLabel("" + (p + 1), posAnc, 0, "box-label");
+  }
+
+  // step display
+  var placementSteps = [
+    "P opposite S → P at pos 1, S at pos 4",
+    "Q to the right of P → P faces center, right=ACW → Q at pos 6",
+    "R adjacent to P → R at pos 2",
+    "T opposite Q → Q at 6 → T at pos 3",
+    "U in remaining → U at pos 5",
+    "For P(center): left=CW | For Q(outward): left=ACW — always check facing!"
+  ];
+
+  var stepAnc = new THREE.Object3D();
+  stepAnc.position.set(0, 5.5, 0);
+  sceneGroup.add(stepAnc);
+  var stepLabel = addLabel("", stepAnc, 0, "box-label");
+  stepLabel.style.fontSize = "14px";
+
+  var warnAnc = new THREE.Object3D();
+  warnAnc.position.set(0, 4, 0);
+  sceneGroup.add(warnAnc);
+  var warnLabel = addLabel("", warnAnc, 0, "trap-label");
+
+  // visibility per step: which person indices to show
+  var stepShow = [[0, 3], [5], [1], [2], [4], []];
+  var revealed = [];
+
+  animState.data = {
+    persons: persons, stepLabel: stepLabel, warnLabel: warnLabel,
+    placementSteps: placementSteps, stepShow: stepShow,
+    revealed: revealed, N: N
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+    var stepDur = 4;
+    var si = Math.min(Math.floor(t / stepDur), d.placementSteps.length - 1);
+
+    d.stepLabel.textContent = d.placementSteps[si];
+
+    // reveal persons
+    for (var st = 0; st <= si && st < d.stepShow.length; st++) {
+      for (var j = 0; j < d.stepShow[st].length; j++) {
+        var pi = d.stepShow[st][j];
+        if (d.revealed.indexOf(pi) === -1) {
+          d.revealed.push(pi);
+        }
+      }
+    }
+
+    // dim unrevealed, brighten revealed
+    for (var i = 0; i < d.N; i++) {
+      if (d.revealed.indexOf(i) >= 0) {
+        d.persons[i].body.material.opacity = 1.0;
+        d.persons[i].body.material.transparent = false;
+      } else {
+        d.persons[i].body.material.opacity = 0.2;
+        d.persons[i].body.material.transparent = true;
+      }
+    }
+
+    // show warning on last step
+    if (si >= d.placementSteps.length - 1) {
+      d.warnLabel.textContent = "Mixed facing is the HARDEST — check each person's direction!";
+      // pulse all
+      var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+      for (var k = 0; k < d.N; k++) {
+        d.persons[k].body.material.emissive.setRGB(0.12 * pulse, 0.08 * pulse, 0.04 * pulse);
+      }
+    } else {
+      d.warnLabel.textContent = "";
+    }
+  };
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  var dt = Math.min(clock.getDelta(), 0.1);
+  if (animState.update) animState.update(dt);
+  controls.update();
+  updateLabels();
+  renderer.render(activeScene, camera);
+}
+
+/* ===== INIT ===== */
+initRenderer();
+loadScene(0);
+animate();
+</script>
+</body>
+</html>

@@ -1,0 +1,1555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 4: Double-Row Seating Arrangements</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+#title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 48px;
+  background: #1a8a8a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  z-index: 10;
+  letter-spacing: 0.3px;
+}
+#canvas-container {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 70%;
+  height: calc(100vh - 48px);
+  background: #f8f8f8;
+}
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100vh;
+  background: #fff;
+  border-left: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#info-header {
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a8a8a;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+#info-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+}
+#info-body h3 {
+  color: #1a8a8a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+#info-body ul,
+#info-body ol {
+  margin: 8px 0 16px 18px;
+}
+#info-body li {
+  margin-bottom: 4px;
+}
+#info-body .key-point {
+  background: #e8f5f5;
+  border-left: 3px solid #1a8a8a;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#info-body .warn {
+  background: #fff3e0;
+  border-left: 3px solid #e8a317;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#nav-bar {
+  padding: 14px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+}
+#nav-bar .counter {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+#nav-bar button {
+  padding: 7px 18px;
+  border: 1px solid #1a8a8a;
+  background: #fff;
+  color: #1a8a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+#nav-bar button:hover {
+  background: #1a8a8a;
+  color: #fff;
+}
+#nav-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+  color: #1a8a8a;
+}
+#scene-title {
+  position: fixed;
+  top: 56px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid #ddd;
+}
+.label-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.label-overlay.box-label {
+  background: rgba(255, 255, 255, 0.90);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.label-overlay.highlight-label {
+  background: rgba(217, 79, 79, 0.12);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+}
+.label-overlay.trap-label {
+  background: rgba(255, 240, 240, 0.95);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 2px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="title-bar">Chapter 4: Double-Row Seating Arrangements</div>
+<div id="canvas-container"></div>
+<div id="scene-title"></div>
+
+<div id="info-panel">
+  <div id="info-header">Scene Information</div>
+  <div id="info-body"></div>
+  <div id="nav-bar">
+    <button id="btn-prev" onclick="prevScene()">Previous</button>
+    <span class="counter" id="counter">Scene 1 of 6</span>
+    <button id="btn-next" onclick="nextScene()">Next</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+
+/* ===== COLOR PALETTE ===== */
+var TEAL = 0x1a8a8a, CORAL = 0xd94f4f, AMBER = 0xe8a317;
+var INDIGO = 0x4a5da8, GREEN = 0x2e8b57;
+var DARK = 0x333333, LGRAY = 0xdddddd;
+
+var TEAL_S = "#1a8a8a", CORAL_S = "#d94f4f", AMBER_S = "#e8a317";
+var INDIGO_S = "#4a5da8", GREEN_S = "#2e8b57";
+
+/* ===== GLOBALS ===== */
+var renderer, camera, controls, clock;
+var currentScene = 0, totalScenes = 6;
+var container = document.getElementById("canvas-container");
+var labelPool = [];
+var sceneGroup, activeScene;
+var animState = { time: 0, phase: 0, data: {}, update: null };
+
+/* ===== RENDERER SETUP ===== */
+function initRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0xf8f8f8);
+  container.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(
+    50, container.clientWidth / container.clientHeight, 0.1, 200
+  );
+  camera.position.set(0, 8, 18);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 4;
+  controls.maxDistance = 60;
+  clock = new THREE.Clock();
+}
+
+function onResize() {
+  var w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener("resize", onResize);
+
+/* ===== LABEL SYSTEM ===== */
+function clearLabels() {
+  for (var i = 0; i < labelPool.length; i++) labelPool[i].el.remove();
+  labelPool.length = 0;
+}
+
+function addLabel(text, obj, offsetY, cls) {
+  var el = document.createElement("div");
+  el.className = "label-overlay" + (cls ? " " + cls : "");
+  el.textContent = text;
+  container.appendChild(el);
+  labelPool.push({ el: el, obj: obj, offsetY: offsetY || 0 });
+  return el;
+}
+
+function updateLabels() {
+  var w = container.clientWidth, h = container.clientHeight;
+  var v = new THREE.Vector3();
+  for (var i = 0; i < labelPool.length; i++) {
+    var l = labelPool[i];
+    if (!l.obj || !l.obj.parent) { l.el.style.display = "none"; continue; }
+    l.obj.getWorldPosition(v);
+    v.y += l.offsetY;
+    v.project(camera);
+    if (v.z > 1) { l.el.style.display = "none"; continue; }
+    l.el.style.display = "";
+    l.el.style.left = ((v.x * 0.5 + 0.5) * w) + "px";
+    l.el.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  }
+}
+
+/* ===== GEOMETRY HELPERS ===== */
+function mat(color, em) {
+  return new THREE.MeshPhongMaterial({ color: color, emissive: em || 0, shininess: 60 });
+}
+function matT(color, op) {
+  return new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: op, shininess: 40 });
+}
+function lineMat(color) {
+  return new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+}
+function dashedLineMat(color) {
+  return new THREE.LineDashedMaterial({ color: color, linewidth: 2, dashSize: 0.3, gapSize: 0.15 });
+}
+function makeBox(w, h, d, c) {
+  return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+}
+function makeSphere(r, c) {
+  return new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), mat(c));
+}
+function makeCyl(rt, rb, h, c) {
+  return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 24), mat(c));
+}
+function makeLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(g, lineMat(c));
+}
+function makeDashedLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  var line = new THREE.Line(g, dashedLineMat(c));
+  line.computeLineDistances();
+  return line;
+}
+function makeArrow(from, to, c, hl) {
+  var dir = new THREE.Vector3().subVectors(to, from);
+  var len = dir.length(); dir.normalize();
+  return new THREE.ArrowHelper(dir, from, len, c, hl || 0.4, 0.2);
+}
+
+function makeChair(x, y, z) {
+  var g = new THREE.Group();
+  var seat = makeBox(1.0, 0.12, 0.9, 0xcccccc);
+  g.add(seat);
+  var back = makeBox(1.0, 0.8, 0.1, 0xbbbbbb);
+  back.position.set(0, 0.4, -0.4);
+  g.add(back);
+  var legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+  var legM = mat(0x999999);
+  [[-0.38, -0.31, -0.32], [0.38, -0.31, -0.32],
+   [-0.38, -0.31, 0.32], [0.38, -0.31, 0.32]].forEach(function(o) {
+    var leg = new THREE.Mesh(legGeo, legM);
+    leg.position.set(o[0], o[1], o[2]);
+    g.add(leg);
+  });
+  g.position.set(x, y, z);
+  return g;
+}
+
+function makePerson(x, y, z, color) {
+  var g = new THREE.Group();
+  var body = makeCyl(0.25, 0.25, 0.7, color);
+  body.position.set(0, 0.35, 0);
+  g.add(body);
+  var head = makeSphere(0.22, color);
+  head.position.set(0, 0.85, 0);
+  g.add(head);
+  g.position.set(x, y, z);
+  return g;
+}
+
+/* ===== LIGHTING ===== */
+function addLights(sc) {
+  sc.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var d1 = new THREE.DirectionalLight(0xffffff, 0.65);
+  d1.position.set(8, 12, 10); sc.add(d1);
+  var d2 = new THREE.DirectionalLight(0xffffff, 0.3);
+  d2.position.set(-6, 8, -8); sc.add(d2);
+}
+
+function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
+
+/* ===== SCENE INFO ===== */
+var sceneInfo = [
+  {
+    title: "Scene 1: Double Row Construction",
+    header: "Double Row Layout",
+    body: "<h3>Two Parallel Rows Facing Each Other</h3>" +
+      "<p>In double-row (parallel row) problems, two rows of people sit facing " +
+      "each other across a gap — like two sides of a dining table.</p>" +
+      "<ul>" +
+      "<li><b>Row 1 (Top):</b> People face South (downward)</li>" +
+      "<li><b>Row 2 (Bottom):</b> People face North (upward)</li>" +
+      "<li>Each row has positions numbered P1 to P4 (left to right)</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Two rows face EACH OTHER — this is the standard " +
+      "convention in Banking exams (SBI PO, IBPS, RBI).</div>" +
+      "<p>Watch the rows appear one at a time, followed by facing-direction arrows.</p>"
+  },
+  {
+    title: "Scene 2: The Direction Reversal Trap",
+    header: "The #1 Mistake in Double-Row Problems",
+    body: "<h3>LEFT/RIGHT Reverse Between Rows!</h3>" +
+      "<p>This is the single most common source of errors:</p>" +
+      "<div class=\"warn\"><b>CRITICAL TRAP:</b> The word 'LEFT' means OPPOSITE " +
+      "screen directions in the two rows because people face opposite ways!</div>" +
+      "<ul>" +
+      "<li><b>Row 1 (facing South):</b> Left = increasing position (→ on screen)</li>" +
+      "<li><b>Row 2 (facing North):</b> Left = decreasing position (← on screen)</li>" +
+      "</ul>" +
+      "<h3>Formula Table</h3>" +
+      "<ul>" +
+      "<li>Row 1 (South): k left → p+k, k right → p−k</li>" +
+      "<li>Row 2 (North): k left → p−k, k right → p+k</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">SAME WORD 'LEFT' → OPPOSITE DIRECTIONS in different rows! " +
+      "Always determine which row the person is in FIRST.</div>"
+  },
+  {
+    title: "Scene 3: Facing Pairs",
+    header: "Understanding Facing Relationships",
+    body: "<h3>Facing = Same Position, Different Row</h3>" +
+      "<p>When a problem states \"A faces B\", it means:</p>" +
+      "<ul>" +
+      "<li>A and B are in <b>different</b> rows</li>" +
+      "<li>They are at the <b>same</b> position number</li>" +
+      "<li>They directly look at each other across the gap</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Facing = Same position number, Different rows. " +
+      "This is distinct from \"adjacent\" which means same row, next position.</div>" +
+      "<p>Watch the facing pair lines connect corresponding positions.</p>"
+  },
+  {
+    title: "Scene 4: Cross-Row Constraint Chaining",
+    header: "Cross-Row Constraint Propagation",
+    body: "<h3>How Clues Cascade Across Rows</h3>" +
+      "<p>Placing someone in one row can determine positions in the other:</p>" +
+      "<ol>" +
+      "<li>\"B is at Row 1 position 3\" → Place B</li>" +
+      "<li>\"R faces B\" → R at Row 2 position 3</li>" +
+      "<li>\"S is to the left of R\" → Row 2 facing north, left = pos 2</li>" +
+      "<li>\"A is to the right of B\" → Row 1 facing south, right = pos 2</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">Cross-row constraints are the FASTEST way to solve — " +
+      "process 'faces' clues FIRST to bridge between rows.</div>" +
+      "<p>Watch how each constraint propagates with green cascade arrows.</p>"
+  },
+  {
+    title: "Scene 5: Solved Example — 8 People",
+    header: "Full Walkthrough: 8-Person Double Row",
+    body: "<h3>Step-by-Step Solution</h3>" +
+      "<p>Row 1 (facing South): A, B, C, D<br>Row 2 (facing North): P, Q, R, S</p>" +
+      "<ol>" +
+      "<li>B sits 3rd from left in Row 1 → B at pos 3</li>" +
+      "<li>R faces B → R at Row 2 pos 3</li>" +
+      "<li>A is immediate right of B → Row 1 south, right = pos 2 → A at pos 2</li>" +
+      "<li>S is immediate left of R → Row 2 north, left = pos 2 → S at pos 2</li>" +
+      "<li>D not adjacent to A → D not at pos 1 or 3 → D at pos 4, C at pos 1</li>" +
+      "<li>P doesn't face D → D at pos 4 → P not pos 4 → P at pos 1, Q at pos 4</li>" +
+      "</ol>" +
+      "<div class=\"key-point\">Final: Row 1 [C, A, B, D] | Row 2 [P, S, R, Q]</div>"
+  },
+  {
+    title: "Scene 6: Common Traps Catalogue",
+    header: "4 Common Double-Row Traps",
+    body: "<h3>Avoid These Mistakes</h3>" +
+      "<ul>" +
+      "<li><b>Trap 1 — Left/Right Confusion:</b> Forgetting that left/right " +
+      "reverse between rows</li>" +
+      "<li><b>Trap 2 — Faces vs Adjacent:</b> 'Faces' = opposite row; " +
+      "'Adjacent' = same row, next seat</li>" +
+      "<li><b>Trap 3 — Assuming Row Assignment:</b> When the problem doesn't specify " +
+      "which row, consider both possibilities</li>" +
+      "<li><b>Trap 4 — Diagonal Confusion:</b> 'Diagonally opposite' means " +
+      "adjacent position in opposite row</li>" +
+      "</ul>" +
+      "<div class=\"warn\">Each trap shows the WRONG answer in red, then the CORRECT " +
+      "answer in green. Learn to spot these patterns instantly.</div>"
+  }
+];
+
+/* ===== NAVIGATION ===== */
+function updateNav() {
+  document.getElementById("counter").textContent =
+    "Scene " + (currentScene + 1) + " of " + totalScenes;
+  document.getElementById("btn-prev").disabled = (currentScene === 0);
+  document.getElementById("btn-next").disabled = (currentScene === totalScenes - 1);
+  var s = sceneInfo[currentScene];
+  document.getElementById("scene-title").textContent = s.title;
+  document.getElementById("info-header").textContent = s.header;
+  document.getElementById("info-body").innerHTML = s.body;
+}
+function nextScene() { if (currentScene < totalScenes - 1) { currentScene++; loadScene(currentScene); } }
+function prevScene() { if (currentScene > 0) { currentScene--; loadScene(currentScene); } }
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextScene();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevScene();
+});
+
+/* ===== SCENE LOADER ===== */
+function loadScene(idx) {
+  clearLabels();
+  activeScene = new THREE.Scene();
+  activeScene.background = new THREE.Color(0xf8f8f8);
+  addLights(activeScene);
+  sceneGroup = new THREE.Group();
+  activeScene.add(sceneGroup);
+  animState = { time: 0, phase: 0, data: {}, update: null };
+  [buildScene1, buildScene2, buildScene3,
+   buildScene4, buildScene5, buildScene6][idx]();
+  updateNav();
+}
+
+/* ===========================================================
+   SCENE 1 -- Double Row Construction
+   =========================================================== */
+function buildScene1() {
+  camera.position.set(0, 10, 16);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var spacing = 2.2;
+  var rowZ1 = -2.5, rowZ2 = 2.5;
+  var row1Chairs = [], row2Chairs = [], row1Labels = [], row2Labels = [];
+
+  // Row 1 chairs (facing south — backrest toward north/negative-z)
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * spacing;
+    var ch = makeChair(x, 0, rowZ1);
+    ch.rotation.y = Math.PI; // face south
+    ch.scale.set(0, 0, 0);
+    sceneGroup.add(ch);
+    row1Chairs.push(ch);
+    var pAnc = new THREE.Object3D();
+    pAnc.position.set(x, 0.9, rowZ1);
+    sceneGroup.add(pAnc);
+    row1Labels.push(addLabel("P" + (i + 1), pAnc, 0, "box-label"));
+  }
+
+  // Row 2 chairs (facing north — backrest toward south/positive-z)
+  for (var j = 0; j < 4; j++) {
+    var x2 = (j - 1.5) * spacing;
+    var ch2 = makeChair(x2, 0, rowZ2);
+    ch2.scale.set(0, 0, 0);
+    sceneGroup.add(ch2);
+    row2Chairs.push(ch2);
+    var pAnc2 = new THREE.Object3D();
+    pAnc2.position.set(x2, 0.9, rowZ2);
+    sceneGroup.add(pAnc2);
+    row2Labels.push(addLabel("P" + (j + 1), pAnc2, 0, "box-label"));
+  }
+
+  // Row labels
+  var r1Anc = new THREE.Object3D();
+  r1Anc.position.set(5.5, 0.5, rowZ1);
+  sceneGroup.add(r1Anc);
+  var r1Lbl = addLabel("Row 1 — Facing South ↓", r1Anc, 0, "box-label");
+  r1Lbl.style.display = "none";
+
+  var r2Anc = new THREE.Object3D();
+  r2Anc.position.set(5.5, 0.5, rowZ2);
+  sceneGroup.add(r2Anc);
+  var r2Lbl = addLabel("Row 2 — Facing North ↑", r2Anc, 0, "box-label");
+  r2Lbl.style.display = "none";
+
+  // Direction arrows (appear later)
+  var dirArrow1 = makeArrow(
+    new THREE.Vector3(0, 1.5, rowZ1),
+    new THREE.Vector3(0, 1.5, rowZ1 + 2), CORAL, 0.4
+  );
+  dirArrow1.visible = false;
+  sceneGroup.add(dirArrow1);
+
+  var dirArrow2 = makeArrow(
+    new THREE.Vector3(0, 1.5, rowZ2),
+    new THREE.Vector3(0, 1.5, rowZ2 - 2), TEAL, 0.4
+  );
+  dirArrow2.visible = false;
+  sceneGroup.add(dirArrow2);
+
+  // Table between rows
+  var table = makeBox(8, 0.1, 2, 0xe0d5c0);
+  table.position.set(0, -0.2, 0);
+  table.scale.set(0, 0, 0);
+  sceneGroup.add(table);
+
+  // Floor
+  var floor = makeBox(14, 0.04, 10, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  // Convention label
+  var convAnc = new THREE.Object3D();
+  convAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(convAnc);
+  var convLbl = addLabel(
+    "Two rows face EACH OTHER — standard convention in Banking exams",
+    convAnc, 0, "highlight-label"
+  );
+  convLbl.style.display = "none";
+
+  animState.data = {
+    row1Chairs: row1Chairs, row2Chairs: row2Chairs,
+    r1Lbl: r1Lbl, r2Lbl: r2Lbl,
+    dirArrow1: dirArrow1, dirArrow2: dirArrow2,
+    table: table, convLbl: convLbl
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // Phase 1: Row 1 chairs appear (0-2s)
+    for (var i = 0; i < 4; i++) {
+      var e1 = t - i * 0.35;
+      if (e1 > 0) {
+        var s1 = easeOut(e1 / 0.5);
+        d.row1Chairs[i].scale.set(s1, s1, s1);
+      }
+    }
+
+    // Phase 2: Table appears (1.5s)
+    if (t > 1.5) {
+      var ts = easeOut((t - 1.5) / 0.6);
+      d.table.scale.set(ts, ts, ts);
+    }
+
+    // Phase 3: Row 2 chairs appear (2.5s)
+    for (var j = 0; j < 4; j++) {
+      var e2 = t - 2.5 - j * 0.35;
+      if (e2 > 0) {
+        var s2 = easeOut(e2 / 0.5);
+        d.row2Chairs[j].scale.set(s2, s2, s2);
+      }
+    }
+
+    // Phase 4: Row labels (4s)
+    if (t > 4) {
+      d.r1Lbl.style.display = "";
+      d.r2Lbl.style.display = "";
+    }
+
+    // Phase 5: Direction arrows (5s)
+    if (t > 5) {
+      d.dirArrow1.visible = true;
+      d.dirArrow2.visible = true;
+    }
+
+    // Phase 6: Convention label (6.5s)
+    if (t > 6.5) {
+      d.convLbl.style.display = "";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 2 -- The Direction Reversal Trap
+   =========================================================== */
+function buildScene2() {
+  camera.position.set(0, 12, 18);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var spacing = 2.2;
+  var rowZ1 = -3, rowZ2 = 3;
+
+  // Row 1: 4 chairs facing south
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * spacing;
+    var ch = makeChair(x, 0, rowZ1);
+    ch.rotation.y = Math.PI;
+    sceneGroup.add(ch);
+    var pAnc = new THREE.Object3D();
+    pAnc.position.set(x, -0.8, rowZ1);
+    sceneGroup.add(pAnc);
+    addLabel("P" + (i + 1), pAnc, 0, "box-label");
+  }
+
+  // Row 2: 4 chairs facing north
+  for (var j = 0; j < 4; j++) {
+    var x2 = (j - 1.5) * spacing;
+    var ch2 = makeChair(x2, 0, rowZ2);
+    sceneGroup.add(ch2);
+    var pAnc2 = new THREE.Object3D();
+    pAnc2.position.set(x2, -0.8, rowZ2);
+    sceneGroup.add(pAnc2);
+    addLabel("P" + (j + 1), pAnc2, 0, "box-label");
+  }
+
+  // Row labels
+  var r1Anc = new THREE.Object3D();
+  r1Anc.position.set(5.8, 1.2, rowZ1);
+  sceneGroup.add(r1Anc);
+  addLabel("Row 1 (Facing South ↓)", r1Anc, 0, "box-label");
+
+  var r2Anc = new THREE.Object3D();
+  r2Anc.position.set(5.8, 1.2, rowZ2);
+  sceneGroup.add(r2Anc);
+  addLabel("Row 2 (Facing North ↑)", r2Anc, 0, "box-label");
+
+  // Person in Row 1 at position 2
+  var person1 = makePerson((0 - 1.5 + 1) * spacing, 0.15, rowZ1, INDIGO);
+  sceneGroup.add(person1);
+  var p1head = new THREE.Object3D();
+  p1head.position.set((1 - 1.5) * spacing, 1.4, rowZ1);
+  sceneGroup.add(p1head);
+  addLabel("Person at P2", p1head, 0, "box-label");
+
+  // Person in Row 2 at position 2
+  var person2 = makePerson((1 - 1.5) * spacing, 0.15, rowZ2, INDIGO);
+  sceneGroup.add(person2);
+  var p2head = new THREE.Object3D();
+  p2head.position.set((1 - 1.5) * spacing, 1.4, rowZ2);
+  sceneGroup.add(p2head);
+  addLabel("Person at P2", p2head, 0, "box-label");
+
+  // Row 1 LEFT arrow: goes right on screen (from P2 toward P3) because facing south
+  var r1LeftArrow = makeArrow(
+    new THREE.Vector3((1 - 1.5) * spacing + 0.5, 0.7, rowZ1),
+    new THREE.Vector3((2 - 1.5) * spacing - 0.3, 0.7, rowZ1),
+    GREEN, 0.3
+  );
+  r1LeftArrow.visible = false;
+  sceneGroup.add(r1LeftArrow);
+  var r1la = new THREE.Object3D();
+  r1la.position.set((1.5 - 1.5) * spacing, 1.8, rowZ1);
+  sceneGroup.add(r1la);
+  var r1LeftLbl = addLabel("LEFT (person's perspective) → P3", r1la, 0, "box-label");
+  r1LeftLbl.style.color = GREEN_S;
+  r1LeftLbl.style.display = "none";
+
+  // Row 2 LEFT arrow: goes left on screen (from P2 toward P1) because facing north
+  var r2LeftArrow = makeArrow(
+    new THREE.Vector3((1 - 1.5) * spacing - 0.5, 0.7, rowZ2),
+    new THREE.Vector3((0 - 1.5) * spacing + 0.3, 0.7, rowZ2),
+    AMBER, 0.3
+  );
+  r2LeftArrow.visible = false;
+  sceneGroup.add(r2LeftArrow);
+  var r2la = new THREE.Object3D();
+  r2la.position.set((0.5 - 1.5) * spacing, 1.8, rowZ2);
+  sceneGroup.add(r2la);
+  var r2LeftLbl = addLabel("LEFT (person's perspective) → P1", r2la, 0, "box-label");
+  r2LeftLbl.style.color = AMBER_S;
+  r2LeftLbl.style.display = "none";
+
+  // BIG TRAP label
+  var trapAnc = new THREE.Object3D();
+  trapAnc.position.set(0, 4, 0);
+  sceneGroup.add(trapAnc);
+  var trapLbl = addLabel(
+    "SAME WORD 'LEFT' → OPPOSITE DIRECTIONS in different rows!",
+    trapAnc, 0, "trap-label"
+  );
+  trapLbl.style.display = "none";
+
+  // Formula table anchors
+  var fAnc1 = new THREE.Object3D();
+  fAnc1.position.set(-3, -2.5, 0);
+  sceneGroup.add(fAnc1);
+  var fLbl1 = addLabel("Row 1 (South): k left → p+k, k right → p−k", fAnc1, 0, "box-label");
+  fLbl1.style.display = "none";
+
+  var fAnc2 = new THREE.Object3D();
+  fAnc2.position.set(-3, -3.5, 0);
+  sceneGroup.add(fAnc2);
+  var fLbl2 = addLabel("Row 2 (North): k left → p−k, k right → p+k", fAnc2, 0, "box-label");
+  fLbl2.style.display = "none";
+
+  // Floor
+  var floor = makeBox(16, 0.04, 12, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  animState.data = {
+    r1LeftArrow: r1LeftArrow, r2LeftArrow: r2LeftArrow,
+    r1LeftLbl: r1LeftLbl, r2LeftLbl: r2LeftLbl,
+    trapLbl: trapLbl, fLbl1: fLbl1, fLbl2: fLbl2,
+    person1: person1, person2: person2
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // Pulse persons
+    var pulse = 1 + 0.05 * Math.sin(t * 4);
+    d.person1.scale.set(pulse, pulse, pulse);
+    d.person2.scale.set(pulse, pulse, pulse);
+
+    // Phase 1: Row 1 left arrow (2s)
+    if (t > 2) {
+      d.r1LeftArrow.visible = true;
+      d.r1LeftLbl.style.display = "";
+    }
+
+    // Phase 2: Row 2 left arrow (5s)
+    if (t > 5) {
+      d.r2LeftArrow.visible = true;
+      d.r2LeftLbl.style.display = "";
+    }
+
+    // Phase 3: Trap warning (8s)
+    if (t > 8) {
+      d.trapLbl.style.display = "";
+      // Make it pulse red
+      var tp = 0.6 + 0.4 * Math.sin(t * 3);
+      d.trapLbl.style.opacity = tp;
+    }
+
+    // Phase 4: Formula table (10s)
+    if (t > 10) {
+      d.fLbl1.style.display = "";
+      d.fLbl2.style.display = "";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 3 -- Facing Pairs
+   =========================================================== */
+function buildScene3() {
+  camera.position.set(0, 10, 16);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var spacing = 2.2;
+  var rowZ1 = -2.5, rowZ2 = 2.5;
+  var facingLines = [];
+
+  // Row 1 chairs + people
+  var names1 = ["A", "B", "C", "D"];
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * spacing;
+    var ch = makeChair(x, 0, rowZ1);
+    ch.rotation.y = Math.PI;
+    sceneGroup.add(ch);
+    var ps = makeSphere(0.3, TEAL);
+    ps.position.set(x, 0.75, rowZ1);
+    sceneGroup.add(ps);
+    addLabel(names1[i], ps, 0.5, "box-label");
+
+    // Position label below
+    var posAnc = new THREE.Object3D();
+    posAnc.position.set(x, -0.8, rowZ1);
+    sceneGroup.add(posAnc);
+    addLabel("P" + (i + 1), posAnc, 0, "box-label");
+  }
+
+  // Row 2 chairs + people
+  var names2 = ["P", "Q", "R", "S"];
+  for (var j = 0; j < 4; j++) {
+    var x2 = (j - 1.5) * spacing;
+    var ch2 = makeChair(x2, 0, rowZ2);
+    sceneGroup.add(ch2);
+    var ps2 = makeSphere(0.3, CORAL);
+    ps2.position.set(x2, 0.75, rowZ2);
+    sceneGroup.add(ps2);
+    addLabel(names2[j], ps2, 0.5, "box-label");
+
+    var posAnc2 = new THREE.Object3D();
+    posAnc2.position.set(x2, -0.8, rowZ2);
+    sceneGroup.add(posAnc2);
+    addLabel("P" + (j + 1), posAnc2, 0, "box-label");
+  }
+
+  // Row labels
+  var r1Anc = new THREE.Object3D();
+  r1Anc.position.set(5.8, 0.5, rowZ1);
+  sceneGroup.add(r1Anc);
+  addLabel("Row 1 (South ↓)", r1Anc, 0, "box-label");
+
+  var r2Anc = new THREE.Object3D();
+  r2Anc.position.set(5.8, 0.5, rowZ2);
+  sceneGroup.add(r2Anc);
+  addLabel("Row 2 (North ↑)", r2Anc, 0, "box-label");
+
+  // Facing pair dashed lines
+  for (var k = 0; k < 4; k++) {
+    var xp = (k - 1.5) * spacing;
+    var fl = makeDashedLine(
+      new THREE.Vector3(xp, 0.5, rowZ1 + 0.6),
+      new THREE.Vector3(xp, 0.5, rowZ2 - 0.6),
+      AMBER
+    );
+    fl.visible = false;
+    sceneGroup.add(fl);
+    facingLines.push(fl);
+
+    // Facing pair label
+    var fpAnc = new THREE.Object3D();
+    fpAnc.position.set(xp, 0.5, 0);
+    sceneGroup.add(fpAnc);
+    var fpLbl = addLabel(names1[k] + " ↔ " + names2[k], fpAnc, 0, "box-label");
+    fpLbl.style.color = AMBER_S;
+    fpLbl.style.display = "none";
+    facingLines.push(fpLbl); // store for show/hide
+  }
+
+  // "Faces" explanation
+  var faceAnc = new THREE.Object3D();
+  faceAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(faceAnc);
+  var faceLbl = addLabel(
+    "\"X faces Y\" → Same position number, Different rows",
+    faceAnc, 0, "highlight-label"
+  );
+  faceLbl.style.display = "none";
+
+  // Clue example
+  var clueAnc = new THREE.Object3D();
+  clueAnc.position.set(0, -2, 0);
+  sceneGroup.add(clueAnc);
+  var clueLbl = addLabel(
+    "Facing = Same position number, Different rows",
+    clueAnc, 0, "box-label"
+  );
+  clueLbl.style.color = TEAL_S;
+  clueLbl.style.display = "none";
+
+  // Floor
+  var floor = makeBox(14, 0.04, 10, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  animState.data = {
+    facingLines: facingLines, faceLbl: faceLbl, clueLbl: clueLbl
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // Animate facing lines appearing one by one (2s apart)
+    for (var i = 0; i < 4; i++) {
+      if (t > 2 + i * 1.2) {
+        d.facingLines[i * 2].visible = true;     // dashed line
+        d.facingLines[i * 2 + 1].style.display = ""; // pair label
+      }
+    }
+
+    // "Faces" explanation appears at 7s
+    if (t > 7) {
+      d.faceLbl.style.display = "";
+    }
+
+    // Clue label at 9s
+    if (t > 9) {
+      d.clueLbl.style.display = "";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 4 -- Cross-Row Constraint Chaining
+   =========================================================== */
+function buildScene4() {
+  camera.position.set(0, 11, 18);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var spacing = 2.4;
+  var rowZ1 = -3, rowZ2 = 3;
+
+  // Build both rows of chairs
+  var slots1 = [], slots2 = [];
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * spacing;
+    var ch1 = makeChair(x, 0, rowZ1);
+    ch1.rotation.y = Math.PI;
+    sceneGroup.add(ch1);
+    slots1.push(x);
+
+    var pAnc1 = new THREE.Object3D();
+    pAnc1.position.set(x, -0.8, rowZ1);
+    sceneGroup.add(pAnc1);
+    addLabel("P" + (i + 1), pAnc1, 0, "box-label");
+
+    var ch2 = makeChair(x, 0, rowZ2);
+    sceneGroup.add(ch2);
+    slots2.push(x);
+
+    var pAnc2 = new THREE.Object3D();
+    pAnc2.position.set(x, -0.8, rowZ2);
+    sceneGroup.add(pAnc2);
+    addLabel("P" + (i + 1), pAnc2, 0, "box-label");
+  }
+
+  // Row labels
+  var r1a = new THREE.Object3D();
+  r1a.position.set(6, 0.5, rowZ1);
+  sceneGroup.add(r1a);
+  addLabel("Row 1 (South ↓)", r1a, 0, "box-label");
+
+  var r2a = new THREE.Object3D();
+  r2a.position.set(6, 0.5, rowZ2);
+  sceneGroup.add(r2a);
+  addLabel("Row 2 (North ↑)", r2a, 0, "box-label");
+
+  // People to place (initially hidden)
+  // Step 1: B at Row 1 pos 3
+  var personB = makePerson(slots1[2], 0.15, rowZ1, TEAL);
+  personB.scale.set(0, 0, 0);
+  sceneGroup.add(personB);
+  var bAnc = new THREE.Object3D();
+  bAnc.position.set(slots1[2], 1.5, rowZ1);
+  sceneGroup.add(bAnc);
+  var bLbl = addLabel("B", bAnc, 0, "box-label");
+  bLbl.style.color = TEAL_S;
+  bLbl.style.display = "none";
+
+  // Step 2: R at Row 2 pos 3 (faces B)
+  var personR = makePerson(slots2[2], 0.15, rowZ2, CORAL);
+  personR.scale.set(0, 0, 0);
+  sceneGroup.add(personR);
+  var rAnc = new THREE.Object3D();
+  rAnc.position.set(slots2[2], 1.5, rowZ2);
+  sceneGroup.add(rAnc);
+  var rLbl = addLabel("R", rAnc, 0, "box-label");
+  rLbl.style.color = CORAL_S;
+  rLbl.style.display = "none";
+
+  // Step 3: S at Row 2 pos 2 (left of R in Row 2)
+  var personS = makePerson(slots2[1], 0.15, rowZ2, AMBER);
+  personS.scale.set(0, 0, 0);
+  sceneGroup.add(personS);
+  var sAnc = new THREE.Object3D();
+  sAnc.position.set(slots2[1], 1.5, rowZ2);
+  sceneGroup.add(sAnc);
+  var sLbl = addLabel("S", sAnc, 0, "box-label");
+  sLbl.style.color = AMBER_S;
+  sLbl.style.display = "none";
+
+  // Step 4: A at Row 1 pos 2 (right of B in Row 1)
+  var personA = makePerson(slots1[1], 0.15, rowZ1, GREEN);
+  personA.scale.set(0, 0, 0);
+  sceneGroup.add(personA);
+  var aAnc = new THREE.Object3D();
+  aAnc.position.set(slots1[1], 1.5, rowZ1);
+  sceneGroup.add(aAnc);
+  var aLbl = addLabel("A", aAnc, 0, "box-label");
+  aLbl.style.color = GREEN_S;
+  aLbl.style.display = "none";
+
+  // Cascade arrows (green)
+  // Arrow 1: B placement (highlight)
+  var cascArrow1 = makeArrow(
+    new THREE.Vector3(slots1[2], 2.2, rowZ1),
+    new THREE.Vector3(slots1[2], 2.2, rowZ1 + 0.01),
+    GREEN, 0.2
+  );
+  cascArrow1.visible = false;
+  sceneGroup.add(cascArrow1);
+
+  // Arrow 2: B → R (cross row, facing pair)
+  var cascArrow2 = makeDashedLine(
+    new THREE.Vector3(slots1[2], 0.5, rowZ1 + 0.6),
+    new THREE.Vector3(slots2[2], 0.5, rowZ2 - 0.6),
+    GREEN
+  );
+  cascArrow2.visible = false;
+  sceneGroup.add(cascArrow2);
+
+  // Arrow 3: R → S (left in Row 2)
+  var cascArrow3 = makeArrow(
+    new THREE.Vector3(slots2[2] - 0.4, 0.7, rowZ2),
+    new THREE.Vector3(slots2[1] + 0.4, 0.7, rowZ2),
+    GREEN, 0.3
+  );
+  cascArrow3.visible = false;
+  sceneGroup.add(cascArrow3);
+
+  // Arrow 4: B → A (right in Row 1)
+  var cascArrow4 = makeArrow(
+    new THREE.Vector3(slots1[2] - 0.4, 0.7, rowZ1),
+    new THREE.Vector3(slots1[1] + 0.4, 0.7, rowZ1),
+    GREEN, 0.3
+  );
+  cascArrow4.visible = false;
+  sceneGroup.add(cascArrow4);
+
+  // Step constraint labels
+  var steps = [
+    { text: "Step 1: B at Row 1 pos 3", time: 1.5 },
+    { text: "Step 2: R faces B → R at Row 2 pos 3", time: 5 },
+    { text: "Step 3: S left of R (Row 2 north) → S at pos 2", time: 9 },
+    { text: "Step 4: A right of B (Row 1 south) → A at pos 2", time: 13 }
+  ];
+  var stepAnc = new THREE.Object3D();
+  stepAnc.position.set(0, 5, 0);
+  sceneGroup.add(stepAnc);
+  var stepLbl = addLabel("", stepAnc, 0, "highlight-label");
+
+  // Bottom label
+  var bottomAnc = new THREE.Object3D();
+  bottomAnc.position.set(0, -2, 0);
+  sceneGroup.add(bottomAnc);
+  var bottomLbl = addLabel(
+    "Cross-row constraints are the FASTEST way to solve — process 'faces' clues FIRST",
+    bottomAnc, 0, "box-label"
+  );
+  bottomLbl.style.color = GREEN_S;
+  bottomLbl.style.display = "none";
+
+  // Floor
+  var floor = makeBox(16, 0.04, 12, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  animState.data = {
+    personB: personB, personR: personR, personS: personS, personA: personA,
+    bLbl: bLbl, rLbl: rLbl, sLbl: sLbl, aLbl: aLbl,
+    cascArrow2: cascArrow2, cascArrow3: cascArrow3, cascArrow4: cascArrow4,
+    stepLbl: stepLbl, steps: steps, bottomLbl: bottomLbl
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // Update step label
+    var currentStep = "";
+    for (var i = d.steps.length - 1; i >= 0; i--) {
+      if (t > d.steps[i].time) { currentStep = d.steps[i].text; break; }
+    }
+    d.stepLbl.textContent = currentStep;
+
+    // Step 1: Place B (1.5s)
+    if (t > 1.5) {
+      var s1 = easeOut((t - 1.5) / 0.6);
+      d.personB.scale.set(s1, s1, s1);
+      d.bLbl.style.display = "";
+    }
+
+    // Step 2: Place R + facing line (5s)
+    if (t > 5) {
+      var s2 = easeOut((t - 5) / 0.6);
+      d.personR.scale.set(s2, s2, s2);
+      d.rLbl.style.display = "";
+      d.cascArrow2.visible = true;
+    }
+
+    // Step 3: Place S + arrow from R (9s)
+    if (t > 9) {
+      var s3 = easeOut((t - 9) / 0.6);
+      d.personS.scale.set(s3, s3, s3);
+      d.sLbl.style.display = "";
+      d.cascArrow3.visible = true;
+    }
+
+    // Step 4: Place A + arrow from B (13s)
+    if (t > 13) {
+      var s4 = easeOut((t - 13) / 0.6);
+      d.personA.scale.set(s4, s4, s4);
+      d.aLbl.style.display = "";
+      d.cascArrow4.visible = true;
+    }
+
+    // Bottom label (16s)
+    if (t > 16) {
+      d.bottomLbl.style.display = "";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 5 -- Solved Example (8 People, 4 per Row)
+   =========================================================== */
+function buildScene5() {
+  camera.position.set(0, 11, 18);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var spacing = 2.4;
+  var rowZ1 = -3, rowZ2 = 3;
+
+  // Build chairs for both rows
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * spacing;
+    var ch1 = makeChair(x, 0, rowZ1);
+    ch1.rotation.y = Math.PI;
+    sceneGroup.add(ch1);
+    var ch2 = makeChair(x, 0, rowZ2);
+    sceneGroup.add(ch2);
+
+    // Position labels
+    var pa1 = new THREE.Object3D();
+    pa1.position.set(x, -0.8, rowZ1);
+    sceneGroup.add(pa1);
+    addLabel("P" + (i + 1), pa1, 0, "box-label");
+
+    var pa2 = new THREE.Object3D();
+    pa2.position.set(x, -0.8, rowZ2);
+    sceneGroup.add(pa2);
+    addLabel("P" + (i + 1), pa2, 0, "box-label");
+  }
+
+  // Row labels
+  var r1a = new THREE.Object3D();
+  r1a.position.set(6.5, 0.5, rowZ1);
+  sceneGroup.add(r1a);
+  addLabel("Row 1 (South ↓)", r1a, 0, "box-label");
+
+  var r2a = new THREE.Object3D();
+  r2a.position.set(6.5, 0.5, rowZ2);
+  sceneGroup.add(r2a);
+  addLabel("Row 2 (North ↑)", r2a, 0, "box-label");
+
+  // Final arrangement: Row 1: [C, A, B, D], Row 2: [P, S, R, Q]
+  var row1Final = [
+    { name: "C", pos: 0, color: AMBER },
+    { name: "A", pos: 1, color: GREEN },
+    { name: "B", pos: 2, color: TEAL },
+    { name: "D", pos: 3, color: INDIGO }
+  ];
+  var row2Final = [
+    { name: "P", pos: 0, color: 0x8855aa },
+    { name: "S", pos: 1, color: 0xcc6633 },
+    { name: "R", pos: 2, color: CORAL },
+    { name: "Q", pos: 3, color: 0x5599cc }
+  ];
+
+  // Place order matches the steps
+  var placementSteps = [
+    { row: 1, pos: 2, name: "B", color: TEAL, time: 2,
+      desc: "Step 1: B at Row 1 pos 3 (3rd from left)" },
+    { row: 2, pos: 2, name: "R", color: CORAL, time: 5,
+      desc: "Step 2: R faces B → Row 2 pos 3" },
+    { row: 1, pos: 1, name: "A", color: GREEN, time: 8,
+      desc: "Step 3: A immediate right of B → Row 1 pos 2" },
+    { row: 2, pos: 1, name: "S", color: 0xcc6633, time: 11,
+      desc: "Step 4: S immediate left of R → Row 2 pos 2" },
+    { row: 1, pos: 3, name: "D", color: INDIGO, time: 14,
+      desc: "Step 5: D not adjacent to A → pos 4" },
+    { row: 1, pos: 0, name: "C", color: AMBER, time: 15.5,
+      desc: "Step 5: C fills remaining → pos 1" },
+    { row: 2, pos: 0, name: "P", color: 0x8855aa, time: 17,
+      desc: "Step 6: P doesn't face D → pos 1" },
+    { row: 2, pos: 3, name: "Q", color: 0x5599cc, time: 18.5,
+      desc: "Step 6: Q fills remaining → pos 4" }
+  ];
+
+  var personMeshes = [], personLbls = [];
+  for (var s = 0; s < placementSteps.length; s++) {
+    var step = placementSteps[s];
+    var sx = (step.pos - 1.5) * spacing;
+    var sz = step.row === 1 ? rowZ1 : rowZ2;
+    var pm = makePerson(sx, 0.15, sz, step.color);
+    pm.scale.set(0, 0, 0);
+    sceneGroup.add(pm);
+    personMeshes.push(pm);
+
+    var lAnc = new THREE.Object3D();
+    lAnc.position.set(sx, 1.5, sz);
+    sceneGroup.add(lAnc);
+    var lbl = addLabel(step.name, lAnc, 0, "box-label");
+    lbl.style.display = "none";
+    personLbls.push(lbl);
+  }
+
+  // Facing pair line for B-R
+  var faceLine = makeDashedLine(
+    new THREE.Vector3((2 - 1.5) * spacing, 0.5, rowZ1 + 0.6),
+    new THREE.Vector3((2 - 1.5) * spacing, 0.5, rowZ2 - 0.6),
+    GREEN
+  );
+  faceLine.visible = false;
+  sceneGroup.add(faceLine);
+
+  // Step description label
+  var descAnc = new THREE.Object3D();
+  descAnc.position.set(0, 5, 0);
+  sceneGroup.add(descAnc);
+  var descLbl = addLabel("", descAnc, 0, "highlight-label");
+
+  // Checkmarks
+  var checkAnc = new THREE.Object3D();
+  checkAnc.position.set(0, -2, 0);
+  sceneGroup.add(checkAnc);
+  var checkLbl = addLabel("", checkAnc, 0, "box-label");
+  checkLbl.style.color = GREEN_S;
+  checkLbl.style.fontSize = "16px";
+
+  // Floor
+  var floor = makeBox(16, 0.04, 12, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  animState.data = {
+    placementSteps: placementSteps,
+    personMeshes: personMeshes,
+    personLbls: personLbls,
+    faceLine: faceLine,
+    descLbl: descLbl, checkLbl: checkLbl
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // Place people step by step
+    var currentDesc = "";
+    var placedCount = 0;
+    for (var i = 0; i < d.placementSteps.length; i++) {
+      var step = d.placementSteps[i];
+      if (t > step.time) {
+        var elapsed = t - step.time;
+        var sc = easeOut(elapsed / 0.5);
+        d.personMeshes[i].scale.set(sc, sc, sc);
+        d.personLbls[i].style.display = "";
+        currentDesc = step.desc;
+        placedCount++;
+      }
+    }
+    d.descLbl.textContent = currentDesc;
+
+    // Show facing line after step 2
+    if (t > 5.5) d.faceLine.visible = true;
+
+    // Show final verification
+    if (placedCount === d.placementSteps.length && t > 20) {
+      d.checkLbl.textContent = "✓ All constraints verified — Row 1: [C, A, B, D] | Row 2: [P, S, R, Q]";
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 6 -- Common Traps Catalogue
+   =========================================================== */
+function buildScene6() {
+  camera.position.set(0, 8, 20);
+  controls.target.set(0, 2.5, 0);
+  controls.update();
+
+  var trapY = [7, 3.5, 0, -3.5];
+  var trapColors = [CORAL, AMBER, INDIGO, TEAL];
+  var trapTitles = [
+    "Trap 1: Left/Right Confusion",
+    "Trap 2: Faces vs Adjacent",
+    "Trap 3: Assuming Row Assignment",
+    "Trap 4: Diagonal Confusion"
+  ];
+
+  var trapBoxes = [], wrongLabels = [], correctLabels = [];
+
+  for (var i = 0; i < 4; i++) {
+    // Trap title box
+    var tBox = makeBox(4, 0.8, 0.8, trapColors[i]);
+    tBox.position.set(-5, trapY[i], 0);
+    tBox.scale.set(0, 0, 0);
+    sceneGroup.add(tBox);
+    addLabel(trapTitles[i], tBox, 0.7, "box-label");
+    trapBoxes.push(tBox);
+  }
+
+  // Trap 1: Left/Right Confusion
+  // Wrong: placing left of person in Row 2 going right on screen
+  var t1WrongAnc = new THREE.Object3D();
+  t1WrongAnc.position.set(0, trapY[0] + 0.5, 0);
+  sceneGroup.add(t1WrongAnc);
+  var t1w = addLabel("✗ Row 2 'left' → placed rightward on screen", t1WrongAnc, 0, "trap-label");
+  t1w.style.display = "none";
+  wrongLabels.push(t1w);
+
+  var t1CorrectAnc = new THREE.Object3D();
+  t1CorrectAnc.position.set(0, trapY[0] - 0.5, 0);
+  sceneGroup.add(t1CorrectAnc);
+  var t1c = addLabel("✓ Row 2 (north): left = leftward on screen (decreasing pos)", t1CorrectAnc, 0, "box-label");
+  t1c.style.color = GREEN_S;
+  t1c.style.display = "none";
+  correctLabels.push(t1c);
+
+  // Wrong indicator sphere (red)
+  var t1ws = makeSphere(0.25, CORAL);
+  t1ws.position.set(4, trapY[0] + 0.5, 0);
+  t1ws.visible = false;
+  sceneGroup.add(t1ws);
+
+  // Correct indicator sphere (green)
+  var t1cs = makeSphere(0.25, GREEN);
+  t1cs.position.set(4, trapY[0] - 0.5, 0);
+  t1cs.visible = false;
+  sceneGroup.add(t1cs);
+
+  // Trap 2: Faces vs Adjacent
+  var t2WrongAnc = new THREE.Object3D();
+  t2WrongAnc.position.set(0, trapY[1] + 0.5, 0);
+  sceneGroup.add(t2WrongAnc);
+  var t2w = addLabel("✗ 'A faces B' → placed A next to B in SAME row", t2WrongAnc, 0, "trap-label");
+  t2w.style.display = "none";
+  wrongLabels.push(t2w);
+
+  var t2CorrectAnc = new THREE.Object3D();
+  t2CorrectAnc.position.set(0, trapY[1] - 0.5, 0);
+  sceneGroup.add(t2CorrectAnc);
+  var t2c = addLabel("✓ 'Faces' = opposite row, same position; 'Adjacent' = same row", t2CorrectAnc, 0, "box-label");
+  t2c.style.color = GREEN_S;
+  t2c.style.display = "none";
+  correctLabels.push(t2c);
+
+  var t2ws = makeSphere(0.25, CORAL);
+  t2ws.position.set(6, trapY[1] + 0.5, 0);
+  t2ws.visible = false;
+  sceneGroup.add(t2ws);
+
+  var t2cs = makeSphere(0.25, GREEN);
+  t2cs.position.set(6, trapY[1] - 0.5, 0);
+  t2cs.visible = false;
+  sceneGroup.add(t2cs);
+
+  // Trap 3: Assuming Row Assignment
+  var t3WrongAnc = new THREE.Object3D();
+  t3WrongAnc.position.set(0, trapY[2] + 0.5, 0);
+  sceneGroup.add(t3WrongAnc);
+  var t3w = addLabel("✗ Assumed X is in Row 1 without evidence", t3WrongAnc, 0, "trap-label");
+  t3w.style.display = "none";
+  wrongLabels.push(t3w);
+
+  var t3CorrectAnc = new THREE.Object3D();
+  t3CorrectAnc.position.set(0, trapY[2] - 0.5, 0);
+  sceneGroup.add(t3CorrectAnc);
+  var t3c = addLabel("✓ If row not specified, consider BOTH possibilities", t3CorrectAnc, 0, "box-label");
+  t3c.style.color = GREEN_S;
+  t3c.style.display = "none";
+  correctLabels.push(t3c);
+
+  // Show two possibility spheres for Trap 3
+  var t3opt1 = makeSphere(0.2, AMBER);
+  t3opt1.position.set(4, trapY[2] + 0.3, 0);
+  t3opt1.visible = false;
+  sceneGroup.add(t3opt1);
+  var t3o1a = new THREE.Object3D();
+  t3o1a.position.set(5.2, trapY[2] + 0.3, 0);
+  sceneGroup.add(t3o1a);
+  var t3o1l = addLabel("Case 1: Row 1", t3o1a, 0, "box-label");
+  t3o1l.style.display = "none";
+
+  var t3opt2 = makeSphere(0.2, AMBER);
+  t3opt2.position.set(4, trapY[2] - 0.3, 0);
+  t3opt2.visible = false;
+  sceneGroup.add(t3opt2);
+  var t3o2a = new THREE.Object3D();
+  t3o2a.position.set(5.2, trapY[2] - 0.3, 0);
+  sceneGroup.add(t3o2a);
+  var t3o2l = addLabel("Case 2: Row 2", t3o2a, 0, "box-label");
+  t3o2l.style.display = "none";
+
+  // Trap 4: Diagonal Confusion
+  var t4WrongAnc = new THREE.Object3D();
+  t4WrongAnc.position.set(0, trapY[3] + 0.5, 0);
+  sceneGroup.add(t4WrongAnc);
+  var t4w = addLabel("✗ 'Diagonally opposite' = facing (same position)", t4WrongAnc, 0, "trap-label");
+  t4w.style.display = "none";
+  wrongLabels.push(t4w);
+
+  var t4CorrectAnc = new THREE.Object3D();
+  t4CorrectAnc.position.set(0, trapY[3] - 0.5, 0);
+  sceneGroup.add(t4CorrectAnc);
+  var t4c = addLabel("✓ Diagonal = adjacent position in opposite row (offset by 1)", t4CorrectAnc, 0, "box-label");
+  t4c.style.color = GREEN_S;
+  t4c.style.display = "none";
+  correctLabels.push(t4c);
+
+  // Mini diagram for Trap 4 diagonal
+  var t4d1 = makeSphere(0.18, TEAL);
+  t4d1.position.set(4, trapY[3] + 0.4, 0);
+  t4d1.visible = false;
+  sceneGroup.add(t4d1);
+
+  var t4d2 = makeSphere(0.18, CORAL);
+  t4d2.position.set(5.2, trapY[3] - 0.4, 0);
+  t4d2.visible = false;
+  sceneGroup.add(t4d2);
+
+  // Diagonal line
+  var t4diagLine = makeLine(
+    new THREE.Vector3(4.2, trapY[3] + 0.3, 0),
+    new THREE.Vector3(5, trapY[3] - 0.3, 0),
+    AMBER
+  );
+  t4diagLine.visible = false;
+  sceneGroup.add(t4diagLine);
+
+  var t4da = new THREE.Object3D();
+  t4da.position.set(4.6, trapY[3] + 0.9, 0);
+  sceneGroup.add(t4da);
+  var t4dl = addLabel("Diagonal", t4da, 0, "box-label");
+  t4dl.style.display = "none";
+
+  // Floor
+  var floor = makeBox(16, 0.04, 4, 0xf2f2f2);
+  floor.position.set(0, -5.5, 0);
+  sceneGroup.add(floor);
+
+  animState.data = {
+    trapBoxes: trapBoxes, wrongLabels: wrongLabels, correctLabels: correctLabels,
+    t1ws: t1ws, t1cs: t1cs, t2ws: t2ws, t2cs: t2cs,
+    t3opt1: t3opt1, t3opt2: t3opt2, t3o1l: t3o1l, t3o2l: t3o2l,
+    t4d1: t4d1, t4d2: t4d2, t4diagLine: t4diagLine, t4dl: t4dl
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // Trap boxes appear in sequence
+    for (var i = 0; i < d.trapBoxes.length; i++) {
+      var delay = i * 4;
+      var elapsed = t - delay;
+      if (elapsed > 0) {
+        var sc = easeOut(elapsed / 0.6);
+        d.trapBoxes[i].scale.set(sc, sc, sc);
+      }
+      // Wrong label appears 1s after box
+      if (elapsed > 1) {
+        d.wrongLabels[i].style.display = "";
+      }
+      // Correct label appears 2.5s after box
+      if (elapsed > 2.5) {
+        d.correctLabels[i].style.display = "";
+      }
+    }
+
+    // Trap 1 indicators
+    if (t > 1) d.t1ws.visible = true;
+    if (t > 2.5) d.t1cs.visible = true;
+
+    // Trap 2 indicators
+    if (t > 5) d.t2ws.visible = true;
+    if (t > 6.5) d.t2cs.visible = true;
+
+    // Trap 3 possibilities
+    if (t > 10.5) {
+      d.t3opt1.visible = true;
+      d.t3opt2.visible = true;
+      d.t3o1l.style.display = "";
+      d.t3o2l.style.display = "";
+    }
+
+    // Trap 4 diagonal demo
+    if (t > 14.5) {
+      d.t4d1.visible = true;
+      d.t4d2.visible = true;
+      d.t4diagLine.visible = true;
+      d.t4dl.style.display = "";
+    }
+
+    // Pulse wrong indicators red
+    var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+    if (d.t1ws.visible) d.t1ws.material.emissive.setRGB(0.3 * pulse, 0, 0);
+    if (d.t2ws.visible) d.t2ws.material.emissive.setRGB(0.3 * pulse, 0, 0);
+
+    // Pulse correct indicators green
+    if (d.t1cs.visible) d.t1cs.material.emissive.setRGB(0, 0.2 * pulse, 0);
+    if (d.t2cs.visible) d.t2cs.material.emissive.setRGB(0, 0.2 * pulse, 0);
+  };
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  var dt = Math.min(clock.getDelta(), 0.1);
+  if (animState.update) animState.update(dt);
+  controls.update();
+  updateLabels();
+  renderer.render(activeScene, camera);
+}
+
+/* ===== INIT ===== */
+initRenderer();
+loadScene(0);
+animate();
+</script>
+</body>
+</html>

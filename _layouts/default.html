@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ page.title | default: site.title }}</title>
+  <meta name="description" content="{{ page.description | default: site.description }}">
+
+  <!-- Sketch-style fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Architects+Daughter&family=Nunito:wght@400;600;700;800&family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    /* ===== SKETCHNOTE COLOR PALETTE ===== */
+    :root {
+      --sk-teal: #1a8a8a;
+      --sk-teal-light: #e0f5f5;
+      --sk-coral: #d94f4f;
+      --sk-coral-light: #fdeaea;
+      --sk-amber: #e8a317;
+      --sk-amber-light: #fef5e0;
+      --sk-indigo: #4a5da8;
+      --sk-indigo-light: #eaedfa;
+      --sk-green: #2e8b57;
+      --sk-green-light: #e6f5ed;
+      --sk-purple: #7b4daa;
+      --sk-purple-light: #f2eaf8;
+      --sk-dark: #2c3e50;
+      --sk-gray: #5d6d7e;
+      --sk-light: #f9fafb;
+      --sk-paper: #ffffff;
+      --sk-border: #d5dce4;
+      --sk-notepad: #fffef5;
+      --font-sketch: 'Architects Daughter', cursive;
+      --font-body: 'Nunito', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-code: 'Source Code Pro', 'Consolas', monospace;
+    }
+
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: var(--font-body);
+      color: var(--sk-dark);
+      line-height: 1.85;
+      background: var(--sk-paper);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ===== HEADER (Sketch Banner) ===== */
+    .site-header {
+      background: var(--sk-paper);
+      border-bottom: 3px solid var(--sk-teal);
+      padding: 1rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .site-header .container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .site-header h1 {
+      font-family: var(--font-sketch);
+      font-size: 1.4rem;
+      font-weight: 400;
+      color: var(--sk-teal);
+      letter-spacing: 0.5px;
+    }
+
+    .site-header h1 a {
+      color: var(--sk-teal);
+      text-decoration: none;
+    }
+
+    .site-header .badge {
+      display: inline-block;
+      background: var(--sk-amber);
+      color: #fff;
+      padding: 0.1rem 0.55rem;
+      border-radius: 10px;
+      font-family: var(--font-body);
+      font-size: 0.65rem;
+      font-weight: 700;
+      margin-left: 0.4rem;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+    }
+
+    .site-header nav a {
+      color: var(--sk-gray);
+      text-decoration: none;
+      margin-left: 1.25rem;
+      font-size: 0.88rem;
+      font-weight: 600;
+      position: relative;
+      transition: color 0.2s;
+    }
+
+    .site-header nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--sk-teal);
+      transition: width 0.25s ease;
+    }
+
+    .site-header nav a:hover { color: var(--sk-teal); }
+    .site-header nav a:hover::after { width: 100%; }
+
+    /* ===== CONTAINER ===== */
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 0 1.5rem;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      padding: 2.5rem 0 4rem;
+    }
+
+    /* ===== TYPOGRAPHY — SKETCH HEADINGS ===== */
+    .main-content h1 {
+      font-family: var(--font-sketch);
+      font-size: 2.2rem;
+      font-weight: 400;
+      color: var(--sk-teal);
+      margin-bottom: 0.75rem;
+      padding-bottom: 0.5rem;
+      border-bottom: none;
+      position: relative;
+    }
+
+    .main-content h1::after {
+      content: '';
+      display: block;
+      width: 100%;
+      height: 4px;
+      margin-top: 6px;
+      background: linear-gradient(90deg, var(--sk-teal) 0%, var(--sk-amber) 50%, var(--sk-coral) 100%);
+      border-radius: 2px;
+    }
+
+    .main-content h2 {
+      font-family: var(--font-sketch);
+      font-size: 1.55rem;
+      font-weight: 400;
+      color: var(--sk-indigo);
+      margin: 2.5rem 0 1rem;
+      padding-bottom: 0.2rem;
+      padding-left: 1.1rem;
+      border-bottom: none;
+      position: relative;
+    }
+
+    .main-content h2::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 10px;
+      height: 10px;
+      background: var(--sk-indigo);
+      border-radius: 50%;
+    }
+
+    .main-content h3 {
+      font-family: var(--font-sketch);
+      font-size: 1.2rem;
+      font-weight: 400;
+      color: var(--sk-coral);
+      margin: 1.8rem 0 0.7rem;
+    }
+
+    .main-content h4 {
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--sk-dark);
+      margin: 1.3rem 0 0.4rem;
+    }
+
+    .main-content p { margin-bottom: 1rem; }
+
+    .main-content a {
+      color: var(--sk-teal);
+      text-decoration: none;
+      border-bottom: 1.5px dashed var(--sk-teal);
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .main-content a:hover {
+      color: var(--sk-indigo);
+      border-bottom-color: var(--sk-indigo);
+      border-bottom-style: solid;
+    }
+
+    .main-content strong { font-weight: 700; color: var(--sk-dark); }
+
+    .main-content em { color: var(--sk-gray); }
+
+    /* ===== HORIZONTAL RULES — Sketch Dividers ===== */
+    .main-content hr {
+      border: none;
+      height: 3px;
+      margin: 2.5rem 0;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          var(--sk-border) 0px,
+          var(--sk-border) 8px,
+          transparent 8px,
+          transparent 14px
+        );
+      border-radius: 2px;
+    }
+
+    /* ===== LISTS — Visual Bullets ===== */
+    .main-content ul, .main-content ol {
+      margin: 0.5rem 0 1.2rem 1.5rem;
+    }
+
+    .main-content ul li {
+      list-style: none;
+      position: relative;
+      padding-left: 0.3rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .main-content ul li::before {
+      content: '';
+      position: absolute;
+      left: -1.1rem;
+      top: 0.65rem;
+      width: 7px;
+      height: 7px;
+      background: var(--sk-teal);
+      border-radius: 50%;
+    }
+
+    .main-content ol li { margin-bottom: 0.4rem; }
+
+    .main-content li > ul, .main-content li > ol {
+      margin-top: 0.3rem;
+      margin-bottom: 0;
+    }
+
+    .main-content li > ul li::before { background: var(--sk-amber); }
+
+    /* Checkbox items */
+    .main-content input[type="checkbox"] {
+      accent-color: var(--sk-teal);
+      margin-right: 0.4rem;
+    }
+
+    /* ===== TABLES — Sketch Cards ===== */
+    .main-content table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      border: 2px solid var(--sk-dark);
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .main-content thead {
+      background: var(--sk-indigo);
+      color: #fff;
+    }
+
+    .main-content th {
+      padding: 0.7rem 0.9rem;
+      text-align: left;
+      font-family: var(--font-sketch);
+      font-weight: 400;
+      font-size: 0.88rem;
+      letter-spacing: 0.3px;
+    }
+
+    .main-content td {
+      padding: 0.6rem 0.9rem;
+      border-bottom: 1px dashed var(--sk-border);
+    }
+
+    .main-content tbody tr:last-child td { border-bottom: none; }
+
+    .main-content tbody tr:nth-child(even) { background: var(--sk-light); }
+
+    .main-content tbody tr:hover { background: var(--sk-teal-light); }
+
+    /* ===== CODE BLOCKS — Notepad / Sketch Pad ===== */
+    .main-content code {
+      font-family: var(--font-code);
+      font-size: 0.86em;
+      background: var(--sk-notepad);
+      padding: 0.15rem 0.4rem;
+      border-radius: 4px;
+      border: 1.5px solid var(--sk-border);
+      color: var(--sk-dark);
+    }
+
+    .main-content pre {
+      background: var(--sk-notepad);
+      border: 2px dashed var(--sk-amber);
+      border-radius: 10px;
+      padding: 1.3rem 1.5rem;
+      overflow-x: auto;
+      margin: 1.5rem 0;
+      line-height: 1.55;
+      position: relative;
+    }
+
+    /* Tape decoration on code blocks */
+    .main-content pre::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-1deg);
+      width: 56px;
+      height: 14px;
+      background: rgba(232, 163, 23, 0.35);
+      border-radius: 2px;
+      border: 1px solid rgba(232, 163, 23, 0.2);
+    }
+
+    .main-content pre code {
+      background: none;
+      border: none;
+      padding: 0;
+      font-size: 0.84rem;
+      color: var(--sk-dark);
+    }
+
+    /* ===== BLOCKQUOTES — Insight / Callout Cards ===== */
+    .main-content blockquote {
+      border-left: 5px solid var(--sk-amber);
+      background: linear-gradient(135deg, var(--sk-amber-light) 0%, #fff 100%);
+      padding: 1.1rem 1.4rem;
+      margin: 1.5rem 0;
+      border-radius: 0 10px 10px 0;
+      position: relative;
+      box-shadow: 2px 3px 0 rgba(0,0,0,0.04);
+    }
+
+    .main-content blockquote p:last-child { margin-bottom: 0; }
+
+    /* Nested blockquote (double >) */
+    .main-content blockquote blockquote {
+      border-left-color: var(--sk-coral);
+      background: linear-gradient(135deg, var(--sk-coral-light) 0%, #fff 100%);
+      margin: 0.8rem 0 0 0;
+    }
+
+    /* ===== DETAILS / SUMMARY — Collapsible Sketch Box ===== */
+    .main-content details {
+      border: 2px solid var(--sk-teal);
+      border-radius: 10px;
+      padding: 1rem 1.3rem;
+      margin: 1.5rem 0;
+      background: var(--sk-teal-light);
+    }
+
+    .main-content summary {
+      cursor: pointer;
+      font-family: var(--font-sketch);
+      font-weight: 400;
+      color: var(--sk-teal);
+      font-size: 1.05rem;
+      outline: none;
+    }
+
+    .main-content details[open] summary {
+      margin-bottom: 0.75rem;
+      border-bottom: 1.5px dashed var(--sk-teal);
+      padding-bottom: 0.5rem;
+    }
+
+    /* ===== DIAGRAM CONTAINERS (for inline SVG) ===== */
+    .diagram {
+      margin: 2rem auto;
+      padding: 1.2rem;
+      background: var(--sk-paper);
+      border: 2px solid var(--sk-dark);
+      border-radius: 12px;
+      text-align: center;
+      overflow-x: auto;
+      box-shadow: 3px 4px 0 rgba(0,0,0,0.06);
+    }
+
+    .diagram svg {
+      max-width: 100%;
+      height: auto;
+    }
+
+    .diagram-caption {
+      font-family: var(--font-sketch);
+      color: var(--sk-gray);
+      font-size: 0.92rem;
+      margin-top: 0.6rem;
+      text-align: center;
+    }
+
+    /* ===== FORMULA HIGHLIGHT ===== */
+    .main-content .MathJax_Display,
+    .main-content mjx-container[display="true"] {
+      overflow-x: auto;
+      overflow-y: hidden;
+      padding: 0.5rem 0;
+    }
+
+    /* ===== CHAPTER NAVIGATION ===== */
+    .chapter-nav {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      padding: 1.5rem 0;
+      margin-top: 3rem;
+      border-top: 3px dashed var(--sk-border);
+    }
+
+    .chapter-nav a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+      padding: 0.55rem 1.1rem;
+      background: var(--sk-paper);
+      color: var(--sk-teal) !important;
+      border: 2px solid var(--sk-teal);
+      border-radius: 8px;
+      font-family: var(--font-sketch);
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+      box-shadow: 2px 2px 0 rgba(0,0,0,0.08);
+    }
+
+    .chapter-nav a:hover {
+      background: var(--sk-teal);
+      color: #fff !important;
+      transform: translateY(-2px);
+      box-shadow: 3px 4px 0 rgba(0,0,0,0.1);
+      border-bottom: 2px solid var(--sk-teal);
+    }
+
+    /* ===== SCROLL ANIMATIONS ===== */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* SVG path drawing animation */
+    .draw-path {
+      stroke-dasharray: 1000;
+      stroke-dashoffset: 1000;
+      transition: stroke-dashoffset 1.5s ease;
+    }
+    .visible .draw-path,
+    .draw-path.animate {
+      stroke-dashoffset: 0;
+    }
+
+    /* ===== FOOTER ===== */
+    .site-footer {
+      background: var(--sk-light);
+      border-top: 2px solid var(--sk-border);
+      padding: 1.5rem 0;
+      text-align: center;
+      color: var(--sk-gray);
+      font-size: 0.82rem;
+    }
+
+    .site-footer a {
+      color: var(--sk-teal);
+      text-decoration: none;
+      border-bottom: 1px dashed var(--sk-teal);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 768px) {
+      .site-header h1 { font-size: 1.15rem; }
+      .site-header .container { flex-direction: column; align-items: flex-start; }
+      .site-header nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+      .site-header nav a { margin-left: 0; margin-right: 1rem; }
+      .main-content h1 { font-size: 1.7rem; }
+      .main-content h2 { font-size: 1.3rem; }
+      .main-content h3 { font-size: 1.05rem; }
+      .container { padding: 0 1rem; }
+      .main-content table { font-size: 0.78rem; }
+      .main-content th, .main-content td { padding: 0.45rem 0.55rem; }
+      .main-content pre { padding: 1rem; font-size: 0.8rem; }
+      .diagram { padding: 0.8rem; }
+    }
+
+    /* ===== PRINT ===== */
+    @media print {
+      .site-header, .site-footer, .chapter-nav { display: none; }
+      .main-content { padding: 0; }
+      .reveal { opacity: 1 !important; transform: none !important; }
+      .main-content pre { border: 1px solid #999; }
+      .main-content blockquote { border-left: 3px solid #999; background: none; }
+    }
+  </style>
+
+  <!-- MathJax 3 for LaTeX rendering -->
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']],
+        processEscapes: true
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+      }
+    };
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js" async></script>
+</head>
+<body>
+
+  <header class="site-header">
+    <div class="container">
+      <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a><span class="badge">2026</span></h1>
+      <nav>
+        <a href="{{ '/' | relative_url }}">Home</a>
+        <a href="{{ '/Aptitude/Seating-Arrangements/' | relative_url }}">Seating Arrangements</a>
+        <a href="https://github.com/dailycodingworkout/CSE" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main-content">
+    <div class="container">
+      {{ content }}
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>GATE CSE Study Material &copy; 2026 &middot; Built for <strong>GATE / ESE / PSU / BANK</strong> aspirants</p>
+      <p><a href="https://github.com/dailycodingworkout/CSE">View on GitHub</a></p>
+    </div>
+  </footer>
+
+  <!-- Scroll-reveal animation -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var targets = document.querySelectorAll(
+        '.main-content h2, .main-content h3, .main-content blockquote, .main-content table, .main-content pre, .main-content details, .diagram'
+      );
+      if (!('IntersectionObserver' in window)) {
+        targets.forEach(function(el) { el.classList.add('visible'); });
+        return;
+      }
+      // Trigger reveal when 8% of element is visible, with 40px bottom margin buffer
+      var io = new IntersectionObserver(function(entries) {
+        entries.forEach(function(e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('visible');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
+      targets.forEach(function(el) {
+        el.classList.add('reveal');
+        io.observe(el);
+      });
+    });
+  </script>
+
+</body>
+</html>
