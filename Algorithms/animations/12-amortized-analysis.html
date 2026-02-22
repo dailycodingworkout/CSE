@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amortized Analysis — Visual Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="three.min.js"></script>
+<script>
+// Chapter 12: Amortized Analysis — Dynamic Array Doubling + Stack Multipop
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.006);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.5));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(20, 60, 30);
+scene.add(dl);
+const pl = new THREE.PointLight(0x4488ff, 0.8, 100);
+scene.add(pl);
+
+const pg = new THREE.BufferGeometry();
+const pp = new Float32Array(1200*3);
+for(let i=0;i<3600;i++) pp[i]=(Math.random()-0.5)*250;
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x1a2a4a,size:0.5,transparent:true,opacity:0.3})));
+
+// ===== SCENE 1: Dynamic Array Doubling =====
+const dynGroup = new THREE.Group();
+scene.add(dynGroup);
+
+const cellSize = 3;
+let capacity = 2;
+let size = 0;
+let arrayCells = [];
+let costBars = []; // visual cost per operation
+const maxOps = 32;
+
+// Container (capacity indicator)
+let container = null;
+function createContainer(cap) {
+  if(container) dynGroup.remove(container);
+  const w = cap * (cellSize + 0.5) + 2;
+  const geo = new THREE.BoxGeometry(w, 6, cellSize + 2);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0x223344,
+    transparent: true,
+    opacity: 0.3,
+    side: THREE.DoubleSide
+  });
+  container = new THREE.Mesh(geo, mat);
+  container.position.set((cap-1) * (cellSize+0.5) / 2, 3, 0);
+  dynGroup.add(container);
+}
+
+function addElement() {
+  if(size >= capacity) {
+    // DOUBLE — expensive operation!
+    const oldCap = capacity;
+    capacity *= 2;
+    createContainer(capacity);
+    
+    // Visual: flash old elements (copy cost)
+    arrayCells.forEach(c => {
+      c.mesh.material.emissive.setHex(0xff8844);
+      c.mesh.material.emissiveIntensity = 0.5;
+    });
+    
+    // Cost bar (tall = expensive)
+    addCostBar(oldCap + 1, 0xff4466);
+    return;
+  }
+  
+  // Normal insert — cheap
+  const geo = new THREE.BoxGeometry(cellSize, 4, cellSize);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0x44aaff,
+    emissive: 0x44aaff,
+    emissiveIntensity: 0.2,
+    transparent: true,
+    opacity: 0
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(size * (cellSize + 0.5), 3, 0);
+  dynGroup.add(mesh);
+  arrayCells.push({mesh, idx: size});
+  size++;
+  
+  addCostBar(1, 0x44ff88);
+}
+
+function addCostBar(cost, color) {
+  const h = cost * 2;
+  const geo = new THREE.BoxGeometry(1.5, h, 1.5);
+  const mat = new THREE.MeshPhongMaterial({
+    color, emissive: color, emissiveIntensity: 0.2,
+    transparent: true, opacity: 0
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(costBars.length * 2.5 - 20, h/2 - 15, 20);
+  dynGroup.add(mesh);
+  costBars.push({mesh, cost, targetOpacity: 0.8});
+}
+
+// Amortized cost line (O(1) line through cost bars)
+const amortLine = new THREE.Line(
+  new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-20, -15 + 3*2, 20),
+    new THREE.Vector3(60, -15 + 3*2, 20)
+  ]),
+  new THREE.LineBasicMaterial({color: 0xffcc00, transparent:true, opacity:0})
+);
+dynGroup.add(amortLine);
+
+createContainer(capacity);
+
+// ===== SCENE 2: Stack Multipop =====
+const stackGroup = new THREE.Group();
+stackGroup.visible = false;
+stackGroup.position.set(0, 0, 0);
+scene.add(stackGroup);
+
+// Stack visualization
+const stackElements = [];
+const maxStackSize = 12;
+
+function createStackElement(idx, color) {
+  const geo = new THREE.BoxGeometry(8, 2.5, 8);
+  const mat = new THREE.MeshPhongMaterial({
+    color, emissive: color, emissiveIntensity: 0.15,
+    transparent: true, opacity: 0
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(0, idx * 3 + 1.5, 0);
+  stackGroup.add(mesh);
+  return {mesh, idx};
+}
+
+// Stack container
+const stackContainer = new THREE.Mesh(
+  new THREE.BoxGeometry(10, 40, 10),
+  new THREE.MeshPhongMaterial({color:0x223344, transparent:true, opacity:0.2, side:THREE.DoubleSide})
+);
+stackContainer.position.set(0, 18, 0);
+stackGroup.add(stackContainer);
+
+// Credit coins (accounting method)
+const creditGroup = new THREE.Group();
+stackGroup.add(creditGroup);
+
+// ===== SCENE 3: Potential Method =====
+const potGroup = new THREE.Group();
+potGroup.visible = false;
+scene.add(potGroup);
+
+// Potential function visualization: wave/energy level
+const potPoints = [];
+for(let i = 0; i < 100; i++) {
+  potPoints.push(new THREE.Vector3(i * 0.8 - 40, 0, 0));
+}
+const potCurve = new THREE.Line(
+  new THREE.BufferGeometry().setFromPoints(potPoints),
+  new THREE.LineBasicMaterial({color: 0x8866ff, transparent:true, opacity:0.8})
+);
+potGroup.add(potCurve);
+
+// Actual cost spikes
+const actualBars = [];
+for(let i = 0; i < 32; i++) {
+  const isPower = (i & (i-1)) === 0 && i > 0;
+  const h = isPower ? i * 1.5 + 2 : 2;
+  const geo = new THREE.BoxGeometry(1.5, h, 1.5);
+  const color = isPower ? 0xff4466 : 0x44ff88;
+  const mat = new THREE.MeshPhongMaterial({
+    color, emissive: color, emissiveIntensity: 0.2,
+    transparent: true, opacity: 0
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(i * 2.5 - 40, h/2 - 10, 0);
+  potGroup.add(mesh);
+  actualBars.push({mesh, revealTime: i * 0.3});
+}
+
+// Amortized constant line
+const amortLine2 = new THREE.Line(
+  new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-42, -10 + 6, 0),
+    new THREE.Vector3(42, -10 + 6, 0)
+  ]),
+  new THREE.LineBasicMaterial({color: 0xffcc00, transparent:true, opacity:0.5})
+);
+potGroup.add(amortLine2);
+
+// Animation
+camera.position.set(15, 10, 45);
+camera.lookAt(10, 3, 0);
+
+const clock = new THREE.Clock();
+let phase = 0, phaseTime = 0;
+const phaseDurs = [18, 4, 12, 4, 10, 5]; // dyn array, pause, stack, pause, potential, final
+let opIdx = 0;
+let lastOp = 0;
+const opInterval = 0.5;
+let stackIdx = 0;
+let stackPhase = 'push'; // push or multipop
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) {
+      phase = 0;
+      // Reset dynamic array
+      arrayCells.forEach(c => dynGroup.remove(c.mesh));
+      costBars.forEach(c => dynGroup.remove(c.mesh));
+      arrayCells = []; costBars = []; size = 0; capacity = 2; opIdx = 0;
+      createContainer(capacity);
+    }
+  }
+  
+  dynGroup.visible = (phase <= 1);
+  stackGroup.visible = (phase === 2 || phase === 3);
+  potGroup.visible = (phase === 4 || phase === 5);
+  
+  // Phase 0: Dynamic Array
+  if(phase === 0 && phaseTime - lastOp > opInterval && opIdx < maxOps) {
+    addElement();
+    opIdx++;
+    lastOp = phaseTime;
+    
+    // Show amortized line after several ops
+    if(opIdx > 5) amortLine.material.opacity = Math.min(0.6, amortLine.material.opacity + 0.1);
+  }
+  
+  // Fade in elements
+  arrayCells.forEach(c => {
+    c.mesh.material.opacity = Math.min(0.9, c.mesh.material.opacity + dt * 3);
+    // Reset glow
+    c.mesh.material.emissiveIntensity *= 0.98;
+  });
+  costBars.forEach(c => {
+    c.mesh.material.opacity = Math.min(c.targetOpacity, c.mesh.material.opacity + dt * 3);
+  });
+  
+  if(phase === 0) {
+    camera.position.set(size * 1.5, 12, 40);
+    camera.lookAt(size * 0.7, 0, 5);
+  }
+  
+  // Phase 2: Stack Multipop
+  if(phase === 2) {
+    const interval = 0.4;
+    if(phaseTime - lastOp > interval) {
+      if(stackPhase === 'push' && stackIdx < maxStackSize) {
+        const colors = [0x44aaff, 0x44ff88, 0xff8844, 0xffcc00, 0x8866ff, 0xff44aa];
+        const el = createStackElement(stackIdx, colors[stackIdx % colors.length]);
+        stackElements.push(el);
+        stackIdx++;
+        if(stackIdx >= maxStackSize) { stackPhase = 'multipop'; }
+      } else if(stackPhase === 'multipop' && stackElements.length > 0) {
+        const el = stackElements.pop();
+        el.mesh.material.color.setHex(0xff4466);
+        el.mesh.material.emissive.setHex(0xff4466);
+        el.mesh.material.emissiveIntensity = 0.5;
+        // Fly off
+        el.mesh.position.x += 20;
+        el.mesh.material.opacity = 0.3;
+        stackIdx--;
+        if(stackElements.length <= 3) { stackPhase = 'push'; }
+      }
+      lastOp = phaseTime;
+    }
+    
+    stackElements.forEach(el => {
+      el.mesh.material.opacity = Math.min(0.85, el.mesh.material.opacity + dt * 3);
+    });
+    
+    camera.position.set(Math.sin(t*0.2)*15, 15, 35);
+    camera.lookAt(0, 12, 0);
+  }
+  
+  // Phase 4: Potential method
+  if(phase === 4) {
+    actualBars.forEach(b => {
+      if(phaseTime > b.revealTime) {
+        b.mesh.material.opacity = Math.min(0.8, b.mesh.material.opacity + dt * 2);
+      }
+    });
+    
+    // Update potential curve
+    const positions = potCurve.geometry.attributes.position.array;
+    for(let i = 0; i < 100; i++) {
+      const x = i * 0.8 - 40;
+      // Potential rises linearly, drops at powers of 2
+      const isPow2 = (i & (i-1)) === 0 && i > 0;
+      positions[i*3+1] = Math.sin(t + i*0.1) * 2 + (isPow2 ? -5 : i * 0.3) - 5;
+    }
+    potCurve.geometry.attributes.position.needsUpdate = true;
+    
+    camera.position.set(Math.sin(t*0.15)*15, 8, 35);
+    camera.lookAt(0, -3, 0);
+  }
+  
+  // Transitions
+  if(phase === 1 || phase === 3 || phase === 5) {
+    const a = t * 0.4;
+    camera.position.set(Math.cos(a)*50, 20, Math.sin(a)*50);
+    camera.lookAt(0, 5, 0);
+  }
+  
+  pl.position.set(Math.sin(t)*20, 25, Math.cos(t)*20);
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

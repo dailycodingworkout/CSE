@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Divide and Conquer — Visual Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="three.min.js"></script>
+<script>
+// Chapter 5: Divide and Conquer
+// Shows array splitting, recursive solving, and merging back
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.005);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.5));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(20, 60, 30);
+scene.add(dl);
+
+// Particles
+const pg = new THREE.BufferGeometry();
+const pp = new Float32Array(1200*3);
+for(let i=0;i<3600;i++) pp[i]=(Math.random()-0.5)*250;
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x1a2a4a,size:0.5,transparent:true,opacity:0.3})));
+
+// D&C visualization: Array blocks splitting apart, solving, merging
+const blockGroup = new THREE.Group();
+scene.add(blockGroup);
+
+const data = [38, 27, 43, 3, 9, 82, 10, 51];
+const colors = [0xff4466, 0xff8844, 0xffcc00, 0x44ff88, 0x44aaff, 0x8866ff, 0xff44aa, 0x44ffcc];
+
+// Animation timeline: each frame = array of {blocks, positions}
+const levels = []; // each level = array of sub-arrays
+
+// Level 0: full array
+// Level 1: split in 2
+// Level 2: split in 4
+// Level 3: split in 8 (individual)
+// Level 4: merge to 4 (sorted)
+// Level 5: merge to 2 (sorted)
+// Level 6: merge to 1 (sorted)
+
+function buildLevels() {
+  // Level 0
+  levels.push([{arr: [...data], x: 0, y: 40, z: 0}]);
+  // Level 1: split
+  levels.push([
+    {arr: data.slice(0,4), x: -20, y: 25, z: 0},
+    {arr: data.slice(4,8), x: 20, y: 25, z: 0}
+  ]);
+  // Level 2: split more
+  levels.push([
+    {arr: data.slice(0,2), x: -30, y: 10, z: 0},
+    {arr: data.slice(2,4), x: -10, y: 10, z: 0},
+    {arr: data.slice(4,6), x: 10, y: 10, z: 0},
+    {arr: data.slice(6,8), x: 30, y: 10, z: 0}
+  ]);
+  // Level 3: individual elements
+  levels.push(data.map((v,i) => ({arr:[v], x: -35 + i*10, y: -5, z: 0})));
+  // Level 4: merge pairs (sorted)
+  levels.push([
+    {arr: [27,38], x: -30, y: -20, z: 0},
+    {arr: [3,43], x: -10, y: -20, z: 0},
+    {arr: [9,82], x: 10, y: -20, z: 0},
+    {arr: [10,51], x: 30, y: -20, z: 0}
+  ]);
+  // Level 5: merge quads
+  levels.push([
+    {arr: [3,27,38,43], x: -20, y: -35, z: 0},
+    {arr: [9,10,51,82], x: 20, y: -35, z: 0}
+  ]);
+  // Level 6: fully sorted
+  levels.push([{arr: [3,9,10,27,38,43,51,82], x: 0, y: -50, z: 0}]);
+}
+buildLevels();
+
+// Create 3D blocks for current level
+let currentBlocks = [];
+
+function createLevelBlocks(levelIdx) {
+  // Clear existing
+  currentBlocks.forEach(b => blockGroup.remove(b.group));
+  currentBlocks = [];
+  
+  const level = levels[levelIdx];
+  level.forEach((sub, si) => {
+    const group = new THREE.Group();
+    group.position.set(sub.x, sub.y, sub.z);
+    
+    sub.arr.forEach((val, vi) => {
+      const h = val * 0.5 + 1;
+      const w = 3;
+      const geo = new THREE.BoxGeometry(w, h, w);
+      const colorIdx = data.indexOf(val) % colors.length;
+      const mat = new THREE.MeshPhongMaterial({
+        color: colors[colorIdx],
+        emissive: colors[colorIdx],
+        emissiveIntensity: 0.15,
+        transparent: true,
+        opacity: 0
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.position.set(vi * 4 - (sub.arr.length-1)*2, h/2, 0);
+      group.add(mesh);
+    });
+    
+    blockGroup.add(group);
+    currentBlocks.push({group, sub, opacity: 0});
+  });
+}
+
+// Connecting lines between levels
+const lineGroup = new THREE.Group();
+scene.add(lineGroup);
+
+function createSplitLines(fromLevel, toLevel) {
+  lineGroup.clear();
+  const from = levels[fromLevel];
+  const to = levels[toLevel];
+  
+  // Connect centers
+  from.forEach(f => {
+    to.forEach(t => {
+      // Check if t is a subset of f (approximate by position)
+      const dist = Math.abs(f.x - t.x);
+      if(dist < 40) {
+        const points = [
+          new THREE.Vector3(f.x, f.y - 2, 0),
+          new THREE.Vector3((f.x + t.x)/2, (f.y + t.y)/2, 5),
+          new THREE.Vector3(t.x, t.y + 2, 0)
+        ];
+        const curve = new THREE.QuadraticBezierCurve3(...points);
+        const geo = new THREE.BufferGeometry().setFromPoints(curve.getPoints(20));
+        const mat = new THREE.LineBasicMaterial({color:0x336699, transparent:true, opacity:0.4});
+        lineGroup.add(new THREE.Line(geo, mat));
+      }
+    });
+  });
+}
+
+// Strassen's matrix multiplication visual
+const matrixGroup = new THREE.Group();
+matrixGroup.visible = false;
+matrixGroup.position.set(0, 0, -40);
+scene.add(matrixGroup);
+
+function createMatrix(x, y, size, color) {
+  const g = new THREE.Group();
+  for(let r = 0; r < 2; r++) {
+    for(let c = 0; c < 2; c++) {
+      const geo = new THREE.BoxGeometry(size, size, size*0.3);
+      const mat = new THREE.MeshPhongMaterial({
+        color,
+        emissive: color,
+        emissiveIntensity: 0.2,
+        transparent: true,
+        opacity: 0.8
+      });
+      const m = new THREE.Mesh(geo, mat);
+      m.position.set(x + c * (size+1), y - r * (size+1), 0);
+      g.add(m);
+    }
+  }
+  return g;
+}
+
+const matA = createMatrix(-20, 10, 5, 0x44aaff);
+const matB = createMatrix(0, 10, 5, 0xff8844);
+const matC = createMatrix(20, 10, 5, 0x44ff88);
+matrixGroup.add(matA, matB, matC);
+
+// Multiply sign
+const multGeo = new THREE.SphereGeometry(1.5, 16, 16);
+const multMat = new THREE.MeshPhongMaterial({color:0xffffff, emissive:0xffffff, emissiveIntensity:0.5});
+const multSign = new THREE.Mesh(multGeo, multMat);
+multSign.position.set(-10, 7, 0);
+matrixGroup.add(multSign);
+
+const eqSign = new THREE.Mesh(multGeo.clone(), multMat.clone());
+eqSign.position.set(10, 7, 0);
+matrixGroup.add(eqSign);
+
+// Animation
+camera.position.set(0, 15, 70);
+camera.lookAt(0, 10, 0);
+
+const clock = new THREE.Clock();
+let phase = 0, phaseTime = 0;
+const phaseDurs = [5, 4, 4, 4, 4, 4, 5, 8, 5]; // split levels + merge levels + strassen + final
+
+let currentLevel = 0;
+createLevelBlocks(0);
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) phase = 0;
+    
+    if(phase < 7) {
+      currentLevel = phase;
+      createLevelBlocks(currentLevel);
+      if(currentLevel > 0) createSplitLines(currentLevel-1, currentLevel);
+    }
+    if(phase === 7) {
+      matrixGroup.visible = true;
+      blockGroup.visible = false;
+      lineGroup.visible = false;
+    }
+    if(phase === 8 || phase === 0) {
+      matrixGroup.visible = false;
+      blockGroup.visible = true;
+      lineGroup.visible = true;
+      if(phase === 0) {
+        currentLevel = 0;
+        createLevelBlocks(0);
+        lineGroup.clear();
+      }
+    }
+  }
+  
+  // Fade in blocks
+  currentBlocks.forEach((b, i) => {
+    b.group.children.forEach(child => {
+      if(child.material) {
+        child.material.opacity = Math.min(0.9, child.material.opacity + dt * 2);
+      }
+    });
+    // Gentle float
+    b.group.position.y = b.sub.y + Math.sin(t * 1.5 + i) * 0.5;
+  });
+  
+  // Strassen's phase
+  if(phase === 7) {
+    matrixGroup.children.forEach((child, i) => {
+      child.rotation.y = Math.sin(t * 0.5 + i) * 0.1;
+    });
+    
+    // Pulse the matrices
+    [matA, matB, matC].forEach((m, i) => {
+      m.children.forEach(c => {
+        c.material.emissiveIntensity = 0.2 + Math.sin(t * 2 + i) * 0.1;
+      });
+    });
+    
+    camera.position.lerp(new THREE.Vector3(0, 10, 50), dt);
+    camera.lookAt(0, 7, -40);
+  } else {
+    // Camera for D&C tree view
+    const targetY = 40 - currentLevel * 12;
+    camera.position.set(
+      Math.sin(t * 0.15) * 15,
+      targetY + 15 + Math.sin(t * 0.3) * 3,
+      65 + Math.sin(t * 0.1) * 5
+    );
+    camera.lookAt(0, targetY - 5, 0);
+  }
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

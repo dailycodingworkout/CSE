@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backtracking & Branch and Bound — Visual Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="three.min.js"></script>
+<script>
+// Chapter 9: Backtracking & Branch and Bound
+// N-Queens placement with backtracking animation
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.006);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.5));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(20, 60, 30);
+scene.add(dl);
+const pl = new THREE.PointLight(0xff8844, 0.8, 100);
+pl.position.set(0, 30, 0);
+scene.add(pl);
+
+const pg = new THREE.BufferGeometry();
+const pp = new Float32Array(1200*3);
+for(let i=0;i<3600;i++) pp[i]=(Math.random()-0.5)*250;
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x1a2a4a,size:0.5,transparent:true,opacity:0.3})));
+
+// ===== N-Queens Board =====
+const N = 8;
+const cellSize = 4;
+const boardGroup = new THREE.Group();
+scene.add(boardGroup);
+
+// Create chessboard
+const boardCells = [];
+for(let r = 0; r < N; r++) {
+  for(let c = 0; c < N; c++) {
+    const isDark = (r + c) % 2 === 0;
+    const geo = new THREE.BoxGeometry(cellSize*0.95, 0.5, cellSize*0.95);
+    const mat = new THREE.MeshPhongMaterial({
+      color: isDark ? 0x2a3a4a : 0x4a5a6a,
+      emissive: isDark ? 0x0a1520 : 0x1a2530,
+      emissiveIntensity: 0.1
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set((c - N/2 + 0.5) * cellSize, 0, (r - N/2 + 0.5) * cellSize);
+    boardGroup.add(mesh);
+    boardCells.push({mesh, row:r, col:c, isDark});
+  }
+}
+
+// Board border
+const borderGeo = new THREE.BoxGeometry(N*cellSize + 2, 1, N*cellSize + 2);
+const borderMat = new THREE.MeshPhongMaterial({color:0x1a2a3a});
+const border = new THREE.Mesh(borderGeo, borderMat);
+border.position.y = -0.5;
+boardGroup.add(border);
+
+// Queen pieces
+const queens = [];
+function createQueen() {
+  const group = new THREE.Group();
+  
+  // Base
+  const baseGeo = new THREE.CylinderGeometry(1.2, 1.5, 0.5, 16);
+  const baseMat = new THREE.MeshPhongMaterial({color:0xffcc00, emissive:0xffcc00, emissiveIntensity:0.2});
+  group.add(new THREE.Mesh(baseGeo, baseMat));
+  
+  // Body
+  const bodyGeo = new THREE.CylinderGeometry(0.6, 1.1, 2, 16);
+  const bodyMat = new THREE.MeshPhongMaterial({color:0xffcc00, emissive:0xffcc00, emissiveIntensity:0.2});
+  const body = new THREE.Mesh(bodyGeo, bodyMat);
+  body.position.y = 1.2;
+  group.add(body);
+  
+  // Crown
+  const crownGeo = new THREE.SphereGeometry(0.7, 16, 16);
+  const crownMat = new THREE.MeshPhongMaterial({color:0xffdd44, emissive:0xffdd44, emissiveIntensity:0.3});
+  const crown = new THREE.Mesh(crownGeo, crownMat);
+  crown.position.y = 2.5;
+  group.add(crown);
+  
+  group.visible = false;
+  boardGroup.add(group);
+  return group;
+}
+
+for(let i = 0; i < N; i++) {
+  queens.push(createQueen());
+}
+
+// Attack indicators (lines showing threats)
+const attackLines = [];
+
+function showAttackLines(row, col) {
+  clearAttackLines();
+  
+  // Row lines
+  for(let c = 0; c < N; c++) {
+    if(c !== col) highlightCell(row, c, 0xff4466, 0.3);
+  }
+  // Column lines
+  for(let r = 0; r < N; r++) {
+    if(r !== row) highlightCell(r, col, 0xff4466, 0.3);
+  }
+  // Diagonals
+  for(let i = 1; i < N; i++) {
+    if(row+i < N && col+i < N) highlightCell(row+i, col+i, 0xff4466, 0.2);
+    if(row-i >= 0 && col-i >= 0) highlightCell(row-i, col-i, 0xff4466, 0.2);
+    if(row+i < N && col-i >= 0) highlightCell(row+i, col-i, 0xff4466, 0.2);
+    if(row-i >= 0 && col+i < N) highlightCell(row-i, col+i, 0xff4466, 0.2);
+  }
+}
+
+function highlightCell(row, col, color, intensity) {
+  const idx = row * N + col;
+  if(idx < boardCells.length) {
+    boardCells[idx].mesh.material.emissive.setHex(color);
+    boardCells[idx].mesh.material.emissiveIntensity = intensity;
+  }
+}
+
+function clearAttackLines() {
+  boardCells.forEach(c => {
+    c.mesh.material.emissive.setHex(c.isDark ? 0x0a1520 : 0x1a2530);
+    c.mesh.material.emissiveIntensity = 0.1;
+  });
+}
+
+// Record N-Queens backtracking steps
+const steps = [];
+function solveNQueens() {
+  const board = new Array(N).fill(-1);
+  
+  function isSafe(row, col) {
+    for(let r = 0; r < row; r++) {
+      if(board[r] === col || Math.abs(board[r] - col) === Math.abs(r - row)) return false;
+    }
+    return true;
+  }
+  
+  function solve(row) {
+    if(row === N) {
+      steps.push({type:'solution', board:[...board]});
+      return true;
+    }
+    for(let col = 0; col < N; col++) {
+      steps.push({type:'try', row, col, board:[...board]});
+      if(isSafe(row, col)) {
+        board[row] = col;
+        steps.push({type:'place', row, col, board:[...board]});
+        if(solve(row + 1)) return true;
+        board[row] = -1;
+        steps.push({type:'backtrack', row, col, board:[...board]});
+      } else {
+        steps.push({type:'conflict', row, col, board:[...board]});
+      }
+    }
+    return false;
+  }
+  
+  solve(0);
+}
+solveNQueens();
+
+// Subset sum tree (Scene 2)
+const subsetGroup = new THREE.Group();
+subsetGroup.visible = false;
+subsetGroup.position.set(0, 0, -50);
+scene.add(subsetGroup);
+
+// Build subset-sum decision tree visually
+const ssNodes = [];
+function buildSSTree(x, y, depth, maxDepth, spread) {
+  if(depth > maxDepth) return;
+  const size = Math.max(0.8, 2 - depth * 0.3);
+  const color = depth <= 2 ? 0x44aaff : (depth <= 3 ? 0xffcc00 : 0xff4466);
+  const geo = new THREE.SphereGeometry(size, 16, 16);
+  const mat = new THREE.MeshPhongMaterial({color, emissive:color, emissiveIntensity:0.2, transparent:true, opacity:0});
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, 0);
+  subsetGroup.add(mesh);
+  ssNodes.push({mesh, depth, revealTime: depth * 2});
+  
+  if(depth < maxDepth) {
+    // Include branch
+    buildSSTree(x - spread, y - 10, depth + 1, maxDepth, spread * 0.5);
+    const e1 = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, y, 0), new THREE.Vector3(x-spread, y-10, 0)
+    ]);
+    subsetGroup.add(new THREE.Line(e1, new THREE.LineBasicMaterial({color:0x44ff88, transparent:true, opacity:0.3})));
+    
+    // Exclude branch
+    buildSSTree(x + spread, y - 10, depth + 1, maxDepth, spread * 0.5);
+    const e2 = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, y, 0), new THREE.Vector3(x+spread, y-10, 0)
+    ]);
+    subsetGroup.add(new THREE.Line(e2, new THREE.LineBasicMaterial({color:0xff4466, transparent:true, opacity:0.3})));
+  }
+}
+buildSSTree(0, 30, 0, 4, 25);
+
+// Animation
+camera.position.set(0, 40, 45);
+camera.lookAt(0, 0, 0);
+
+const clock = new THREE.Clock();
+let phase = 0, phaseTime = 0;
+const phaseDurs = [25, 4, 12, 5]; // n-queens, pause, subset tree, final
+let stepIdx = 0;
+const stepSpeed = 0.12;
+let lastStep = 0;
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) { phase = 0; stepIdx = 0; }
+  }
+  
+  boardGroup.visible = (phase <= 1);
+  subsetGroup.visible = (phase === 2 || phase === 3);
+  
+  // Phase 0: N-Queens backtracking
+  if(phase === 0 && phaseTime - lastStep > stepSpeed && stepIdx < steps.length) {
+    const step = steps[stepIdx];
+    clearAttackLines();
+    
+    // Update queen positions from board state
+    for(let r = 0; r < N; r++) {
+      if(step.board[r] >= 0) {
+        queens[r].visible = true;
+        queens[r].position.set(
+          (step.board[r] - N/2 + 0.5) * cellSize,
+          1.5,
+          (r - N/2 + 0.5) * cellSize
+        );
+      } else {
+        queens[r].visible = false;
+      }
+    }
+    
+    // Visual feedback
+    if(step.type === 'try') {
+      highlightCell(step.row, step.col, 0xffcc00, 0.4);
+    }
+    if(step.type === 'place') {
+      highlightCell(step.row, step.col, 0x44ff88, 0.5);
+      showAttackLines(step.row, step.col);
+    }
+    if(step.type === 'conflict') {
+      highlightCell(step.row, step.col, 0xff4466, 0.6);
+    }
+    if(step.type === 'backtrack') {
+      highlightCell(step.row, step.col, 0xff8844, 0.4);
+    }
+    if(step.type === 'solution') {
+      for(let r = 0; r < N; r++) {
+        highlightCell(r, step.board[r], 0x44ff88, 0.5);
+      }
+    }
+    
+    stepIdx++;
+    lastStep = phaseTime;
+  }
+  
+  // Phase 2: Subset Sum tree
+  if(phase === 2) {
+    ssNodes.forEach(n => {
+      if(phaseTime > n.revealTime) {
+        n.mesh.material.opacity = Math.min(0.8, n.mesh.material.opacity + dt * 2);
+        n.mesh.scale.setScalar(1 + Math.sin(t*2 + n.depth)*0.08);
+      }
+    });
+    
+    camera.position.set(Math.sin(t*0.2)*15, 20, 20);
+    camera.lookAt(0, 10, -50);
+  }
+  
+  // Camera for N-Queens
+  if(phase === 0) {
+    const a = t * 0.15;
+    camera.position.set(Math.cos(a)*45, 35 + Math.sin(t*0.3)*3, Math.sin(a)*45);
+    camera.lookAt(0, 0, 0);
+  }
+  
+  if(phase === 1 || phase === 3) {
+    const a = t * 0.4;
+    camera.position.set(Math.cos(a)*50, 35, Math.sin(a)*50);
+    camera.lookAt(0, 5, 0);
+  }
+  
+  // Queen float
+  queens.forEach((q, i) => {
+    if(q.visible) q.position.y = 1.5 + Math.sin(t*2 + i)*0.3;
+  });
+  
+  pl.position.set(Math.sin(t)*15, 25, Math.cos(t)*15);
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

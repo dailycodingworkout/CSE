@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sorting Algorithms — Visual Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="three.min.js"></script>
+<script>
+// Chapter 4: Sorting Algorithms
+// Animated: Bubble Sort, Selection Sort, Merge Sort, Quick Sort
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.006);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.5));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(20, 50, 30);
+scene.add(dl);
+const pl = new THREE.PointLight(0x4488ff, 0.8, 100);
+pl.position.set(0, 30, 20);
+scene.add(pl);
+
+// Particles
+const pg = new THREE.BufferGeometry();
+const pp = new Float32Array(1500*3);
+for(let i=0;i<4500;i++) pp[i]=(Math.random()-0.5)*200;
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+scene.add(new THREE.Points(pg, new THREE.PointsMaterial({color:0x1a2a4a,size:0.4,transparent:true,opacity:0.3})));
+
+// Sorting state
+const N = 16;
+const barW = 3;
+const barGap = 1;
+const totalW = N * (barW + barGap);
+const startX = -totalW / 2;
+
+let arr = [];
+const bars = [];
+const barGroup = new THREE.Group();
+scene.add(barGroup);
+
+const sortColors = {
+  default: 0x336699,
+  comparing: 0xffaa00,
+  swapping: 0xff4466,
+  sorted: 0x00ff88,
+  pivot: 0xff8844,
+  merging: 0x8866ff,
+  selected: 0x44ddff
+};
+
+function initArray() {
+  // Shuffled array
+  arr = [];
+  for(let i = 1; i <= N; i++) arr.push(i);
+  for(let i = arr.length-1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  
+  barGroup.clear();
+  bars.length = 0;
+  
+  arr.forEach((val, i) => {
+    const h = val * 2.5;
+    const geo = new THREE.BoxGeometry(barW, h, barW);
+    const mat = new THREE.MeshPhongMaterial({
+      color: sortColors.default,
+      emissive: 0x112233,
+      emissiveIntensity: 0.15
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(startX + i * (barW + barGap), h/2, 0);
+    barGroup.add(mesh);
+    bars.push({mesh, value: val, targetX: 0, targetY: 0});
+  });
+}
+
+// Platform
+const platGeo = new THREE.BoxGeometry(totalW + 10, 0.5, barW + 6);
+const platMat = new THREE.MeshPhongMaterial({color:0x1a2a3a});
+const platform = new THREE.Mesh(platGeo, platMat);
+platform.position.set(0, -0.5, 0);
+scene.add(platform);
+
+// Pre-record sort steps
+function recordBubbleSort(a) {
+  const steps = [];
+  const arr = [...a];
+  for(let i = 0; i < arr.length - 1; i++) {
+    for(let j = 0; j < arr.length - i - 1; j++) {
+      steps.push({type:'compare', i:j, j:j+1, arr:[...arr]});
+      if(arr[j] > arr[j+1]) {
+        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+        steps.push({type:'swap', i:j, j:j+1, arr:[...arr]});
+      }
+    }
+    steps.push({type:'sorted', idx: arr.length-1-i, arr:[...arr]});
+  }
+  steps.push({type:'sorted', idx: 0, arr:[...arr]});
+  return steps;
+}
+
+function recordSelectionSort(a) {
+  const steps = [];
+  const arr = [...a];
+  for(let i = 0; i < arr.length - 1; i++) {
+    let minIdx = i;
+    steps.push({type:'select', idx: i, arr:[...arr]});
+    for(let j = i+1; j < arr.length; j++) {
+      steps.push({type:'compare', i:minIdx, j, arr:[...arr]});
+      if(arr[j] < arr[minIdx]) minIdx = j;
+    }
+    if(minIdx !== i) {
+      [arr[i], arr[minIdx]] = [arr[minIdx], arr[i]];
+      steps.push({type:'swap', i, j:minIdx, arr:[...arr]});
+    }
+    steps.push({type:'sorted', idx: i, arr:[...arr]});
+  }
+  steps.push({type:'sorted', idx: arr.length-1, arr:[...arr]});
+  return steps;
+}
+
+function recordMergeSort(a) {
+  const steps = [];
+  const arr = [...a];
+  function merge(arr, l, m, r) {
+    const left = arr.slice(l, m+1);
+    const right = arr.slice(m+1, r+1);
+    let i=0, j=0, k=l;
+    while(i < left.length && j < right.length) {
+      steps.push({type:'merge_compare', i:l+i, j:m+1+j, arr:[...arr]});
+      if(left[i] <= right[j]) { arr[k++] = left[i++]; }
+      else { arr[k++] = right[j++]; }
+      steps.push({type:'merge_place', idx:k-1, arr:[...arr]});
+    }
+    while(i < left.length) { arr[k++] = left[i++]; steps.push({type:'merge_place', idx:k-1, arr:[...arr]}); }
+    while(j < right.length) { arr[k++] = right[j++]; steps.push({type:'merge_place', idx:k-1, arr:[...arr]}); }
+  }
+  function ms(arr, l, r) {
+    if(l < r) {
+      const m = Math.floor((l+r)/2);
+      steps.push({type:'divide', l, m, r, arr:[...arr]});
+      ms(arr, l, m);
+      ms(arr, m+1, r);
+      merge(arr, l, m, r);
+    }
+  }
+  ms(arr, 0, arr.length-1);
+  return steps;
+}
+
+function recordQuickSort(a) {
+  const steps = [];
+  const arr = [...a];
+  function qs(arr, lo, hi) {
+    if(lo < hi) {
+      const pivot = arr[hi];
+      steps.push({type:'pivot', idx:hi, arr:[...arr]});
+      let i = lo - 1;
+      for(let j = lo; j < hi; j++) {
+        steps.push({type:'compare', i:j, j:hi, arr:[...arr]});
+        if(arr[j] < pivot) {
+          i++;
+          [arr[i], arr[j]] = [arr[j], arr[i]];
+          steps.push({type:'swap', i, j, arr:[...arr]});
+        }
+      }
+      [arr[i+1], arr[hi]] = [arr[hi], arr[i+1]];
+      steps.push({type:'pivot_place', idx:i+1, arr:[...arr]});
+      qs(arr, lo, i);
+      qs(arr, i+2, hi);
+    }
+  }
+  qs(arr, 0, arr.length-1);
+  return steps;
+}
+
+// Animation state
+let phase = 0, phaseTime = 0;
+const clock = new THREE.Clock();
+let sortSteps = [];
+let stepIdx = 0;
+let sortedSet = new Set();
+const stepInterval = 0.15;
+let lastStepTime = 0;
+
+const sortNames = ['Bubble Sort', 'Selection Sort', 'Merge Sort', 'Quick Sort'];
+const phaseDurs = [15, 3, 12, 3, 15, 3, 15, 5];
+
+function startPhase(p) {
+  initArray();
+  sortedSet.clear();
+  stepIdx = 0;
+  lastStepTime = 0;
+  
+  if(p === 0) sortSteps = recordBubbleSort(arr);
+  else if(p === 2) sortSteps = recordSelectionSort(arr);
+  else if(p === 4) sortSteps = recordMergeSort(arr);
+  else if(p === 6) sortSteps = recordQuickSort(arr);
+  else sortSteps = [];
+}
+
+startPhase(0);
+camera.position.set(0, 30, 55);
+camera.lookAt(0, 15, 0);
+
+function updateBars(stepData) {
+  if(!stepData) return;
+  const a = stepData.arr;
+  
+  bars.forEach((b, i) => {
+    const h = a[i] * 2.5;
+    b.mesh.geometry.dispose();
+    b.mesh.geometry = new THREE.BoxGeometry(barW, h, barW);
+    b.mesh.position.set(startX + i * (barW + barGap), h/2, 0);
+    b.value = a[i];
+    
+    // Default color
+    if(!sortedSet.has(i)) {
+      b.mesh.material.color.setHex(sortColors.default);
+      b.mesh.material.emissive.setHex(0x112233);
+      b.mesh.material.emissiveIntensity = 0.15;
+    }
+  });
+  
+  // Highlight based on step type
+  if(stepData.type === 'compare' || stepData.type === 'merge_compare') {
+    if(stepData.i >= 0 && stepData.i < bars.length) {
+      bars[stepData.i].mesh.material.color.setHex(sortColors.comparing);
+      bars[stepData.i].mesh.material.emissive.setHex(sortColors.comparing);
+      bars[stepData.i].mesh.material.emissiveIntensity = 0.3;
+    }
+    if(stepData.j >= 0 && stepData.j < bars.length) {
+      bars[stepData.j].mesh.material.color.setHex(sortColors.comparing);
+      bars[stepData.j].mesh.material.emissive.setHex(sortColors.comparing);
+      bars[stepData.j].mesh.material.emissiveIntensity = 0.3;
+    }
+  }
+  if(stepData.type === 'swap') {
+    bars[stepData.i].mesh.material.color.setHex(sortColors.swapping);
+    bars[stepData.i].mesh.material.emissive.setHex(sortColors.swapping);
+    bars[stepData.j].mesh.material.color.setHex(sortColors.swapping);
+    bars[stepData.j].mesh.material.emissive.setHex(sortColors.swapping);
+  }
+  if(stepData.type === 'sorted') {
+    sortedSet.add(stepData.idx);
+    bars[stepData.idx].mesh.material.color.setHex(sortColors.sorted);
+    bars[stepData.idx].mesh.material.emissive.setHex(sortColors.sorted);
+    bars[stepData.idx].mesh.material.emissiveIntensity = 0.3;
+  }
+  if(stepData.type === 'pivot' || stepData.type === 'pivot_place') {
+    bars[stepData.idx].mesh.material.color.setHex(sortColors.pivot);
+    bars[stepData.idx].mesh.material.emissive.setHex(sortColors.pivot);
+    bars[stepData.idx].mesh.material.emissiveIntensity = 0.4;
+  }
+  if(stepData.type === 'merge_place') {
+    bars[stepData.idx].mesh.material.color.setHex(sortColors.merging);
+    bars[stepData.idx].mesh.material.emissive.setHex(sortColors.merging);
+  }
+  if(stepData.type === 'divide') {
+    for(let i = stepData.l; i <= stepData.r; i++) {
+      bars[i].mesh.material.color.setHex(sortColors.selected);
+      bars[i].mesh.material.emissive.setHex(sortColors.selected);
+      bars[i].mesh.material.emissiveIntensity = 0.2;
+    }
+  }
+  if(stepData.type === 'select') {
+    bars[stepData.idx].mesh.material.color.setHex(sortColors.selected);
+    bars[stepData.idx].mesh.material.emissive.setHex(sortColors.selected);
+  }
+  
+  // Always show sorted ones
+  sortedSet.forEach(idx => {
+    if(idx < bars.length) {
+      bars[idx].mesh.material.color.setHex(sortColors.sorted);
+      bars[idx].mesh.material.emissive.setHex(sortColors.sorted);
+    }
+  });
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) phase = 0;
+    startPhase(phase);
+  }
+  
+  // Execute sort steps
+  if(sortSteps.length > 0 && phaseTime - lastStepTime > stepInterval && stepIdx < sortSteps.length) {
+    updateBars(sortSteps[stepIdx]);
+    stepIdx++;
+    lastStepTime = phaseTime;
+  }
+  
+  // If sort complete, flash all green
+  if(stepIdx >= sortSteps.length && sortSteps.length > 0) {
+    bars.forEach((b, i) => {
+      b.mesh.material.color.setHex(sortColors.sorted);
+      b.mesh.material.emissive.setHex(sortColors.sorted);
+      b.mesh.material.emissiveIntensity = 0.2 + Math.sin(t*3 + i*0.3)*0.1;
+    });
+  }
+  
+  // Camera movement
+  const sortPhase = Math.floor(phase / 2);
+  if(phase % 2 === 0) {
+    // Active sort - gentle tracking
+    camera.position.set(
+      Math.sin(t * 0.2) * 8,
+      28 + Math.sin(t * 0.3) * 3,
+      52 + Math.sin(t * 0.15) * 5
+    );
+  } else {
+    // Transition pause - orbit
+    const a = phaseTime * 0.8;
+    camera.position.set(Math.cos(a) * 60, 35, Math.sin(a) * 60);
+  }
+  camera.lookAt(0, 12, 0);
+  
+  pl.position.set(Math.sin(t)*20, 30, 20);
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
