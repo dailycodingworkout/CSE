@@ -306,7 +306,7 @@ body {
 
 <div class="edge-box">
   <div class="tag">Edge Case</div>
-  <p>Negative integers have no factorial. Factorials grow super-exponentially: 20! &approx; 2.4 &times; 10&sup1;&#8312;. In GATE, you rarely compute beyond 10!.</p>
+  <p>Negative integers have no factorial. Factorials grow super-exponentially: 20! &approx; 2.4 &times; 10<sup>18</sup>. In GATE, you rarely compute beyond 10!.</p>
 </div>
 
 <div class="page-nav">
@@ -604,7 +604,7 @@ body {
 <p><strong>Where does this come from?</strong> Apply Inclusion-Exclusion. Let A&#7522; = set of permutations where element i is fixed. Then:</p>
 <ul>
   <li>|A&#7522;| = (n-1)!, |A&#7522; &cap; A&#11388;| = (n-2)!, etc.</li>
-  <li>D(n) = n! &minus; C(n,1)(n-1)! + C(n,2)(n-2)! &minus; &hellip; = n! &sum; (-1)<sup>k</sup>/k!</li>
+  <li>D(n) = n! &minus; C(n,1)(n-1)! + C(n,2)(n-2)! &minus; &hellip; = n! &times; &Sigma;<sub>k=0 to n</sub> (&minus;1)<sup>k</sup>/k!</li>
 </ul>
 
 <h2>Quick Values</h2>
