@@ -1,0 +1,1560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Permutation &amp; Combination — Interactive 3D Study Material</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --teal: #1a8a8a;
+  --coral: #d94f4f;
+  --amber: #e8a317;
+  --indigo: #4a5da8;
+  --green: #2e8b57;
+  --accent: #58a6ff;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+/* --- Navigation --- */
+#nav {
+  position: fixed; top: 0; left: 0; width: 280px; height: 100vh;
+  background: var(--surface); border-right: 1px solid var(--border);
+  overflow-y: auto; z-index: 100; padding: 20px 0;
+  transition: transform 0.3s;
+}
+#nav.collapsed { transform: translateX(-280px); }
+#nav h2 {
+  font-size: 14px; text-transform: uppercase; letter-spacing: 1.5px;
+  color: var(--teal); padding: 0 20px 12px; border-bottom: 1px solid var(--border);
+}
+.nav-item {
+  display: block; width: 100%; text-align: left; background: none; border: none;
+  color: var(--muted); font-size: 13px; padding: 10px 20px; cursor: pointer;
+  transition: all 0.2s; border-left: 3px solid transparent;
+}
+.nav-item:hover { background: rgba(88,166,255,0.06); color: var(--text); }
+.nav-item.active {
+  color: var(--accent); border-left-color: var(--accent);
+  background: rgba(88,166,255,0.1);
+}
+.nav-item .num {
+  display: inline-block; width: 22px; height: 22px; line-height: 22px;
+  text-align: center; border-radius: 50%; background: var(--border);
+  color: var(--muted); font-size: 11px; margin-right: 8px;
+}
+.nav-item.active .num { background: var(--accent); color: var(--bg); }
+#toggle-nav {
+  position: fixed; top: 12px; left: 12px; z-index: 200;
+  background: var(--surface); border: 1px solid var(--border); border-radius: 6px;
+  color: var(--text); width: 36px; height: 36px; cursor: pointer;
+  font-size: 18px; display: flex; align-items: center; justify-content: center;
+}
+/* --- Main Content --- */
+#main {
+  margin-left: 280px; transition: margin-left 0.3s;
+  min-height: 100vh;
+}
+#main.expanded { margin-left: 0; }
+.scene-section {
+  display: none; padding: 40px 48px 60px; max-width: 960px; margin: 0 auto;
+}
+.scene-section.active { display: block; }
+.scene-section h1 {
+  font-size: 32px; margin-bottom: 6px;
+  background: linear-gradient(135deg, var(--teal), var(--accent));
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+}
+.scene-section .subtitle {
+  color: var(--muted); font-size: 15px; margin-bottom: 28px;
+}
+.scene-section h2 {
+  font-size: 22px; color: var(--amber); margin: 32px 0 12px;
+  border-bottom: 1px solid var(--border); padding-bottom: 6px;
+}
+.scene-section h3 { font-size: 17px; color: var(--teal); margin: 20px 0 8px; }
+.scene-section p, .scene-section li {
+  font-size: 15px; line-height: 1.75; color: var(--text); margin-bottom: 10px;
+}
+.scene-section ul { padding-left: 20px; }
+.scene-section li { margin-bottom: 6px; }
+
+/* --- 3D Canvas Container --- */
+.canvas-box {
+  width: 100%; height: 340px; border-radius: 10px;
+  border: 1px solid var(--border); overflow: hidden;
+  margin: 20px 0; position: relative; background: #0a0e14;
+}
+.canvas-box canvas { display: block; width: 100%; height: 100%; }
+.canvas-label {
+  position: absolute; bottom: 8px; left: 12px;
+  font-size: 12px; color: var(--muted);
+  background: rgba(0,0,0,0.6); padding: 3px 8px; border-radius: 4px;
+}
+.play-btn {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  background: var(--teal); color: #fff; border: none; border-radius: 50%;
+  width: 56px; height: 56px; font-size: 24px; cursor: pointer;
+  box-shadow: 0 4px 20px rgba(26,138,138,0.4); transition: transform 0.2s;
+}
+.play-btn:hover { transform: translate(-50%, -50%) scale(1.1); }
+.play-btn.hidden { display: none; }
+
+/* --- Formula Box --- */
+.formula-box {
+  background: rgba(26,138,138,0.08); border: 1px solid rgba(26,138,138,0.25);
+  border-radius: 8px; padding: 16px 20px; margin: 16px 0;
+  font-family: 'Courier New', monospace; font-size: 18px;
+  text-align: center; color: var(--teal); letter-spacing: 0.5px;
+}
+.formula-box .label {
+  display: block; font-size: 12px; color: var(--muted); margin-bottom: 6px;
+  font-family: 'Segoe UI', sans-serif; text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* --- Example Box --- */
+.example-box {
+  background: var(--surface); border-left: 3px solid var(--amber);
+  border-radius: 0 8px 8px 0; padding: 16px 20px; margin: 16px 0;
+}
+.example-box .tag {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--amber); margin-bottom: 6px;
+}
+.example-box p { margin-bottom: 6px; }
+.example-box .answer { color: var(--green); font-weight: 600; }
+
+/* --- Trick Box --- */
+.trick-box {
+  background: rgba(217,79,79,0.08); border: 1px solid rgba(217,79,79,0.25);
+  border-radius: 8px; padding: 16px 20px; margin: 16px 0;
+}
+.trick-box .tag {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--coral); margin-bottom: 6px;
+}
+
+/* --- Edge Case Box --- */
+.edge-box {
+  background: rgba(74,93,168,0.08); border: 1px solid rgba(74,93,168,0.25);
+  border-radius: 8px; padding: 16px 20px; margin: 16px 0;
+}
+.edge-box .tag {
+  font-size: 11px; text-transform: uppercase; letter-spacing: 1px;
+  color: var(--indigo); margin-bottom: 6px;
+}
+
+/* --- Navigation Arrows --- */
+.page-nav {
+  display: flex; justify-content: space-between; margin-top: 40px;
+  padding-top: 20px; border-top: 1px solid var(--border);
+}
+.page-nav button {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  color: var(--text); padding: 10px 24px; cursor: pointer; font-size: 14px;
+  transition: all 0.2s;
+}
+.page-nav button:hover { border-color: var(--accent); color: var(--accent); }
+.page-nav button:disabled { opacity: 0.3; cursor: default; }
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  #nav { transform: translateX(-280px); }
+  #nav.open { transform: translateX(0); }
+  #main { margin-left: 0; }
+  .scene-section { padding: 24px 16px 40px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Toggle -->
+<button id="toggle-nav" aria-label="Toggle navigation">&#9776;</button>
+
+<!-- Sidebar Navigation -->
+<nav id="nav">
+  <h2>P &amp; C Masterclass</h2>
+  <button class="nav-item active" data-scene="0"><span class="num">1</span>Fundamental Counting Principle</button>
+  <button class="nav-item" data-scene="1"><span class="num">2</span>Factorial &mdash; The Building Block</button>
+  <button class="nav-item" data-scene="2"><span class="num">3</span>Permutations (nPr)</button>
+  <button class="nav-item" data-scene="3"><span class="num">4</span>Combinations (nCr)</button>
+  <button class="nav-item" data-scene="4"><span class="num">5</span>Circular Permutations</button>
+  <button class="nav-item" data-scene="5"><span class="num">6</span>Permutations with Repetition</button>
+  <button class="nav-item" data-scene="6"><span class="num">7</span>Combinations with Repetition</button>
+  <button class="nav-item" data-scene="7"><span class="num">8</span>Derangements</button>
+  <button class="nav-item" data-scene="8"><span class="num">9</span>Inclusion-Exclusion Principle</button>
+  <button class="nav-item" data-scene="9"><span class="num">10</span>Pascal's Triangle &amp; Identities</button>
+  <button class="nav-item" data-scene="10"><span class="num">11</span>Distribution &amp; Partition Problems</button>
+  <button class="nav-item" data-scene="11"><span class="num">12</span>GATE / ESE Tricks &amp; Edge Cases</button>
+</nav>
+
+<!-- Main Content -->
+<div id="main">
+
+<!-- =============== SCENE 0: FUNDAMENTAL COUNTING PRINCIPLE =============== -->
+<section class="scene-section active" id="scene-0">
+<h1>1. Fundamental Counting Principle</h1>
+<p class="subtitle">The DNA of every counting problem &mdash; master this, master everything.</p>
+
+<div class="canvas-box" id="canvas-fcp">
+  <button class="play-btn" id="play-fcp">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Multiplication Principle</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>Counting = Choosing at each independent stage.</strong></p>
+<p>Every counting problem reduces to: <em>How many choices at each step, and are the steps independent?</em></p>
+
+<h2>Multiplication Principle (AND)</h2>
+<p>If task A can be done in <strong>m</strong> ways <em>and then</em> task B can be done in <strong>n</strong> ways, total ways = <strong>m &times; n</strong>.</p>
+<div class="formula-box">
+  <span class="label">Multiplication Principle</span>
+  Total = n&#8321; &times; n&#8322; &times; n&#8323; &times; &hellip; &times; n&#8342;
+</div>
+<p><strong>Why multiply?</strong> Think of it as a tree. Each branch at stage 1 spawns n&#8322; branches at stage 2. The total number of leaf nodes (complete paths) = product of branches at each level.</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Shirt &amp; Pants</div>
+  <p>You have 3 shirts and 4 pants. How many outfits?</p>
+  <p>Each shirt can pair with any of 4 pants. Total = 3 &times; 4 = <span class="answer">12 outfits</span></p>
+</div>
+
+<h2>Addition Principle (OR)</h2>
+<p>If task A can be done in <strong>m</strong> ways <em>or</em> task B can be done in <strong>n</strong> ways (mutually exclusive), total ways = <strong>m + n</strong>.</p>
+<div class="formula-box">
+  <span class="label">Addition Principle</span>
+  Total = n&#8321; + n&#8322; + n&#8323; + &hellip; + n&#8342; &ensp;(when cases are mutually exclusive)
+</div>
+<p><strong>Why add?</strong> When you choose one <em>or</em> the other (not both), you are counting separate non-overlapping buckets. Just add the bucket sizes.</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Travel</div>
+  <p>3 trains or 2 flights from A to B. Total ways = 3 + 2 = <span class="answer">5 ways</span></p>
+</div>
+
+<div class="trick-box">
+  <div class="tag">GATE Trap</div>
+  <p><strong>AND vs OR confusion:</strong> "Do task A <em>and then</em> task B" &rarr; multiply. "Do task A <em>or</em> task B" &rarr; add. If tasks overlap (not mutually exclusive), use inclusion-exclusion.</p>
+</div>
+
+<div class="edge-box">
+  <div class="tag">Edge Case</div>
+  <p><strong>Dependent stages:</strong> If choices at stage 2 depend on stage 1, the multiplication still works &mdash; but n&#8322; may vary per branch. Sum over all branches: &Sigma; (choices at stage 2 given stage 1 choice).</p>
+</div>
+
+<div class="page-nav">
+  <button disabled>&larr; Previous</button>
+  <button onclick="goScene(1)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 1: FACTORIAL =============== -->
+<section class="scene-section" id="scene-1">
+<h1>2. Factorial &mdash; The Building Block</h1>
+<p class="subtitle">Every formula in P&amp;C is built from factorials. Understand it deeply.</p>
+
+<div class="canvas-box" id="canvas-factorial">
+  <button class="play-btn" id="play-factorial">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Factorial Cascade</span>
+</div>
+
+<h2>What is n! ?</h2>
+<p><strong>n!</strong> (read "n factorial") = the number of ways to arrange <strong>n distinct objects</strong> in a line.</p>
+<div class="formula-box">
+  <span class="label">Factorial Definition</span>
+  n! = n &times; (n&minus;1) &times; (n&minus;2) &times; &hellip; &times; 2 &times; 1
+</div>
+
+<h2>Why does this formula work?</h2>
+<p>Imagine placing n distinct balls into n slots one by one:</p>
+<ul>
+  <li>Slot 1: <strong>n</strong> choices (any ball)</li>
+  <li>Slot 2: <strong>n&minus;1</strong> choices (one used)</li>
+  <li>Slot 3: <strong>n&minus;2</strong> choices</li>
+  <li>&hellip;continue until&hellip;</li>
+  <li>Slot n: <strong>1</strong> choice (last ball remaining)</li>
+</ul>
+<p>By Multiplication Principle: total = n &times; (n&minus;1) &times; &hellip; &times; 1 = <strong>n!</strong></p>
+
+<div class="example-box">
+  <div class="tag">Example</div>
+  <p>Arrange {A, B, C}: 3! = 3 &times; 2 &times; 1 = <span class="answer">6</span></p>
+  <p>All arrangements: ABC, ACB, BAC, BCA, CAB, CBA</p>
+</div>
+
+<h2>Special Values &amp; Properties</h2>
+<div class="formula-box">
+  <span class="label">Key Facts</span>
+  0! = 1 &ensp;|&ensp; 1! = 1 &ensp;|&ensp; n! = n &times; (n&minus;1)!
+</div>
+<p><strong>Why is 0! = 1?</strong> There is exactly <strong>1 way</strong> to arrange zero objects &mdash; do nothing. Also, the recurrence n! = n &times; (n&minus;1)! requires 0! = 1 for consistency when n=1: 1! = 1 &times; 0! &rArr; 0! = 1.</p>
+
+<div class="trick-box">
+  <div class="tag">Speed Trick &mdash; Trailing Zeros</div>
+  <p>Number of trailing zeros in n! = &lfloor;n/5&rfloor; + &lfloor;n/25&rfloor; + &lfloor;n/125&rfloor; + &hellip;</p>
+  <p>Example: 100! has &lfloor;100/5&rfloor; + &lfloor;100/25&rfloor; = 20 + 4 = <strong>24 trailing zeros</strong>.</p>
+</div>
+
+<div class="edge-box">
+  <div class="tag">Edge Case</div>
+  <p>Negative integers have no factorial. Factorials grow super-exponentially: 20! &approx; 2.4 &times; 10<sup>18</sup>. In GATE, you rarely compute beyond 10!.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(0)">&larr; Previous</button>
+  <button onclick="goScene(2)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 2: PERMUTATIONS =============== -->
+<section class="scene-section" id="scene-2">
+<h1>3. Permutations (nPr)</h1>
+<p class="subtitle">Arrangement matters &mdash; the order-sensitive count.</p>
+
+<div class="canvas-box" id="canvas-perm">
+  <button class="play-btn" id="play-perm">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Selecting &amp; Arranging</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>Permutation = Selection + Arrangement.</strong></p>
+
+<h2>Derivation from First Principles</h2>
+<p>Choose <strong>r</strong> items from <strong>n</strong> distinct items <em>and arrange them</em>:</p>
+<ul>
+  <li>Position 1: <strong>n</strong> choices</li>
+  <li>Position 2: <strong>n&minus;1</strong> choices</li>
+  <li>&hellip;</li>
+  <li>Position r: <strong>n&minus;r+1</strong> choices</li>
+</ul>
+<div class="formula-box">
+  <span class="label">Permutation Formula</span>
+  P(n, r) = n &times; (n&minus;1) &times; &hellip; &times; (n&minus;r+1) = n! / (n&minus;r)!
+</div>
+<p><strong>Why n!/(n-r)! ?</strong> We start with all n! arrangements but the last (n-r) positions are irrelevant (we only pick r). Dividing by (n-r)! cancels the unwanted tail.</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Gold, Silver, Bronze</div>
+  <p>8 athletes, award top 3 medals. How many outcomes?</p>
+  <p>P(8,3) = 8 &times; 7 &times; 6 = <span class="answer">336</span></p>
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Word Arrangements</div>
+  <p>How many 4-letter "words" from {A, B, C, D, E} (no repetition)?</p>
+  <p>P(5,4) = 5 &times; 4 &times; 3 &times; 2 = <span class="answer">120</span></p>
+</div>
+
+<h2>Permutation of ALL n objects</h2>
+<p>When r = n: P(n,n) = n! (arrange everything).</p>
+
+<div class="trick-box">
+  <div class="tag">GATE Trick &mdash; Constraint First</div>
+  <p>When a problem has constraints ("A must be before B", "vowels together"), always handle the constrained elements first, then fill the rest.</p>
+</div>
+
+<div class="edge-box">
+  <div class="tag">Edge Cases</div>
+  <p>P(n,0) = 1 (one way to pick nothing). P(n,n) = n!. P(n,r) = 0 if r &gt; n.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(1)">&larr; Previous</button>
+  <button onclick="goScene(3)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 3: COMBINATIONS =============== -->
+<section class="scene-section" id="scene-3">
+<h1>4. Combinations (nCr)</h1>
+<p class="subtitle">Selection without arrangement &mdash; order doesn't matter.</p>
+
+<div class="canvas-box" id="canvas-comb">
+  <button class="play-btn" id="play-comb">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Grouping without Order</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>Combination = Permutation &divide; (internal arrangements).</strong></p>
+
+<h2>Derivation &mdash; Why divide by r! ?</h2>
+<p>P(n,r) counts every <em>ordered</em> selection. But if order doesn't matter, each group of r items has been counted <strong>r!</strong> times (once for each internal arrangement).</p>
+<div class="formula-box">
+  <span class="label">Combination Formula</span>
+  C(n, r) = P(n, r) / r! = n! / [r! &times; (n&minus;r)!]
+</div>
+<p><strong>Analogy:</strong> Permutation is like picking a team <em>and</em> assigning jersey numbers. Combination is just picking the team &mdash; no jerseys.</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Committee</div>
+  <p>Choose 3 people from 10 for a committee.</p>
+  <p>C(10,3) = 10! / (3! &times; 7!) = (10 &times; 9 &times; 8) / (3 &times; 2 &times; 1) = <span class="answer">120</span></p>
+</div>
+
+<h2>Key Properties</h2>
+<div class="formula-box">
+  <span class="label">Symmetry &amp; Special Values</span>
+  C(n,r) = C(n, n&minus;r) &ensp;|&ensp; C(n,0) = C(n,n) = 1 &ensp;|&ensp; C(n,1) = n
+</div>
+<p><strong>Why symmetry?</strong> Choosing r items to <em>include</em> is the same as choosing (n-r) items to <em>exclude</em>.</p>
+
+<div class="trick-box">
+  <div class="tag">Speed Trick</div>
+  <p>Always compute C(n,r) using the smaller of r and n-r. C(100,98) = C(100,2) = (100 &times; 99)/2 = 4950. Don't compute 98!.</p>
+</div>
+
+<div class="edge-box">
+  <div class="tag">GATE Trap</div>
+  <p><strong>"Select" vs "Arrange":</strong> If the problem says "choose", "select", "committee", "group" &rarr; Combination. If it says "arrange", "order", "rank", "sequence" &rarr; Permutation.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(2)">&larr; Previous</button>
+  <button onclick="goScene(4)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 4: CIRCULAR PERMUTATIONS =============== -->
+<section class="scene-section" id="scene-4">
+<h1>5. Circular Permutations</h1>
+<p class="subtitle">When the "starting point" doesn't matter &mdash; round tables, necklaces, rings.</p>
+
+<div class="canvas-box" id="canvas-circular">
+  <button class="play-btn" id="play-circular">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Circular Arrangement</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>Fix one, arrange the rest.</strong></p>
+
+<h2>Derivation</h2>
+<p>In a line, n objects have n! arrangements. In a circle, rotations of the same arrangement look identical. There are n rotations per arrangement.</p>
+<div class="formula-box">
+  <span class="label">Circular Permutation</span>
+  Circular arrangements = n! / n = (n&minus;1)!
+</div>
+<p><strong>Why (n-1)!?</strong> Fix one person's seat to break rotational symmetry. The remaining (n-1) people arrange in (n-1)! ways.</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Round Table</div>
+  <p>Seat 5 people around a circular table.</p>
+  <p>Arrangements = (5&minus;1)! = 4! = <span class="answer">24</span></p>
+</div>
+
+<h2>Necklace / Bracelet (Reflections)</h2>
+<p>If the arrangement can also be <em>flipped</em> (like a necklace), divide by 2:</p>
+<div class="formula-box">
+  <span class="label">Necklace Formula</span>
+  Necklace arrangements = (n&minus;1)! / 2
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Bead Necklace</div>
+  <p>Arrange 6 different beads on a necklace.</p>
+  <p>= (6&minus;1)! / 2 = 120 / 2 = <span class="answer">60</span></p>
+</div>
+
+<div class="trick-box">
+  <div class="tag">GATE Trap</div>
+  <p><strong>Table vs Necklace:</strong> Round table &rarr; (n-1)!. Necklace/keyring &rarr; (n-1)!/2. The question must explicitly allow flipping for the /2 to apply.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(3)">&larr; Previous</button>
+  <button onclick="goScene(5)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 5: PERMUTATIONS WITH REPETITION =============== -->
+<section class="scene-section" id="scene-5">
+<h1>6. Permutations with Repetition</h1>
+<p class="subtitle">When some objects are identical &mdash; divide out the duplicates.</p>
+
+<div class="canvas-box" id="canvas-reprep">
+  <button class="play-btn" id="play-reprep">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Identical Objects</span>
+</div>
+
+<h2>Case 1: Repetition Allowed (with replacement)</h2>
+<p>Fill r positions from n types, each type unlimited.</p>
+<div class="formula-box">
+  <span class="label">Permutation with Replacement</span>
+  n &times; n &times; &hellip; (r times) = n<sup>r</sup>
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; PIN Code</div>
+  <p>4-digit PIN from digits {0&ndash;9}. Each position: 10 choices.</p>
+  <p>Total = 10<sup>4</sup> = <span class="answer">10,000</span></p>
+</div>
+
+<h2>Case 2: Identical Objects (Multinomial)</h2>
+<p>Arrange n objects where some are identical.</p>
+<div class="formula-box">
+  <span class="label">Multinomial Permutation</span>
+  n! / (n&#8321;! &times; n&#8322;! &times; &hellip; &times; n&#8342;!)
+</div>
+<p><strong>Why divide?</strong> Swapping identical objects doesn't create a new arrangement. Each group of n&#7522; identical items has n&#7522;! internal swaps that look the same.</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; MISSISSIPPI</div>
+  <p>Arrange the letters of MISSISSIPPI (11 letters: M&times;1, I&times;4, S&times;4, P&times;2).</p>
+  <p>= 11! / (1! &times; 4! &times; 4! &times; 2!) = 39916800 / (1 &times; 24 &times; 24 &times; 2) = <span class="answer">34,650</span></p>
+</div>
+
+<div class="trick-box">
+  <div class="tag">Speed Trick</div>
+  <p>For MISSISSIPPI-type problems, identify repeated letters first. Count: sum of all repetitions must equal total letters (sanity check).</p>
+</div>
+
+<div class="edge-box">
+  <div class="tag">Edge Case</div>
+  <p>If all objects are identical, arrangements = n!/n! = 1. Makes sense &mdash; you can't distinguish any arrangement.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(4)">&larr; Previous</button>
+  <button onclick="goScene(6)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 6: COMBINATIONS WITH REPETITION =============== -->
+<section class="scene-section" id="scene-6">
+<h1>7. Combinations with Repetition (Stars &amp; Bars)</h1>
+<p class="subtitle">Distributing identical items into distinct groups &mdash; the most elegant trick in P&amp;C.</p>
+
+<div class="canvas-box" id="canvas-stars">
+  <button class="play-btn" id="play-stars">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Stars and Bars</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>Turn distribution into a string of stars and bars.</strong></p>
+
+<h2>Problem Setup</h2>
+<p>Distribute <strong>n identical items</strong> into <strong>r distinct groups</strong> (each group can get 0 or more).</p>
+
+<h2>Derivation</h2>
+<p>Represent items as stars (&starf;) and separators as bars (|). We need n stars and (r&minus;1) bars. Example: distributing 5 identical candies to 3 children.</p>
+<p>&starf;&starf;|&starf;&starf;&starf;| &rarr; (2, 3, 0). Total symbols = n + r &minus; 1. Choose which (r&minus;1) are bars:</p>
+<div class="formula-box">
+  <span class="label">Stars and Bars Formula</span>
+  C(n + r &minus; 1, r &minus; 1) = C(n + r &minus; 1, n)
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Candy Distribution</div>
+  <p>Distribute 5 identical candies to 3 children (each can get &ge; 0).</p>
+  <p>C(5+3&minus;1, 3&minus;1) = C(7, 2) = 21</p>
+  <p class="answer">21 ways</p>
+</div>
+
+<h2>Variant: Each group gets &ge; 1</h2>
+<p>Give 1 to each group first, then distribute the remaining (n &minus; r) freely:</p>
+<div class="formula-box">
+  <span class="label">At Least 1 Each</span>
+  C(n &minus; 1, r &minus; 1)
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; At Least One</div>
+  <p>Distribute 5 identical candies to 3 children, each gets &ge; 1.</p>
+  <p>C(5&minus;1, 3&minus;1) = C(4, 2) = <span class="answer">6 ways</span></p>
+</div>
+
+<div class="trick-box">
+  <div class="tag">GATE Trick</div>
+  <p><strong>Equation Solutions:</strong> Number of non-negative integer solutions of x&#8321;+x&#8322;+&hellip;+x&#8342;=n is exactly C(n+r-1, r-1). This is the same as Stars &amp; Bars.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(5)">&larr; Previous</button>
+  <button onclick="goScene(7)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 7: DERANGEMENTS =============== -->
+<section class="scene-section" id="scene-7">
+<h1>8. Derangements</h1>
+<p class="subtitle">When nothing goes to its original position &mdash; the "chaos" count.</p>
+
+<div class="canvas-box" id="canvas-derange">
+  <button class="play-btn" id="play-derange">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Derangement</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>A derangement is a permutation with zero fixed points.</strong></p>
+
+<h2>Formula &amp; Derivation</h2>
+<p>D(n) = number of permutations of n elements where no element appears in its original position.</p>
+<div class="formula-box">
+  <span class="label">Derangement Formula</span>
+  D(n) = n! &times; [1 &minus; 1/1! + 1/2! &minus; 1/3! + &hellip; + (&minus;1)<sup>n</sup>/n!]
+</div>
+<p><strong>Where does this come from?</strong> Apply Inclusion-Exclusion. Let A&#7522; = set of permutations where element i is fixed. Then:</p>
+<ul>
+  <li>|A&#7522;| = (n-1)!, |A&#7522; &cap; A&#11388;| = (n-2)!, etc.</li>
+  <li>D(n) = n! &minus; C(n,1)(n-1)! + C(n,2)(n-2)! &minus; &hellip; = n! &times; &Sigma;<sub>k=0 to n</sub> (&minus;1)<sup>k</sup>/k!</li>
+</ul>
+
+<h2>Quick Values</h2>
+<p>D(1)=0, D(2)=1, D(3)=2, D(4)=9, D(5)=44</p>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Hat Check</div>
+  <p>4 people check hats. In how many ways can hats be returned so nobody gets their own?</p>
+  <p>D(4) = 4!(1 &minus; 1 + 1/2 &minus; 1/6 + 1/24) = 24 &times; (3/8) = <span class="answer">9</span></p>
+</div>
+
+<div class="trick-box">
+  <div class="tag">Speed Trick</div>
+  <p><strong>Recurrence:</strong> D(n) = (n&minus;1)[D(n&minus;1) + D(n&minus;2)]. Use this for small n instead of the summation.</p>
+</div>
+
+<div class="edge-box">
+  <div class="tag">Approximation</div>
+  <p>For large n, D(n) &approx; n!/e (where e &approx; 2.71828). Round to nearest integer. Probability of a derangement &rarr; 1/e &approx; 0.3679.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(6)">&larr; Previous</button>
+  <button onclick="goScene(8)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 8: INCLUSION-EXCLUSION =============== -->
+<section class="scene-section" id="scene-8">
+<h1>9. Inclusion-Exclusion Principle</h1>
+<p class="subtitle">Count the whole, subtract overlaps, add back over-subtractions &mdash; recursively.</p>
+
+<div class="canvas-box" id="canvas-ie">
+  <button class="play-btn" id="play-ie">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Overlapping Sets</span>
+</div>
+
+<h2>The Atomic Truth</h2>
+<p><strong>Don't double count. Don't double subtract.</strong></p>
+
+<h2>Two-Set Formula</h2>
+<div class="formula-box">
+  <span class="label">Inclusion-Exclusion (2 sets)</span>
+  |A &cup; B| = |A| + |B| &minus; |A &cap; B|
+</div>
+
+<h2>Three-Set Formula</h2>
+<div class="formula-box">
+  <span class="label">Inclusion-Exclusion (3 sets)</span>
+  |A &cup; B &cup; C| = |A|+|B|+|C| &minus; |A&cap;B| &minus; |A&cap;C| &minus; |B&cap;C| + |A&cap;B&cap;C|
+</div>
+
+<h2>General Formula</h2>
+<div class="formula-box">
+  <span class="label">General Inclusion-Exclusion</span>
+  |A&#8321; &cup; &hellip; &cup; A&#8345;| = &Sigma;|A&#7522;| &minus; &Sigma;|A&#7522;&cap;A&#11388;| + &Sigma;|A&#7522;&cap;A&#11388;&cap;A&#8342;| &minus; &hellip;
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Divisibility</div>
+  <p>How many integers from 1 to 100 are divisible by 2 or 3?</p>
+  <p>|div by 2| = 50, |div by 3| = 33, |div by 6| = 16</p>
+  <p>Answer = 50 + 33 &minus; 16 = <span class="answer">67</span></p>
+</div>
+
+<div class="example-box">
+  <div class="tag">Example &mdash; Euler's Totient</div>
+  <p>&phi;(n) = n &times; &prod;(1 &minus; 1/p) for each prime factor p of n. This IS inclusion-exclusion applied to "numbers NOT coprime to n".</p>
+</div>
+
+<div class="trick-box">
+  <div class="tag">GATE Trick &mdash; Complement Counting</div>
+  <p><strong>At least 1 = Total &minus; None.</strong> Often easier to count what you <em>don't</em> want and subtract from total.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(7)">&larr; Previous</button>
+  <button onclick="goScene(9)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 9: PASCAL'S TRIANGLE =============== -->
+<section class="scene-section" id="scene-9">
+<h1>10. Pascal's Triangle &amp; nCr Identities</h1>
+<p class="subtitle">The golden structure hiding inside every combination formula.</p>
+
+<div class="canvas-box" id="canvas-pascal">
+  <button class="play-btn" id="play-pascal">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Pascal's Triangle</span>
+</div>
+
+<h2>Pascal's Identity</h2>
+<div class="formula-box">
+  <span class="label">Pascal's Rule</span>
+  C(n, r) = C(n&minus;1, r&minus;1) + C(n&minus;1, r)
+</div>
+<p><strong>Why?</strong> Consider element x. Either x is in your selection (then choose r-1 from remaining n-1) or x is not (choose all r from remaining n-1).</p>
+
+<h2>Essential Identities for GATE</h2>
+<div class="formula-box">
+  <span class="label">Sum of Row</span>
+  C(n,0) + C(n,1) + &hellip; + C(n,n) = 2<sup>n</sup>
+</div>
+<p><strong>Why 2<sup>n</sup>?</strong> Each element is either in or out of a subset &rarr; 2 choices per element &rarr; 2<sup>n</sup> subsets total.</p>
+
+<div class="formula-box">
+  <span class="label">Alternating Sum</span>
+  C(n,0) &minus; C(n,1) + C(n,2) &minus; &hellip; = 0 &ensp;(for n &ge; 1)
+</div>
+
+<div class="formula-box">
+  <span class="label">Vandermonde's Identity</span>
+  C(m+n, r) = &Sigma; C(m, k) &times; C(n, r&minus;k) &ensp;for k=0 to r
+</div>
+<p><strong>Why?</strong> Choose r items from two groups (m items + n items). If k come from group 1, then r&minus;k come from group 2.</p>
+
+<div class="formula-box">
+  <span class="label">Hockey Stick Identity</span>
+  C(r,r) + C(r+1,r) + &hellip; + C(n,r) = C(n+1, r+1)
+</div>
+
+<div class="trick-box">
+  <div class="tag">GATE Trick</div>
+  <p><strong>Binomial Theorem:</strong> (1+x)<sup>n</sup> = &Sigma; C(n,k) x<sup>k</sup>. Set x=1 to get sum=2<sup>n</sup>. Set x=&minus;1 to get alternating sum=0. Differentiate/integrate for advanced identities.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(8)">&larr; Previous</button>
+  <button onclick="goScene(10)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 10: DISTRIBUTION PROBLEMS =============== -->
+<section class="scene-section" id="scene-10">
+<h1>11. Distribution &amp; Partition Problems</h1>
+<p class="subtitle">The 4 cases every exam loves: identical/distinct items into identical/distinct boxes.</p>
+
+<div class="canvas-box" id="canvas-dist">
+  <button class="play-btn" id="play-dist">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Distribution Matrix</span>
+</div>
+
+<h2>The Distribution Matrix</h2>
+<p>Every distribution problem falls into one of these 4 categories:</p>
+
+<div class="example-box">
+  <div class="tag">Case 1: Distinct items &rarr; Distinct boxes (functions)</div>
+  <p>Each item independently chooses a box. Total = r<sup>n</sup> (r boxes, n items).</p>
+  <p>If at most 1 per box: P(r, n) = r!/(r-n)!</p>
+</div>
+
+<div class="example-box">
+  <div class="tag">Case 2: Identical items &rarr; Distinct boxes (Stars &amp; Bars)</div>
+  <p>C(n+r-1, r-1) ways. Already covered in Stars &amp; Bars.</p>
+</div>
+
+<div class="example-box">
+  <div class="tag">Case 3: Distinct items &rarr; Identical boxes (Stirling numbers)</div>
+  <p>Uses Stirling numbers of the second kind S(n,r) = partitions of n items into exactly r non-empty groups.</p>
+  <p>Total (allowing empty boxes) = S(n,1) + S(n,2) + &hellip; + S(n,r) = Bell number B(n) if r &ge; n.</p>
+</div>
+
+<div class="example-box">
+  <div class="tag">Case 4: Identical items &rarr; Identical boxes (Integer partitions)</div>
+  <p>Number of ways to write n as sum of at most r positive integers. No closed formula &mdash; enumerate or use generating functions.</p>
+</div>
+
+<h2>Onto Functions (Surjections)</h2>
+<div class="formula-box">
+  <span class="label">Surjection Count</span>
+  Onto(n &rarr; r) = &Sigma; (&minus;1)<sup>k</sup> C(r,k) (r&minus;k)<sup>n</sup> &ensp;for k=0 to r
+</div>
+<p>This is Inclusion-Exclusion applied to distribution: subtract cases where &ge;1 box is empty.</p>
+
+<div class="trick-box">
+  <div class="tag">GATE Trick</div>
+  <p><strong>Quick classifier:</strong> Ask two questions. (1) Are items same or different? (2) Are boxes same or different? This immediately tells you which formula to use.</p>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(9)">&larr; Previous</button>
+  <button onclick="goScene(11)">Next &rarr;</button>
+</div>
+</section>
+
+<!-- =============== SCENE 11: GATE TRICKS & EDGE CASES =============== -->
+<section class="scene-section" id="scene-11">
+<h1>12. GATE / ESE / PSU / BANK &mdash; Tricks &amp; Edge Cases</h1>
+<p class="subtitle">The master arsenal for exam-day speed and accuracy.</p>
+
+<div class="canvas-box" id="canvas-tricks">
+  <button class="play-btn" id="play-tricks">&#9654;</button>
+  <span class="canvas-label">3D Animation &mdash; Strategy Overview</span>
+</div>
+
+<h2>Technique 1: Complement Counting</h2>
+<p><strong>P(at least 1) = 1 &minus; P(none).</strong> Use when "at least" appears in the question.</p>
+<div class="example-box">
+  <div class="tag">Example</div>
+  <p>Probability that at least one head in 3 coin tosses?</p>
+  <p>= 1 &minus; P(no heads) = 1 &minus; (1/2)&sup3; = 1 &minus; 1/8 = <span class="answer">7/8</span></p>
+</div>
+
+<h2>Technique 2: Fix &amp; Count</h2>
+<p>For "relative position" problems: fix the constrained elements, then count the rest.</p>
+<div class="example-box">
+  <div class="tag">Example</div>
+  <p>Arrange ABCDE such that A comes before B (not necessarily adjacent).</p>
+  <p>By symmetry, A before B in exactly half the arrangements: 5!/2 = <span class="answer">60</span></p>
+</div>
+
+<h2>Technique 3: Gap Method</h2>
+<p>For "no two adjacent" problems: first place the non-restricted items, then use the gaps.</p>
+<div class="example-box">
+  <div class="tag">Example</div>
+  <p>Arrange 5 boys and 3 girls so no two girls are adjacent.</p>
+  <p>Place 5 boys: 5! ways. This creates 6 gaps (_B_B_B_B_B_). Choose 3 of 6 gaps for girls: C(6,3). Arrange girls: 3!.</p>
+  <p>Total = 5! &times; C(6,3) &times; 3! = 120 &times; 20 &times; 6 = <span class="answer">14,400</span></p>
+</div>
+
+<h2>Technique 4: Treat-as-One (Bundling)</h2>
+<p>For "together" constraints: bundle the required group into a single super-element.</p>
+<div class="example-box">
+  <div class="tag">Example</div>
+  <p>Arrange ABCDE with A and B always together.</p>
+  <p>Bundle {AB} as one unit &rarr; 4 units to arrange: 4! = 24. Internal arrangement of A,B: 2!.</p>
+  <p>Total = 4! &times; 2! = <span class="answer">48</span></p>
+</div>
+
+<h2>Technique 5: Bijection (Counting in Disguise)</h2>
+<p>Map a hard counting problem to an equivalent easier one.</p>
+<div class="example-box">
+  <div class="tag">Example &mdash; Lattice Paths</div>
+  <p>Paths from (0,0) to (m,n) using only right (R) and up (U) steps?</p>
+  <p>Each path = a string of m R's and n U's = arrangement of identical objects.</p>
+  <p>Answer = C(m+n, m) = <span class="answer">C(m+n, n)</span></p>
+</div>
+
+<h2>Technique 6: Generating Functions (Advanced)</h2>
+<p>Coefficient of x<sup>r</sup> in a generating function gives the count.</p>
+<div class="example-box">
+  <div class="tag">Example</div>
+  <p>Ways to make change of 10 using coins of 1, 2, 5:</p>
+  <p>Find coefficient of x<sup>10</sup> in (1+x+x&sup2;+&hellip;)(1+x&sup2;+x&#8308;+&hellip;)(1+x&#8309;+x<sup>10</sup>+&hellip;)</p>
+</div>
+
+<h2>Common Edge Cases in GATE</h2>
+<div class="edge-box">
+  <div class="tag">Edge Case Checklist</div>
+  <ul>
+    <li><strong>n=0:</strong> C(0,0)=1, P(0,0)=1, 0!=1, D(0)=1</li>
+    <li><strong>r &gt; n:</strong> C(n,r)=0, P(n,r)=0</li>
+    <li><strong>All identical:</strong> Only 1 arrangement</li>
+    <li><strong>Overcounting symmetry:</strong> Divide by symmetry group size</li>
+    <li><strong>"At least" / "at most":</strong> Often easier via complement</li>
+    <li><strong>With/without replacement:</strong> Read the question twice</li>
+  </ul>
+</div>
+
+<h2>5-Second Sanity Checks</h2>
+<div class="trick-box">
+  <div class="tag">Verification Heuristics</div>
+  <ul>
+    <li>C(n,r) must be a positive integer</li>
+    <li>C(n,r) &le; n<sup>r</sup> / r! (rough upper bound)</li>
+    <li>P(n,r) &ge; C(n,r) always</li>
+    <li>Total subsets of n elements = 2<sup>n</sup> (includes empty set)</li>
+    <li>If answer seems too large, check if you forgot to divide by symmetry</li>
+    <li>If answer seems too small, check if you accidentally used combination instead of permutation</li>
+  </ul>
+</div>
+
+<h2>GATE Previous Year Pattern</h2>
+<div class="example-box">
+  <div class="tag">High-Frequency Topics</div>
+  <ul>
+    <li>Permutations of words with repeated letters (MISSISSIPPI-type)</li>
+    <li>Circular arrangements with constraints</li>
+    <li>Stars &amp; Bars / integer solutions</li>
+    <li>Derangements</li>
+    <li>Committee formation with constraints (at least 1 woman, etc.)</li>
+    <li>Lattice paths and grid problems</li>
+    <li>Surjections (onto functions)</li>
+  </ul>
+</div>
+
+<div class="page-nav">
+  <button onclick="goScene(10)">&larr; Previous</button>
+  <button disabled>End of Material &check;</button>
+</div>
+</section>
+
+</div><!-- /main -->
+
+<!-- Three.js from CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+/* ============================================================
+   NAVIGATION
+   ============================================================ */
+const navItems = document.querySelectorAll('.nav-item');
+const sections = document.querySelectorAll('.scene-section');
+const nav = document.getElementById('nav');
+const main = document.getElementById('main');
+const toggleBtn = document.getElementById('toggle-nav');
+
+function goScene(i) {
+  sections.forEach(s => s.classList.remove('active'));
+  navItems.forEach(n => n.classList.remove('active'));
+  sections[i].classList.add('active');
+  navItems[i].classList.add('active');
+  window.scrollTo(0, 0);
+  // Initialize canvas if not yet
+  initScene(i);
+}
+
+navItems.forEach(btn => {
+  btn.addEventListener('click', () => goScene(parseInt(btn.dataset.scene)));
+});
+
+toggleBtn.addEventListener('click', () => {
+  nav.classList.toggle('collapsed');
+  main.classList.toggle('expanded');
+});
+
+/* ============================================================
+   THREE.JS ANIMATION ENGINE
+   ============================================================ */
+const TEAL   = 0x1a8a8a;
+const CORAL  = 0xd94f4f;
+const AMBER  = 0xe8a317;
+const INDIGO = 0x4a5da8;
+const GREEN  = 0x2e8b57;
+const WHITE  = 0xe6edf3;
+const COLORS = [TEAL, CORAL, AMBER, INDIGO, GREEN, 0x58a6ff, 0xc678dd, 0x98c379];
+
+const scenes = {};   // cached scene data
+const clocks = {};
+
+function createRenderer(container) {
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+  renderer.setSize(w, h);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x0a0e14, 1);
+  container.appendChild(renderer.domElement);
+  return renderer;
+}
+
+function createCamera(w, h) {
+  const cam = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
+  cam.position.set(0, 2, 8);
+  cam.lookAt(0, 0, 0);
+  return cam;
+}
+
+function addLights(scene) {
+  scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+  dl.position.set(5, 8, 5);
+  scene.add(dl);
+  const pl = new THREE.PointLight(TEAL, 0.6, 20);
+  pl.position.set(-3, 3, 3);
+  scene.add(pl);
+}
+
+function createSphere(color, r) {
+  const geo = new THREE.SphereGeometry(r || 0.35, 32, 32);
+  const mat = new THREE.MeshStandardMaterial({ color, metalness: 0.3, roughness: 0.5 });
+  return new THREE.Mesh(geo, mat);
+}
+
+function createBox(color, w, h, d) {
+  const geo = new THREE.BoxGeometry(w || 0.6, h || 0.6, d || 0.6);
+  const mat = new THREE.MeshStandardMaterial({ color, metalness: 0.2, roughness: 0.6 });
+  return new THREE.Mesh(geo, mat);
+}
+
+function createSlot(x) {
+  const geo = new THREE.CylinderGeometry(0.4, 0.4, 0.08, 32);
+  const mat = new THREE.MeshStandardMaterial({ color: 0x30363d, metalness: 0.1, roughness: 0.8 });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, -1.2, 0);
+  return mesh;
+}
+
+/* ============================================================
+   SCENE INITIALIZERS — One per chapter
+   ============================================================ */
+function initScene(index) {
+  const containerId = [
+    'canvas-fcp', 'canvas-factorial', 'canvas-perm', 'canvas-comb',
+    'canvas-circular', 'canvas-reprep', 'canvas-stars', 'canvas-derange',
+    'canvas-ie', 'canvas-pascal', 'canvas-dist', 'canvas-tricks'
+  ][index];
+
+  if (scenes[index]) return; // already initialized
+
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const playBtn = container.querySelector('.play-btn');
+
+  playBtn.addEventListener('click', () => {
+    playBtn.classList.add('hidden');
+    buildScene(index, container);
+  });
+}
+
+function buildScene(index, container) {
+  const w = container.clientWidth;
+  const h = container.clientHeight;
+  const renderer = createRenderer(container);
+  const camera = createCamera(w, h);
+  const scene = new THREE.Scene();
+  addLights(scene);
+  const clock = new THREE.Clock();
+
+  scenes[index] = { renderer, camera, scene, clock, objects: [], time: 0 };
+
+  const builders = [
+    buildFCP, buildFactorial, buildPerm, buildComb,
+    buildCircular, buildRepPerm, buildStars, buildDerange,
+    buildIE, buildPascal, buildDist, buildTricks
+  ];
+  builders[index](scene, scenes[index]);
+
+  function animate() {
+    requestAnimationFrame(animate);
+    const dt = clock.getDelta();
+    scenes[index].time += dt;
+    const t = scenes[index].time;
+    // per-scene update
+    if (scenes[index].update) scenes[index].update(t, dt);
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  window.addEventListener('resize', () => {
+    const nw = container.clientWidth;
+    const nh = container.clientHeight;
+    camera.aspect = nw / nh;
+    camera.updateProjectionMatrix();
+    renderer.setSize(nw, nh);
+  });
+}
+
+/* --- Scene 0: Fundamental Counting Principle --- */
+function buildFCP(sc, data) {
+  // 3 shirts (top row) x 4 pants (bottom row) = 12 outfits
+  const shirts = [];
+  const pants = [];
+  for (let i = 0; i < 3; i++) {
+    const s = createBox(COLORS[i], 0.5, 0.5, 0.5);
+    s.position.set(-2 + i * 2, 1.5, 0);
+    sc.add(s);
+    shirts.push(s);
+  }
+  for (let i = 0; i < 4; i++) {
+    const p = createBox(COLORS[i + 3], 0.5, 0.7, 0.5);
+    p.position.set(-3 + i * 2, -1, 0);
+    sc.add(p);
+    pants.push(p);
+  }
+  // Connecting lines will animate
+  const lines = [];
+  const lineMat = new THREE.LineBasicMaterial({ color: WHITE, transparent: true, opacity: 0.3 });
+  for (let i = 0; i < 3; i++) {
+    for (let j = 0; j < 4; j++) {
+      const pts = [shirts[i].position.clone(), pants[j].position.clone()];
+      const geo = new THREE.BufferGeometry().setFromPoints(pts);
+      const line = new THREE.Line(geo, lineMat.clone());
+      line.visible = false;
+      line._delay = (i * 4 + j) * 0.15;
+      sc.add(line);
+      lines.push(line);
+    }
+  }
+
+  data.update = (t) => {
+    shirts.forEach((s, i) => {
+      s.rotation.y = Math.sin(t * 1.2 + i) * 0.4;
+    });
+    pants.forEach((p, i) => {
+      p.rotation.y = Math.sin(t * 1.0 + i + 2) * 0.3;
+    });
+    lines.forEach(l => {
+      if (t > l._delay + 0.5) {
+        l.visible = true;
+        l.material.opacity = 0.15 + 0.15 * Math.sin(t * 2);
+      }
+    });
+  };
+}
+
+/* --- Scene 1: Factorial Cascade --- */
+function buildFactorial(sc, data) {
+  const spheres = [];
+  const n = 5;
+  for (let i = 0; i < n; i++) {
+    const s = createSphere(COLORS[i], 0.3);
+    s.position.set(-3 + i * 1.5, 3, 0);
+    s._startY = 3;
+    s._targetY = -1;
+    s._delay = i * 0.6;
+    s._slot = i;
+    sc.add(s);
+    spheres.push(s);
+    // slots
+    sc.add(createSlot(-3 + i * 1.5));
+  }
+
+  data.update = (t) => {
+    spheres.forEach((s, i) => {
+      const progress = Math.max(0, Math.min(1, (t - s._delay) / 0.8));
+      const ease = 1 - Math.pow(1 - progress, 3);
+      s.position.y = s._startY + (s._targetY - s._startY) * ease;
+      s.rotation.x = t * 2;
+      if (progress >= 1) {
+        s.position.y = s._targetY + Math.abs(Math.sin(t * 3 + i)) * 0.1;
+      }
+    });
+  };
+}
+
+/* --- Scene 2: Permutations nPr --- */
+function buildPerm(sc, data) {
+  // 5 balls, select 3 and place into 3 slots
+  const allBalls = [];
+  for (let i = 0; i < 5; i++) {
+    const s = createSphere(COLORS[i], 0.3);
+    s.position.set(-4 + i * 1.2, 1.5, 0);
+    s._origX = s.position.x;
+    s._origY = s.position.y;
+    sc.add(s);
+    allBalls.push(s);
+  }
+  // 3 target slots
+  for (let i = 0; i < 3; i++) {
+    sc.add(createSlot(-1.5 + i * 1.5));
+  }
+  // Animate: first 3 balls drop into slots
+  data.update = (t) => {
+    allBalls.forEach((s, i) => {
+      if (i < 3) {
+        const delay = i * 0.8;
+        const progress = Math.max(0, Math.min(1, (t - delay - 1) / 0.7));
+        const ease = 1 - Math.pow(1 - progress, 3);
+        s.position.x = s._origX + (-1.5 + i * 1.5 - s._origX) * ease;
+        s.position.y = s._origY + (-1.2 - s._origY) * ease;
+      } else {
+        s.position.y = s._origY + Math.sin(t * 2 + i) * 0.15;
+        s.material.opacity = 0.4;
+        s.material.transparent = true;
+      }
+      s.rotation.y = t * 1.5;
+    });
+  };
+}
+
+/* --- Scene 3: Combinations nCr --- */
+function buildComb(sc, data) {
+  // Show 5 balls, group 3 into a circle (no order)
+  const balls = [];
+  for (let i = 0; i < 5; i++) {
+    const s = createSphere(COLORS[i], 0.3);
+    s.position.set(-4 + i * 1.5, 1.5, 0);
+    s._origX = s.position.x;
+    s._origY = s.position.y;
+    sc.add(s);
+    balls.push(s);
+  }
+  // Target circle positions for first 3
+  const circleR = 0.8;
+  const targetPos = [0, 1, 2].map(i => ({
+    x: Math.cos(i * Math.PI * 2 / 3 - Math.PI / 2) * circleR,
+    y: -0.8 + Math.sin(i * Math.PI * 2 / 3 - Math.PI / 2) * circleR
+  }));
+
+  // Group boundary ring
+  const ringGeo = new THREE.RingGeometry(1.0, 1.1, 64);
+  const ringMat = new THREE.MeshBasicMaterial({ color: TEAL, side: THREE.DoubleSide, transparent: true, opacity: 0 });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.set(0, -0.8, 0.01);
+  sc.add(ring);
+
+  data.update = (t) => {
+    balls.forEach((s, i) => {
+      if (i < 3) {
+        const delay = i * 0.6;
+        const progress = Math.max(0, Math.min(1, (t - delay - 0.5) / 0.8));
+        const ease = 1 - Math.pow(1 - progress, 3);
+        s.position.x = s._origX + (targetPos[i].x - s._origX) * ease;
+        s.position.y = s._origY + (targetPos[i].y - s._origY) * ease;
+      } else {
+        s.position.y = s._origY + Math.sin(t * 1.5 + i) * 0.1;
+        s.material.opacity = 0.35;
+        s.material.transparent = true;
+      }
+      s.rotation.y = t;
+    });
+    // Show ring after balls arrive
+    const ringProgress = Math.max(0, Math.min(1, (t - 2.5) / 0.5));
+    ring.material.opacity = ringProgress * 0.5;
+    ring.rotation.z = t * 0.3;
+  };
+}
+
+/* --- Scene 4: Circular Permutations --- */
+function buildCircular(sc, data) {
+  const n = 5;
+  const balls = [];
+  const radius = 2;
+
+  // Table (flat disc)
+  const tableGeo = new THREE.CylinderGeometry(2.3, 2.3, 0.1, 64);
+  const tableMat = new THREE.MeshStandardMaterial({ color: 0x1e2530, metalness: 0.1, roughness: 0.9 });
+  const table = new THREE.Mesh(tableGeo, tableMat);
+  table.position.y = -1.5;
+  sc.add(table);
+
+  for (let i = 0; i < n; i++) {
+    const s = createSphere(COLORS[i], 0.3);
+    s._angle0 = (i * 2 * Math.PI) / n - Math.PI / 2;
+    s.position.set(Math.cos(s._angle0) * radius, -1, Math.sin(s._angle0) * radius);
+    sc.add(s);
+    balls.push(s);
+  }
+
+  // Fix first ball (highlight)
+  balls[0].material.emissive = new THREE.Color(TEAL);
+  balls[0].material.emissiveIntensity = 0.5;
+
+  data.camera.position.set(0, 5, 6);
+  data.camera.lookAt(0, -1, 0);
+
+  data.update = (t) => {
+    // Rotate all except the fixed one
+    balls.forEach((s, i) => {
+      if (i === 0) {
+        s.scale.setScalar(1 + 0.1 * Math.sin(t * 3));
+      } else {
+        const angle = s._angle0 + Math.sin(t * 0.5) * 0.3;
+        s.position.x = Math.cos(angle) * radius;
+        s.position.z = Math.sin(angle) * radius;
+      }
+      s.rotation.y = t * 2;
+    });
+  };
+}
+
+/* --- Scene 5: Permutations with Repetition --- */
+function buildRepPerm(sc, data) {
+  // MISSISSIPPI visualization: show letter groups
+  const letters = ['M', 'I', 'S', 'P'];
+  const counts = [1, 4, 4, 2];
+  const colors = [CORAL, TEAL, AMBER, GREEN];
+
+  let xOff = -4;
+  const allSpheres = [];
+  letters.forEach((letter, gi) => {
+    for (let j = 0; j < counts[gi]; j++) {
+      const s = createSphere(colors[gi], 0.25);
+      s.position.set(xOff, 1.5, 0);
+      s._origX = xOff;
+      s._targetX = -5 + allSpheres.length * 0.9;
+      s._delay = allSpheres.length * 0.12;
+      s._group = gi;
+      sc.add(s);
+      allSpheres.push(s);
+      xOff += 0.7;
+    }
+    xOff += 0.4;
+  });
+
+  data.update = (t) => {
+    allSpheres.forEach((s, i) => {
+      const progress = Math.max(0, Math.min(1, (t - s._delay - 0.5) / 0.6));
+      const ease = 1 - Math.pow(1 - progress, 3);
+      s.position.x = s._origX + (s._targetX - s._origX) * ease;
+      s.position.y = 1.5 + (-1 - 1.5) * ease;
+      s.rotation.y = t * 2;
+      // Pulse by group
+      const pulse = Math.sin(t * 3 + s._group * 1.5) * 0.08;
+      s.scale.setScalar(1 + pulse);
+    });
+  };
+}
+
+/* --- Scene 6: Stars and Bars --- */
+function buildStars(sc, data) {
+  // 5 stars and 2 bars
+  const stars = [];
+  const bars = [];
+  const total = 7; // 5 stars + 2 bars
+
+  for (let i = 0; i < 5; i++) {
+    const s = createSphere(AMBER, 0.25);
+    s.position.set(-3 + i * 0.8, 2, 0);
+    s._idx = i;
+    sc.add(s);
+    stars.push(s);
+  }
+  for (let i = 0; i < 2; i++) {
+    const b = createBox(CORAL, 0.08, 0.9, 0.3);
+    b.position.set(2 + i * 1, 2, 0);
+    b._idx = i;
+    sc.add(b);
+    bars.push(b);
+  }
+
+  // Animate: arrange as pattern ★★|★★★|
+  const finalPositions = [
+    { x: -3, y: -0.5 }, { x: -2.2, y: -0.5 },    // group 1: 2 stars
+    { x: -0.8, y: -0.5 },                           // bar 1
+    { x: 0.2, y: -0.5 }, { x: 1, y: -0.5 }, { x: 1.8, y: -0.5 }, // group 2: 3 stars
+    { x: 3, y: -0.5 },                              // bar 2
+  ];
+
+  data.update = (t) => {
+    // Stars go to positions 0,1,3,4,5
+    const starSlots = [0, 1, 3, 4, 5];
+    stars.forEach((s, i) => {
+      const delay = i * 0.3 + 1;
+      const progress = Math.max(0, Math.min(1, (t - delay) / 0.7));
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const fp = finalPositions[starSlots[i]];
+      s.position.x += (fp.x - s.position.x) * ease * 0.05;
+      s.position.y += (fp.y - s.position.y) * ease * 0.05;
+      s.rotation.y = t * 2;
+    });
+    // Bars go to positions 2, 6
+    const barSlots = [2, 6];
+    bars.forEach((b, i) => {
+      const delay = 2.5 + i * 0.4;
+      const progress = Math.max(0, Math.min(1, (t - delay) / 0.7));
+      const ease = 1 - Math.pow(1 - progress, 3);
+      const fp = finalPositions[barSlots[i]];
+      b.position.x += (fp.x - b.position.x) * ease * 0.05;
+      b.position.y += (fp.y - b.position.y) * ease * 0.05;
+      b.rotation.z = Math.sin(t * 2) * 0.1;
+    });
+  };
+}
+
+/* --- Scene 7: Derangements --- */
+function buildDerange(sc, data) {
+  const n = 4;
+  const balls = [];
+  const slots = [];
+
+  for (let i = 0; i < n; i++) {
+    // Original slot (top)
+    const slotTop = createSlot(-2.5 + i * 1.8);
+    slotTop.position.y = 1;
+    sc.add(slotTop);
+
+    // Target slot (bottom)
+    const slotBot = createSlot(-2.5 + i * 1.8);
+    slotBot.position.y = -1.5;
+    sc.add(slotBot);
+    slots.push(slotBot);
+
+    const s = createSphere(COLORS[i], 0.3);
+    s.position.set(-2.5 + i * 1.8, 1.5, 0);
+    s._origIdx = i;
+    sc.add(s);
+    balls.push(s);
+  }
+
+  // Derangement: 0->1, 1->0, 2->3, 3->2
+  const derangeMap = [1, 0, 3, 2];
+
+  data.update = (t) => {
+    balls.forEach((s, i) => {
+      const targetX = -2.5 + derangeMap[i] * 1.8;
+      const delay = i * 0.6 + 1;
+      const progress = Math.max(0, Math.min(1, (t - delay) / 0.8));
+      const ease = 1 - Math.pow(1 - progress, 3);
+
+      const origX = -2.5 + i * 1.8;
+      s.position.x = origX + (targetX - origX) * ease;
+      s.position.y = 1.5 + (-1) * ease + Math.sin(progress * Math.PI) * 1.5;
+      s.rotation.z = progress * Math.PI * 2;
+    });
+  };
+}
+
+/* --- Scene 8: Inclusion-Exclusion --- */
+function buildIE(sc, data) {
+  // Three overlapping circles (Venn diagram in 3D)
+  const ringColors = [CORAL, TEAL, AMBER];
+  const ringPositions = [
+    { x: -1, y: 0.3 },
+    { x: 1, y: 0.3 },
+    { x: 0, y: -0.8 }
+  ];
+  const rings = [];
+
+  ringPositions.forEach((pos, i) => {
+    const geo = new THREE.TorusGeometry(1.2, 0.06, 16, 64);
+    const mat = new THREE.MeshStandardMaterial({ color: ringColors[i], metalness: 0.5, roughness: 0.3 });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(pos.x, pos.y, 0);
+    mesh.rotation.x = Math.PI / 2;
+    sc.add(mesh);
+    rings.push(mesh);
+
+    // Transparent fill
+    const discGeo = new THREE.CircleGeometry(1.2, 64);
+    const discMat = new THREE.MeshBasicMaterial({
+      color: ringColors[i], transparent: true, opacity: 0.08, side: THREE.DoubleSide
+    });
+    const disc = new THREE.Mesh(discGeo, discMat);
+    disc.position.set(pos.x, pos.y, -0.01 * i);
+    sc.add(disc);
+  });
+
+  data.camera.position.set(0, 0, 6);
+  data.camera.lookAt(0, 0, 0);
+
+  data.update = (t) => {
+    rings.forEach((r, i) => {
+      r.rotation.z = t * 0.5 + i;
+      // Breathing effect
+      const scale = 1 + 0.05 * Math.sin(t * 1.5 + i * 2);
+      r.scale.setScalar(scale);
+    });
+  };
+}
+
+/* --- Scene 9: Pascal's Triangle --- */
+function buildPascal(sc, data) {
+  const rows = 6;
+  const sphereMap = [];
+  const pascal = [];
+
+  for (let n = 0; n < rows; n++) {
+    pascal[n] = [];
+    for (let r = 0; r <= n; r++) {
+      if (r === 0 || r === n) pascal[n][r] = 1;
+      else pascal[n][r] = pascal[n-1][r-1] + pascal[n-1][r];
+
+      const s = createSphere(COLORS[r % COLORS.length], 0.2 + pascal[n][r] * 0.015);
+      const x = (r - n / 2) * 1.2;
+      const y = 2.5 - n * 0.9;
+      s.position.set(x, y, 0);
+      s._delay = n * 0.3 + r * 0.1;
+      s._finalScale = 1;
+      s.scale.setScalar(0);
+      sc.add(s);
+      sphereMap.push(s);
+    }
+  }
+
+  data.camera.position.set(0, 0, 8);
+  data.camera.lookAt(0, 0, 0);
+
+  data.update = (t) => {
+    sphereMap.forEach(s => {
+      const progress = Math.max(0, Math.min(1, (t - s._delay) / 0.4));
+      const ease = 1 - Math.pow(1 - progress, 3);
+      s.scale.setScalar(ease * s._finalScale);
+      s.rotation.y = t * 1.5;
+    });
+  };
+}
+
+/* --- Scene 10: Distribution Problems --- */
+function buildDist(sc, data) {
+  // 2x2 grid: distinct/identical items vs distinct/identical boxes
+  const boxPositions = [
+    { x: -2, y: 1, label: 'Dist→Dist' },
+    { x: 2, y: 1, label: 'Id→Dist' },
+    { x: -2, y: -1.5, label: 'Dist→Id' },
+    { x: 2, y: -1.5, label: 'Id→Id' }
+  ];
+
+  boxPositions.forEach((pos, i) => {
+    const container = createBox(COLORS[i], 1.5, 1.2, 0.5);
+    container.position.set(pos.x, pos.y, 0);
+    container.material.transparent = true;
+    container.material.opacity = 0.3;
+    sc.add(container);
+
+    // Small balls inside
+    for (let j = 0; j < 3; j++) {
+      const s = createSphere(i < 2 ? COLORS[j] : COLORS[0], 0.12);
+      s.position.set(pos.x - 0.3 + j * 0.3, pos.y, 0.3);
+      s._baseY = pos.y;
+      s._phase = j + i * 3;
+      sc.add(s);
+    }
+  });
+
+  data.camera.position.set(0, 0, 7);
+  data.camera.lookAt(0, 0, 0);
+
+  data.update = (t) => {
+    sc.children.forEach(child => {
+      if (child.geometry && child.geometry.type === 'SphereGeometry' && child._baseY !== undefined) {
+        child.position.y = child._baseY + Math.sin(t * 2 + child._phase) * 0.15;
+        child.rotation.y = t * 2;
+      }
+    });
+  };
+}
+
+/* --- Scene 11: GATE Tricks Overview --- */
+function buildTricks(sc, data) {
+  // Floating technique cards (3D boxes with different colors)
+  const techniques = [
+    { label: 'Complement', color: CORAL },
+    { label: 'Fix&Count', color: TEAL },
+    { label: 'Gap', color: AMBER },
+    { label: 'Bundle', color: INDIGO },
+    { label: 'Bijection', color: GREEN },
+    { label: 'GenFunc', color: 0x58a6ff },
+  ];
+
+  const cards = [];
+  techniques.forEach((tech, i) => {
+    const box = createBox(tech.color, 1.2, 0.7, 0.2);
+    const angle = (i / techniques.length) * Math.PI * 2;
+    box._angle = angle;
+    box._radius = 3;
+    box.position.set(Math.cos(angle) * 3, Math.sin(angle) * 1.5, 0);
+    sc.add(box);
+    cards.push(box);
+  });
+
+  data.camera.position.set(0, 0, 7);
+  data.camera.lookAt(0, 0, 0);
+
+  data.update = (t) => {
+    cards.forEach((c, i) => {
+      const angle = c._angle + t * 0.3;
+      c.position.x = Math.cos(angle) * c._radius;
+      c.position.y = Math.sin(angle) * 1.5;
+      c.position.z = Math.sin(angle * 0.5) * 1;
+      c.rotation.y = t + i;
+      c.rotation.x = Math.sin(t + i) * 0.3;
+    });
+  };
+}
+
+/* ============================================================
+   INIT — Load Scene 0 by default
+   ============================================================ */
+initScene(0);
+</script>
+</body>
+</html>
