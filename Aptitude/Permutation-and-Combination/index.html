@@ -81,6 +81,15 @@ body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:#0b0e1
 /* ───── Keyboard Hint ───── */
 .key-hint{position:fixed;bottom:70px;right:20px;font-size:.72rem;color:#475569;z-index:2}
 
+/* ───── Animation Containers ───── */
+.anim-container{position:relative;width:100%;margin:18px 0;border-radius:12px;overflow:hidden;background:rgba(15,20,40,0.6);border:1px solid rgba(96,165,250,0.15)}
+.anim-container canvas{display:block;width:100%;height:100%}
+.anim-container .anim-label{position:absolute;top:8px;left:12px;font-size:.65rem;text-transform:uppercase;letter-spacing:1.5px;color:rgba(148,163,184,0.6);pointer-events:none;z-index:1}
+.anim-container .anim-badge-2d{position:absolute;top:8px;right:12px;font-size:.6rem;padding:2px 8px;border-radius:4px;background:rgba(52,211,153,0.15);color:#34d399;border:1px solid rgba(52,211,153,0.2);pointer-events:none}
+.anim-container .anim-badge-3d{position:absolute;top:8px;right:12px;font-size:.6rem;padding:2px 8px;border-radius:4px;background:rgba(96,165,250,0.15);color:#60a5fa;border:1px solid rgba(96,165,250,0.2);pointer-events:none}
+.anim-replay{position:absolute;bottom:8px;right:12px;font-size:.7rem;padding:4px 12px;border-radius:6px;background:rgba(30,40,80,0.8);color:#93c5fd;border:1px solid rgba(96,165,250,0.25);cursor:pointer;z-index:2;transition:all .2s}
+.anim-replay:hover{background:rgba(96,165,250,0.2);color:#e0e7ff}
+
 /* ───── Responsive ───── */
 @media(max-width:700px){
   .slide{padding:20px 4vw 90px}
@@ -188,6 +197,13 @@ If choices are <strong>not</strong> mutually exclusive, use Inclusion&ndash;Excl
 <strong>A:</strong> Hundreds place: 5 choices &rarr; Tens: 4 remaining &rarr; Units: 3 remaining.<br>
 Total = 5 &times; 4 &times; 3 = <strong>60</strong>.
 </div>
+
+<div class="anim-container" style="height:220px">
+<span class="anim-label">Multiplication Rule &mdash; Shirts &times; Pants</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-multiply" width="800" height="220"></canvas>
+<button class="anim-replay" data-target="anim-multiply">&#8635; Replay</button>
+</div>
 </section>
 
 <!-- ==================== SLIDE 3 ==================== -->
@@ -290,6 +306,13 @@ Order matters: (A=Gold, B=Silver) &ne; (B=Gold, A=Silver).
 <span class="label">Aha Moment</span>
 Permutation = Selection + Arrangement. First <em>pick</em> r items, then <em>order</em> them. That ordering step is what distinguishes permutation from combination.
 </div>
+
+<div class="anim-container" style="height:200px">
+<span class="anim-label">Permutation &mdash; Filling r Slots from n Items</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-perm-slots" width="800" height="200"></canvas>
+<button class="anim-replay" data-target="anim-perm-slots">&#8635; Replay</button>
+</div>
 </section>
 
 <!-- ==================== SLIDE 5 ==================== -->
@@ -356,6 +379,13 @@ Solving: <strong>C(n, r) = P(n, r) / r! = n! / [r! &times; (n&minus;r)!]</strong
 <div class="analogy-box">
 <span class="label">Aha Moment &mdash; Why Divide by r!?</span>
 Suppose you picked 3 people {A, B, C} for a committee. Permutation counts ABC, ACB, BAC, BCA, CAB, CBA as <strong>6 different</strong> outcomes. But as a committee, all 6 are the <strong>same</strong> group. Dividing by 3! = 6 collapses them into one.
+</div>
+
+<div class="anim-container" style="height:220px">
+<span class="anim-label">Combination &mdash; Permutations Collapse into Groups</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-comb-collapse" width="800" height="220"></canvas>
+<button class="anim-replay" data-target="anim-comb-collapse">&#8635; Replay</button>
 </div>
 
 <h3>Properties of C(n, r)</h3>
@@ -448,6 +478,12 @@ Example: C(20, 3) = (20 &times; 19 &times; 18) / (3 &times; 2 &times; 1) = 6840 
 &ldquo;How many ways to choose 3 books from 10 and <strong>arrange them on a shelf</strong>?&rdquo;<br>
 This is <strong>NOT</strong> a pure combination! It&rsquo;s selection + arrangement = P(10, 3) = 720.<br>
 Read the complete question &mdash; the last phrase decides the answer.
+</div>
+
+<div class="anim-container" style="height:250px">
+<span class="anim-label">Permutation vs Combination &mdash; 3D Visual</span>
+<span class="anim-badge-3d">3D Interactive</span>
+<canvas id="anim-pvc-3d" width="800" height="250"></canvas>
 </div>
 </section>
 
@@ -575,6 +611,13 @@ For the ice cream example: C(3 + 4 &minus; 1, 4) = C(6, 4) = <strong>15</strong>
 If x₁ + x₂ + x₃ = 10 with each xᵢ &ge; 1 (positive), substitute yᵢ = xᵢ &minus; 1:<br>
 y₁ + y₂ + y₃ = 7, yᵢ &ge; 0 &rarr; C(7 + 2, 2) = C(9, 2) = <strong>36</strong>.
 </div>
+
+<div class="anim-container" style="height:180px">
+<span class="anim-label">Stars &amp; Bars &mdash; Distributing Objects</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-stars-bars" width="800" height="180"></canvas>
+<button class="anim-replay" data-target="anim-stars-bars">&#8635; Replay</button>
+</div>
 </section>
 
 <!-- ==================== SLIDE 12 ==================== -->
@@ -622,6 +665,13 @@ Total = 720 &times; 2 = <strong>1440</strong>.
 If the circular table has <strong>numbered/labeled seats</strong>, it becomes a <strong>linear</strong> problem! Use n!, not (n&minus;1)!.<br>
 Exam trap: Read whether seats are distinguishable.
 </div>
+
+<div class="anim-container" style="height:250px">
+<span class="anim-label">Circular Permutation &mdash; Rotational Equivalence</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-circular" width="800" height="250"></canvas>
+<button class="anim-replay" data-target="anim-circular">&#8635; Replay</button>
+</div>
 </section>
 
 <!-- ==================== SLIDE 13 ==================== -->
@@ -660,6 +710,12 @@ Total = 252 &times; 12 = <strong>3024</strong>.
 &bull; &ldquo;Round table&rdquo; / &ldquo;circular&rdquo; / &ldquo;necklace&rdquo; (one-sided) &rarr; (n&minus;1)!<br>
 &bull; &ldquo;Bracelet&rdquo; / &ldquo;keychain&rdquo; / &ldquo;garland&rdquo; (can flip) &rarr; (n&minus;1)! / 2<br>
 &bull; &ldquo;Numbered seats around table&rdquo; &rarr; n! (linear!)
+</div>
+
+<div class="anim-container" style="height:250px">
+<span class="anim-label">3D Necklace &mdash; Rotation &amp; Flip Symmetry</span>
+<span class="anim-badge-3d">3D Interactive</span>
+<canvas id="anim-necklace-3d" width="800" height="250"></canvas>
 </div>
 </section>
 
@@ -704,6 +760,13 @@ Recurrence: D(n) = (n&minus;1) &times; [D(n&minus;1) + D(n&minus;2)], with D(1) 
 <span class="label">Quick Computation Trick</span>
 D(n) = nearest integer to n!/e. Works for n &ge; 1!<br>
 Example: D(5) = round(120 / 2.718) = round(44.14) = <strong>44</strong>. &#10003;
+</div>
+
+<div class="anim-container" style="height:200px">
+<span class="anim-label">Derangement &mdash; No Letter in Correct Envelope</span>
+<span class="anim-badge-2d">2D Animation</span>
+<canvas id="anim-derange" width="800" height="200"></canvas>
+<button class="anim-replay" data-target="anim-derange">&#8635; Replay</button>
 </div>
 </section>
 
@@ -1101,6 +1164,711 @@ Permutation &amp; Combination is not about memorizing formulas &mdash; it&rsquo;
       else goTo(current - 1);
     }
   }, {passive:true});
+})();
+
+/* ================================================================
+   2D & 3D SLIDE ANIMATIONS
+   ================================================================ */
+(function(){
+
+  const COLORS = {
+    blue:'#60a5fa', purple:'#a78bfa', green:'#34d399', amber:'#fbbf24',
+    coral:'#f87171', white:'#e2e8f0', dim:'#475569', bg:'#0f1428'
+  };
+
+  /* --- Helper: fit canvas to container --- */
+  function fitCanvas(canvas){
+    const r = canvas.parentElement.getBoundingClientRect();
+    canvas.width  = r.width  * (window.devicePixelRatio||1);
+    canvas.height = r.height * (window.devicePixelRatio||1);
+    canvas.style.width  = r.width+'px';
+    canvas.style.height = r.height+'px';
+    const ctx = canvas.getContext('2d');
+    ctx.scale(window.devicePixelRatio||1, window.devicePixelRatio||1);
+    return {ctx, w:r.width, h:r.height};
+  }
+
+  /* --- Helper: draw rounded rect --- */
+  function roundRect(ctx,x,y,w,h,r,fill,stroke){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.quadraticCurveTo(x+w,y,x+w,y+r);
+    ctx.lineTo(x+w,y+h-r);ctx.quadraticCurveTo(x+w,y+h,x+w-r,y+h);
+    ctx.lineTo(x+r,y+h);ctx.quadraticCurveTo(x,y+h,x,y+h-r);
+    ctx.lineTo(x,y+r);ctx.quadraticCurveTo(x,y,x+r,y);ctx.closePath();
+    if(fill){ctx.fillStyle=fill;ctx.fill();}
+    if(stroke){ctx.strokeStyle=stroke;ctx.lineWidth=1.5;ctx.stroke();}
+  }
+
+  /* =========================================================
+     ANIM 1: Multiplication Principle (Slide 2)
+     3 shirts × 4 pants = 12 outfits — animated tree
+     ========================================================= */
+  function animMultiply(){
+    const canvas = document.getElementById('anim-multiply');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const shirts = [{c:'#ef4444',l:'S1'},{c:'#3b82f6',l:'S2'},{c:'#22c55e',l:'S3'}];
+    const pants  = [{c:'#a855f7',l:'P1'},{c:'#f59e0b',l:'P2'},{c:'#06b6d4',l:'P3'},{c:'#ec4899',l:'P4'}];
+    let step=0, maxStep=shirts.length*pants.length+shirts.length+2;
+    let frame=0;
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2, sy=30;
+      /* Root node */
+      ctx.fillStyle=COLORS.white; ctx.font='bold 13px Segoe UI,sans-serif'; ctx.textAlign='center';
+      roundRect(ctx,cx-40,sy-12,80,24,6,'rgba(96,165,250,0.15)','rgba(96,165,250,0.4)');
+      ctx.fillText('Outfits',cx,sy+5);
+
+      const shirtY=sy+55, pairY=sy+120;
+      const shirtSpacing=w/(shirts.length+1);
+      let pairsDone=Math.max(0,step-1);
+
+      /* Shirt nodes */
+      for(let i=0;i<shirts.length;i++){
+        const sx2=shirtSpacing*(i+1);
+        const reveal=step>=1? Math.min(1,(step-1+i*0.3)) : 0;
+        if(reveal<=0) continue;
+        ctx.globalAlpha=Math.min(1,reveal);
+        /* Line from root */
+        ctx.beginPath();ctx.moveTo(cx,sy+12);ctx.lineTo(sx2,shirtY-12);
+        ctx.strokeStyle='rgba(96,165,250,0.3)';ctx.lineWidth=1;ctx.stroke();
+        /* Shirt box */
+        roundRect(ctx,sx2-22,shirtY-12,44,24,5,shirts[i].c+'33',shirts[i].c+'88');
+        ctx.fillStyle='#fff';ctx.font='bold 11px Segoe UI,sans-serif';
+        ctx.fillText(shirts[i].l,sx2,shirtY+5);
+        ctx.globalAlpha=1;
+
+        /* Pant leaves for this shirt */
+        const pSpacing=44;
+        const startX=sx2 - (pants.length-1)*pSpacing/2;
+        for(let j=0;j<pants.length;j++){
+          const pi=i*pants.length+j;
+          if(pi>=pairsDone) continue;
+          const px=startX+j*pSpacing;
+          const reveal2=Math.min(1,(pairsDone-pi));
+          ctx.globalAlpha=Math.min(1,reveal2);
+          ctx.beginPath();ctx.moveTo(sx2,shirtY+12);ctx.lineTo(px,pairY-10);
+          ctx.strokeStyle='rgba(167,139,250,0.25)';ctx.lineWidth=1;ctx.stroke();
+          roundRect(ctx,px-18,pairY-10,36,20,4,pants[j].c+'22',pants[j].c+'66');
+          ctx.fillStyle='#cbd5e1';ctx.font='9px Segoe UI,sans-serif';
+          ctx.fillText(pants[j].l,px,pairY+4);
+          ctx.globalAlpha=1;
+        }
+      }
+
+      /* Counter */
+      const shown=Math.min(pairsDone,12);
+      if(shown>0){
+        ctx.fillStyle=COLORS.amber;ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='right';
+        ctx.fillText('Combos: '+shown+(shown>=12?' = 3×4 ✓':''),w-16,h-12);
+      }
+
+      frame++;
+      if(frame%4===0 && step<maxStep) step++;
+      if(step<maxStep) requestAnimationFrame(draw);
+    }
+    /* expose reset */
+    canvas._reset=()=>{step=0;frame=0;draw();};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 2: Permutation Slot Filling (Slide 4)
+     5 items filling 3 slots: 5 → 4 → 3 = 60
+     ========================================================= */
+  function animPermSlots(){
+    const canvas = document.getElementById('anim-perm-slots');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const items=['A','B','C','D','E'];
+    const itemColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber,COLORS.coral];
+    const slots=3;
+    let phase=0, t=0; // phase 0-2: filling each slot
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const slotW=70, slotH=50, slotGap=20, startX=(w-(slots*(slotW+slotGap)-slotGap))/2;
+      const slotY=h/2-slotH/2+15;
+
+      /* Title */
+      ctx.fillStyle=COLORS.dim; ctx.font='11px Segoe UI,sans-serif'; ctx.textAlign='center';
+      ctx.fillText('P(5, 3) = 5 × 4 × 3 = 60',w/2,20);
+
+      /* Draw slots */
+      for(let i=0;i<slots;i++){
+        const sx=startX+i*(slotW+slotGap);
+        const filled=i<phase||(i===phase&&t>30);
+        roundRect(ctx,sx,slotY,slotW,slotH,8,filled?'rgba(96,165,250,0.12)':'rgba(30,40,80,0.5)',filled?COLORS.blue:'rgba(100,140,255,0.2)');
+        ctx.fillStyle=COLORS.dim;ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('Slot '+(i+1),sx+slotW/2,slotY-6);
+
+        if(filled){
+          /* Show the picked item */
+          const picked=i===0?'A':i===1?'C':'E';
+          const pickedColor=i===0?itemColors[0]:i===1?itemColors[2]:itemColors[4];
+          ctx.fillStyle=pickedColor;ctx.font='bold 22px Segoe UI,sans-serif';
+          ctx.fillText(picked,sx+slotW/2,slotY+slotH/2+8);
+        }
+
+        /* Choices count */
+        if(i<=phase){
+          const choices=items.length-i;
+          const show=i<phase||(i===phase&&t>10);
+          if(show){
+            ctx.fillStyle=COLORS.amber;ctx.font='bold 12px Segoe UI,sans-serif';
+            ctx.fillText(choices+' choices',sx+slotW/2,slotY+slotH+18);
+          }
+        }
+      }
+
+      /* Available pool */
+      const poolY=slotY-42;
+      ctx.fillStyle=COLORS.white;ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('Available:',w/2,poolY-6);
+      const remaining=items.filter((_,idx)=>phase===0?true:phase===1?idx!==0:phase>=2?idx!==0&&idx!==2:true);
+      const poolStartX=w/2-(remaining.length*30)/2;
+      remaining.forEach((item,i)=>{
+        const ix=items.indexOf(item);
+        const px=poolStartX+i*30+15;
+        ctx.beginPath();ctx.arc(px,poolY+12,12,0,Math.PI*2);
+        ctx.fillStyle=itemColors[ix]+'44';ctx.fill();
+        ctx.strokeStyle=itemColors[ix];ctx.lineWidth=1.5;ctx.stroke();
+        ctx.fillStyle=itemColors[ix];ctx.font='bold 12px Segoe UI,sans-serif';
+        ctx.fillText(item,px,poolY+16);
+      });
+
+      /* Multiply bar */
+      if(phase>=2&&t>40){
+        ctx.fillStyle=COLORS.green;ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('5 × 4 × 3 = 60 arrangements',w/2,h-10);
+      }
+
+      t++;
+      if(t===50&&phase<2){phase++;t=0;}
+      if(!(phase>=2&&t>80)) requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{phase=0;t=0;draw();};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 3: Combination Collapse (Slide 6)
+     6 permutations of {A,B,C} collapse into 1 combination
+     ========================================================= */
+  function animCombCollapse(){
+    const canvas = document.getElementById('anim-comb-collapse');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const perms=['ABC','ACB','BAC','BCA','CAB','CBA'];
+    let progress=0; // 0 to 1
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2;
+
+      /* Phase label */
+      ctx.textAlign='center';ctx.font='11px Segoe UI,sans-serif';
+      if(progress<0.4){
+        ctx.fillStyle=COLORS.blue;
+        ctx.fillText('6 Permutations of {A, B, C}  —  Order Matters',cx,22);
+      } else {
+        ctx.fillStyle=COLORS.green;
+        ctx.fillText('÷ 3! = 1 Combination  —  Order Ignored',cx,22);
+      }
+
+      const boxW=70, boxH=36;
+      const spread=Math.max(0,1-progress*2.5);
+      const positions=[];
+
+      for(let i=0;i<6;i++){
+        const angle=(i/6)*Math.PI*2 - Math.PI/2;
+        const radius=70*spread;
+        const tx=cx+Math.cos(angle)*radius - boxW/2;
+        const ty=h/2+Math.sin(angle)*radius - boxH/2 + 10;
+        positions.push({x:tx,y:ty});
+      }
+
+      for(let i=0;i<6;i++){
+        const {x,y}=positions[i];
+        const alpha=progress<0.5?1:Math.max(0.15,1-(progress-0.5)*1.5*(i>0?1:0));
+        ctx.globalAlpha=alpha;
+        const highlight=progress>=0.8&&i===0;
+        roundRect(ctx,x,y,boxW,boxH,6,
+          highlight?'rgba(52,211,153,0.2)':'rgba(30,40,80,0.6)',
+          highlight?COLORS.green:'rgba(96,165,250,0.3)');
+        ctx.fillStyle=progress>=0.8&&i===0?COLORS.green:COLORS.white;
+        ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText(progress>=0.8&&i===0?'{A,B,C}':perms[i],x+boxW/2,y+boxH/2+5);
+        ctx.globalAlpha=1;
+      }
+
+      /* Divider symbol */
+      if(progress>0.3&&progress<0.9){
+        ctx.fillStyle=COLORS.amber;ctx.font='bold 18px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('÷ 3! = ÷ 6',cx,h-18);
+      }
+      if(progress>=0.9){
+        ctx.fillStyle=COLORS.green;ctx.font='bold 14px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('C(n,r) = P(n,r) / r!',cx,h-14);
+      }
+
+      if(progress<1){
+        progress+=0.008;
+        requestAnimationFrame(draw);
+      }
+    }
+    canvas._reset=()=>{progress=0;draw();};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 4: P vs C 3D Comparison (Slide 8)
+     Two groups of 3D cubes: ordered vs unordered
+     ========================================================= */
+  function animPvC3D(){
+    const canvas = document.getElementById('anim-pvc-3d');
+    if(!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const cw = rect.width, ch = rect.height;
+
+    const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(cw,ch);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50,cw/ch,0.1,100);
+    camera.position.set(0,2,8);
+    camera.lookAt(0,0,0);
+
+    const cubeColors=[0x60a5fa,0xa78bfa,0x34d399];
+    const labels=['A','B','C'];
+
+    /* Permutation side: 3 cubes in a line, spaced */
+    const permGroup = new THREE.Group();
+    labels.forEach((l,i)=>{
+      const geo = new THREE.BoxGeometry(0.8,0.8,0.8);
+      const mat = new THREE.MeshBasicMaterial({color:cubeColors[i],wireframe:false,transparent:true,opacity:0.7});
+      const cube = new THREE.Mesh(geo,mat);
+      cube.position.x = (i-1)*1.2;
+      cube.position.y = 0;
+      const edges = new THREE.EdgesGeometry(geo);
+      const line = new THREE.LineSegments(edges,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.3}));
+      cube.add(line);
+      permGroup.add(cube);
+    });
+    permGroup.position.x = -2.5;
+    scene.add(permGroup);
+
+    /* Combination side: 3 cubes clustered together */
+    const combGroup = new THREE.Group();
+    labels.forEach((l,i)=>{
+      const geo = new THREE.BoxGeometry(0.8,0.8,0.8);
+      const mat = new THREE.MeshBasicMaterial({color:cubeColors[i],wireframe:false,transparent:true,opacity:0.7});
+      const cube = new THREE.Mesh(geo,mat);
+      const angle = (i/3)*Math.PI*2;
+      cube.position.x = Math.cos(angle)*0.5;
+      cube.position.z = Math.sin(angle)*0.5;
+      const edges = new THREE.EdgesGeometry(geo);
+      const line = new THREE.LineSegments(edges,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0.3}));
+      cube.add(line);
+      combGroup.add(cube);
+    });
+    combGroup.position.x = 2.5;
+    scene.add(combGroup);
+
+    /* Labels as sprites */
+    function makeLabel(text,x,y,z,color){
+      const c=document.createElement('canvas');c.width=256;c.height=64;
+      const cx2=c.getContext('2d');
+      cx2.fillStyle=color||'#e2e8f0';cx2.font='bold 28px Segoe UI,sans-serif';cx2.textAlign='center';
+      cx2.fillText(text,128,44);
+      const tex=new THREE.CanvasTexture(c);
+      const sp=new THREE.SpriteMaterial({map:tex,transparent:true});
+      const sprite=new THREE.Sprite(sp);
+      sprite.position.set(x,y,z);sprite.scale.set(2.5,0.6,1);
+      scene.add(sprite);
+    }
+    makeLabel('Permutation',-2.5,1.8,0,'#60a5fa');
+    makeLabel('(Order Matters)',-2.5,1.3,0,'#94a3b8');
+    makeLabel('Combination',2.5,1.8,0,'#34d399');
+    makeLabel('(Order Ignored)',2.5,1.3,0,'#94a3b8');
+
+    let running=true;
+    function anim(){
+      if(!running) return;
+      requestAnimationFrame(anim);
+      /* Permutation: cubes shuffle positions */
+      permGroup.children.forEach((c,i)=>{
+        c.rotation.y += 0.02;
+        c.position.y = Math.sin(Date.now()*0.002+i*2)*0.15;
+      });
+      /* Combination: group rotates as one */
+      combGroup.rotation.y += 0.008;
+      renderer.render(scene,camera);
+    }
+    canvas._stop=()=>{running=false;};
+    canvas._reset=()=>{running=true;anim();};
+    anim();
+  }
+
+  /* =========================================================
+     ANIM 5: Stars & Bars (Slide 11)
+     4 stars, 2 bars → different distributions
+     ========================================================= */
+  function animStarsBars(){
+    const canvas = document.getElementById('anim-stars-bars');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const configs=[
+      [2,1,1],[1,2,1],[1,1,2],[3,1,0],[0,2,2],[4,0,0],[0,0,4],[2,2,0],[0,3,1],[1,0,3]
+    ];
+    let configIdx=0, t=0;
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const conf=configs[configIdx];
+      const cx=w/2;
+
+      ctx.fillStyle=COLORS.dim;ctx.font='11px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('4 stars (★) and 2 bars (|)  →  3 groups  —  Config '+(configIdx+1)+'/'+configs.length,cx,20);
+
+      /* Draw the stars-and-bars representation */
+      const totalSymbols=6; // 4 stars + 2 bars
+      const symW=32, symGap=6;
+      const startX=cx-(totalSymbols*(symW+symGap)-symGap)/2;
+      let pos=0;
+      const symbols=[];
+      for(let g=0;g<3;g++){
+        for(let s=0;s<conf[g];s++){symbols.push({type:'star',group:g});pos++;}
+        if(g<2){symbols.push({type:'bar',group:g});pos++;}
+      }
+
+      const barY=h/2-10;
+      symbols.forEach((sym,i)=>{
+        const sx=startX+i*(symW+symGap);
+        const entryProgress=Math.min(1,Math.max(0,(t-i*5)/15));
+        ctx.globalAlpha=entryProgress;
+        if(sym.type==='star'){
+          ctx.fillStyle=COLORS.amber;ctx.font='24px Segoe UI,sans-serif';ctx.textAlign='center';
+          ctx.fillText('★',sx+symW/2,barY+8);
+        } else {
+          ctx.fillStyle=COLORS.blue;
+          ctx.fillRect(sx+symW/2-2,barY-16,4,36);
+        }
+        ctx.globalAlpha=1;
+      });
+
+      /* Group labels */
+      const groupColors=[COLORS.green,COLORS.purple,COLORS.coral];
+      const groupNames=['Vanilla','Choco','Straw'];
+      if(t>40){
+        const groupStartX=cx-150;
+        for(let g=0;g<3;g++){
+          ctx.fillStyle=groupColors[g];ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='center';
+          ctx.fillText(groupNames[g]+': '+conf[g],groupStartX+g*110,h-16);
+        }
+      }
+
+      /* Result */
+      if(t>50){
+        ctx.fillStyle=COLORS.white;ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='right';
+        ctx.fillText('C(6,4) = 15 total configs',w-16,h-16);
+      }
+
+      t++;
+      if(t===80){t=0;configIdx=(configIdx+1)%configs.length;}
+      requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{configIdx=0;t=0;};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 6: Circular Permutation (Slide 12)
+     4 people around a circle — show rotational equivalence
+     ========================================================= */
+  function animCircular(){
+    const canvas = document.getElementById('anim-circular');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const people=['A','B','C','D'];
+    const pColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber];
+    let rotation=0, phase=0, t=0;
+    // phase 0: show arrangement, phase 1: rotate (same arrangement), phase 2: count
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2, cy=h/2+5, radius=65;
+
+      /* Table circle */
+      ctx.beginPath();ctx.arc(cx,cy,radius+20,0,Math.PI*2);
+      ctx.fillStyle='rgba(30,40,80,0.3)';ctx.fill();
+      ctx.strokeStyle='rgba(96,165,250,0.2)';ctx.lineWidth=1;ctx.stroke();
+
+      ctx.fillStyle=COLORS.dim;ctx.font='10px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('Round Table',cx,cy);
+
+      /* People */
+      for(let i=0;i<4;i++){
+        const angle = (i/4)*Math.PI*2 - Math.PI/2 + rotation;
+        const px=cx+Math.cos(angle)*radius;
+        const py=cy+Math.sin(angle)*radius;
+        ctx.beginPath();ctx.arc(px,py,18,0,Math.PI*2);
+        ctx.fillStyle=pColors[i]+'44';ctx.fill();
+        ctx.strokeStyle=pColors[i];ctx.lineWidth=2;ctx.stroke();
+        ctx.fillStyle=pColors[i];ctx.font='bold 16px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText(people[i],px,py+6);
+      }
+
+      /* Phase labels */
+      ctx.textAlign='left';ctx.font='11px Segoe UI,sans-serif';
+      if(phase===0){
+        ctx.fillStyle=COLORS.white;
+        ctx.fillText('Arrangement: ABCD',16,22);
+        ctx.fillStyle=COLORS.dim;
+        ctx.fillText('Watch: rotating gives the SAME circular arrangement...',16,40);
+      } else if(phase>=1){
+        ctx.fillStyle=COLORS.green;
+        ctx.fillText('All 4 rotations are identical!',16,22);
+        ctx.fillStyle=COLORS.amber;ctx.font='bold 12px Segoe UI,sans-serif';
+        ctx.fillText('Circular perms = n!/n = (n−1)! = 3! = 6',16,40);
+      }
+
+      /* Rotation indicator */
+      if(phase===0 && t>30){
+        const rot=Math.floor(rotation/(Math.PI/2))%4;
+        ctx.fillStyle=COLORS.blue;ctx.font='bold 11px Segoe UI,sans-serif';ctx.textAlign='right';
+        ctx.fillText('Rotation '+(rot+1)+'/4',w-16,22);
+      }
+
+      t++;
+      if(phase===0){
+        if(t>30) rotation+=0.02;
+        if(rotation>=Math.PI*2){rotation=0;phase=1;t=0;}
+      }
+      requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{rotation=0;phase=0;t=0;};
+    draw();
+  }
+
+  /* =========================================================
+     ANIM 7: 3D Necklace / Bracelet (Slide 13)
+     A ring of colored beads rotating in 3D
+     ========================================================= */
+  function animNecklace3D(){
+    const canvas = document.getElementById('anim-necklace-3d');
+    if(!canvas) return;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const cw=rect.width, ch=rect.height;
+
+    const renderer = new THREE.WebGLRenderer({canvas,antialias:true,alpha:true});
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+    renderer.setSize(cw,ch);
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45,cw/ch,0.1,100);
+    camera.position.set(0,2,6);
+    camera.lookAt(0,0,0);
+
+    const beadColors=[0x60a5fa,0xa78bfa,0x34d399,0xfbbf24,0xf87171,0xec4899,0x06b6d4];
+    const numBeads=7;
+    const ring = new THREE.Group();
+    const beadRadius=0.25;
+    const ringRadius=1.5;
+
+    /* Create beads */
+    for(let i=0;i<numBeads;i++){
+      const angle=(i/numBeads)*Math.PI*2;
+      const geo=new THREE.SphereGeometry(beadRadius,16,16);
+      const mat=new THREE.MeshBasicMaterial({color:beadColors[i],transparent:true,opacity:0.85});
+      const bead=new THREE.Mesh(geo,mat);
+      bead.position.set(Math.cos(angle)*ringRadius,0,Math.sin(angle)*ringRadius);
+      ring.add(bead);
+    }
+
+    /* Wire connecting beads */
+    const curve = new THREE.CatmullRomCurve3(
+      Array.from({length:numBeads+1},(_,i)=>{
+        const a=(i/numBeads)*Math.PI*2;
+        return new THREE.Vector3(Math.cos(a)*ringRadius,0,Math.sin(a)*ringRadius);
+      }),true
+    );
+    const tubeGeo = new THREE.TubeGeometry(curve,64,0.04,8,true);
+    const tubeMat = new THREE.MeshBasicMaterial({color:0x475569,transparent:true,opacity:0.4});
+    ring.add(new THREE.Mesh(tubeGeo,tubeMat));
+    scene.add(ring);
+
+    /* Labels */
+    function makeLabel3(text,x,y,z,color){
+      const c=document.createElement('canvas');c.width=300;c.height=64;
+      const cx2=c.getContext('2d');
+      cx2.fillStyle=color||'#e2e8f0';cx2.font='bold 26px Segoe UI,sans-serif';cx2.textAlign='center';
+      cx2.fillText(text,150,44);
+      const tex=new THREE.CanvasTexture(c);
+      const sp=new THREE.SpriteMaterial({map:tex,transparent:true});
+      const sprite=new THREE.Sprite(sp);
+      sprite.position.set(x,y,z);sprite.scale.set(3,0.6,1);
+      scene.add(sprite);
+    }
+    makeLabel3('Necklace: (n−1)! = 720',0,2.2,0,'#60a5fa');
+    makeLabel3('Bracelet: (n−1)!/2 = 360',0,-1.8,0,'#34d399');
+
+    let running=true, flipPhase=false, flipTime=0;
+    function anim(){
+      if(!running) return;
+      requestAnimationFrame(anim);
+      ring.rotation.y += 0.01;
+      /* Occasionally flip to show bracelet symmetry */
+      flipTime++;
+      if(flipTime>300&&!flipPhase){flipPhase=true;flipTime=0;}
+      if(flipPhase){
+        ring.rotation.x += 0.03;
+        if(flipTime>60){flipPhase=false;flipTime=0;ring.rotation.x=0;}
+      }
+      renderer.render(scene,camera);
+    }
+    canvas._stop=()=>{running=false;};
+    canvas._reset=()=>{running=true;ring.rotation.x=0;ring.rotation.y=0;flipTime=0;flipPhase=false;anim();};
+    anim();
+  }
+
+  /* =========================================================
+     ANIM 8: Derangement — Letters & Envelopes (Slide 14)
+     4 letters shuffling into wrong envelopes
+     ========================================================= */
+  function animDerange(){
+    const canvas = document.getElementById('anim-derange');
+    if(!canvas) return;
+    const {ctx,w,h} = fitCanvas(canvas);
+    const letters=['L1','L2','L3','L4'];
+    const envColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber];
+    // derangement: each letter goes to a wrong envelope
+    const derangements=[
+      [1,0,3,2],[1,2,3,0],[1,3,0,2],[2,0,3,1],[2,3,0,1],[2,3,1,0],
+      [3,0,1,2],[3,2,0,1],[3,2,1,0]
+    ];
+    let currentDerange=0, t=0, phase=0; // 0=show correct, 1=animate shuffle, 2=show deranged
+
+    function draw(){
+      ctx.clearRect(0,0,w,h);
+      const cx=w/2;
+      const envW=60, envH=40, gap=20;
+      const startX=cx-(4*(envW+gap)-gap)/2;
+      const envY=h/2+10;
+      const letterY=h/2-40;
+      const d=derangements[currentDerange];
+
+      ctx.fillStyle=COLORS.dim;ctx.font='11px Segoe UI,sans-serif';ctx.textAlign='center';
+      ctx.fillText('Derangement '+(currentDerange+1)+'/'+derangements.length+' — D(4) = 9',cx,18);
+
+      /* Draw envelopes */
+      for(let i=0;i<4;i++){
+        const ex=startX+i*(envW+gap);
+        roundRect(ctx,ex,envY,envW,envH,6,'rgba(30,40,80,0.5)',envColors[i]);
+        ctx.fillStyle=envColors[i];ctx.font='bold 11px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('E'+(i+1),ex+envW/2,envY+envH/2+4);
+      }
+
+      /* Draw letters */
+      for(let i=0;i<4;i++){
+        let lx, ly;
+        if(phase===0){
+          // correct position (above matching envelope)
+          lx=startX+i*(envW+gap)+envW/2;
+          ly=letterY;
+        } else if(phase===1){
+          // animate to deranged position
+          const fromX=startX+i*(envW+gap)+envW/2;
+          const toX=startX+d[i]*(envW+gap)+envW/2;
+          const progress=Math.min(1,t/40);
+          const ease=progress<0.5?2*progress*progress:1-Math.pow(-2*progress+2,2)/2;
+          lx=fromX+(toX-fromX)*ease;
+          ly=letterY-Math.sin(ease*Math.PI)*25;
+        } else {
+          // deranged position
+          lx=startX+d[i]*(envW+gap)+envW/2;
+          ly=letterY;
+        }
+        ctx.beginPath();ctx.arc(lx,ly,16,0,Math.PI*2);
+        const wrong=phase===2&&d[i]!==i;
+        ctx.fillStyle=wrong?'rgba(248,113,113,0.2)':'rgba(96,165,250,0.15)';ctx.fill();
+        ctx.strokeStyle=wrong?COLORS.coral:COLORS.blue;ctx.lineWidth=1.5;ctx.stroke();
+        ctx.fillStyle=wrong?COLORS.coral:COLORS.blue;ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('L'+(i+1),lx,ly+4);
+      }
+
+      /* Status */
+      if(phase===2){
+        ctx.fillStyle=COLORS.coral;ctx.font='bold 12px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('✗ No letter in its own envelope!',cx,h-10);
+      } else if(phase===0){
+        ctx.fillStyle=COLORS.green;ctx.font='11px Segoe UI,sans-serif';ctx.textAlign='center';
+        ctx.fillText('Original: each letter above its envelope',cx,h-10);
+      }
+
+      t++;
+      if(phase===0&&t>40){phase=1;t=0;}
+      if(phase===1&&t>45){phase=2;t=0;}
+      if(phase===2&&t>60){phase=0;t=0;currentDerange=(currentDerange+1)%derangements.length;}
+      requestAnimationFrame(draw);
+    }
+    canvas._reset=()=>{currentDerange=0;t=0;phase=0;};
+    draw();
+  }
+
+  /* =========================================================
+     Animation Registry & Lifecycle
+     ========================================================= */
+  const animMap = {
+    2: animMultiply,
+    4: animPermSlots,
+    6: animCombCollapse,
+    8: animPvC3D,
+    11: animStarsBars,
+    12: animCircular,
+    13: animNecklace3D,
+    14: animDerange
+  };
+  const initialized = new Set();
+
+  /* Initialize animations for the current slide */
+  function initAnimForSlide(slideNum){
+    if(initialized.has(slideNum)) return;
+    if(animMap[slideNum]){
+      animMap[slideNum]();
+      initialized.add(slideNum);
+    }
+  }
+
+  /* Observe slide changes to trigger animations */
+  const observer = new MutationObserver(mutations=>{
+    mutations.forEach(m=>{
+      if(m.type==='attributes'&&m.attributeName==='class'){
+        const el=m.target;
+        if(el.classList.contains('slide')&&el.classList.contains('active')){
+          const num=parseInt(el.getAttribute('data-slide'));
+          initAnimForSlide(num);
+        }
+      }
+    });
+  });
+  document.querySelectorAll('.slide').forEach(s=>{
+    observer.observe(s,{attributes:true,attributeFilter:['class']});
+  });
+
+  /* Initialize animation for slide 1 (already active) and slide 2 */
+  initAnimForSlide(1);
+  initAnimForSlide(2);
+
+  /* Replay buttons */
+  document.querySelectorAll('.anim-replay').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      const id=btn.getAttribute('data-target');
+      const canvas=document.getElementById(id);
+      if(canvas&&canvas._reset) canvas._reset();
+    });
+  });
+
 })();
 </script>
 </body>
