@@ -1520,6 +1520,7 @@ Permutation &amp; Combination is not about memorizing formulas &mdash; it&rsquo;
     if(!canvas) return;
     const {ctx,w,h} = fitCanvas(canvas);
     const configs=[
+      /* Each array = [group1, group2, group3] distributing 4 stars into 3 groups */
       [2,1,1],[1,2,1],[1,1,2],[3,1,0],[0,2,2],[4,0,0],[0,0,4],[2,2,0],[0,3,1],[1,0,3]
     ];
     let configIdx=0, t=0;
@@ -1742,7 +1743,7 @@ Permutation &amp; Combination is not about memorizing formulas &mdash; it&rsquo;
     const {ctx,w,h} = fitCanvas(canvas);
     const letters=['L1','L2','L3','L4'];
     const envColors=[COLORS.blue,COLORS.purple,COLORS.green,COLORS.amber];
-    // derangement: each letter goes to a wrong envelope
+    /* Each array maps letter i → envelope derangements[config][i] (no letter in its own envelope) */
     const derangements=[
       [1,0,3,2],[1,2,3,0],[1,3,0,2],[2,0,3,1],[2,3,0,1],[2,3,1,0],
       [3,0,1,2],[3,2,0,1],[3,2,1,0]
@@ -1856,8 +1857,7 @@ Permutation &amp; Combination is not about memorizing formulas &mdash; it&rsquo;
     observer.observe(s,{attributes:true,attributeFilter:['class']});
   });
 
-  /* Initialize animation for slide 1 (already active) and slide 2 */
-  initAnimForSlide(1);
+  /* Initialize animation for slide 2 (first slide with animation) */
   initAnimForSlide(2);
 
   /* Replay buttons */
