@@ -1,0 +1,1351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter 7: GATE/ESE/PSU/Banking Practice Problems</title>
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+}
+#title-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 70%;
+  height: 48px;
+  background: #1a8a8a;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  font-size: 18px;
+  font-weight: 600;
+  z-index: 10;
+  letter-spacing: 0.3px;
+}
+#canvas-container {
+  position: fixed;
+  top: 48px;
+  left: 0;
+  width: 70%;
+  height: calc(100vh - 48px);
+  background: #f8f8f8;
+}
+#info-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 30%;
+  height: 100vh;
+  background: #fff;
+  border-left: 2px solid #e0e0e0;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
+#info-header {
+  padding: 16px 20px;
+  background: #f5f5f5;
+  border-bottom: 1px solid #e0e0e0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a8a8a;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+}
+#info-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  font-size: 14px;
+  line-height: 1.7;
+  color: #333;
+}
+#info-body h3 {
+  color: #1a8a8a;
+  margin: 0 0 8px;
+  font-size: 15px;
+}
+#info-body ul,
+#info-body ol {
+  margin: 8px 0 16px 18px;
+}
+#info-body li {
+  margin-bottom: 4px;
+}
+#info-body .key-point {
+  background: #e8f5f5;
+  border-left: 3px solid #1a8a8a;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#info-body .warn {
+  background: #fff3e0;
+  border-left: 3px solid #e8a317;
+  padding: 8px 12px;
+  margin: 10px 0;
+  font-size: 13px;
+}
+#nav-bar {
+  padding: 14px 20px;
+  border-top: 1px solid #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #fafafa;
+}
+#nav-bar .counter {
+  font-size: 13px;
+  color: #666;
+  font-weight: 500;
+}
+#nav-bar button {
+  padding: 7px 18px;
+  border: 1px solid #1a8a8a;
+  background: #fff;
+  color: #1a8a8a;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+#nav-bar button:hover {
+  background: #1a8a8a;
+  color: #fff;
+}
+#nav-bar button:disabled {
+  opacity: 0.35;
+  cursor: default;
+  background: #fff;
+  color: #1a8a8a;
+}
+#scene-title {
+  position: fixed;
+  top: 56px;
+  left: 12px;
+  background: rgba(255, 255, 255, 0.92);
+  padding: 6px 16px;
+  border-radius: 4px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+  z-index: 5;
+  pointer-events: none;
+  border: 1px solid #ddd;
+}
+.label-overlay {
+  position: absolute;
+  pointer-events: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #222;
+  white-space: nowrap;
+  text-align: center;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+}
+.label-overlay.box-label {
+  background: rgba(255, 255, 255, 0.90);
+  padding: 2px 8px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+}
+.label-overlay.highlight-label {
+  background: rgba(217, 79, 79, 0.12);
+  padding: 3px 10px;
+  border-radius: 3px;
+  border: 1px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+}
+.label-overlay.trap-label {
+  background: rgba(255, 240, 240, 0.95);
+  padding: 4px 12px;
+  border-radius: 3px;
+  border: 2px solid #d94f4f;
+  color: #d94f4f;
+  font-size: 13px;
+  font-weight: 700;
+}
+</style>
+</head>
+<body>
+
+<div id="title-bar">Chapter 7: GATE/ESE/PSU/Banking Practice Problems</div>
+<div id="canvas-container"></div>
+<div id="scene-title"></div>
+
+<div id="info-panel">
+  <div id="info-header">Scene Information</div>
+  <div id="info-body"></div>
+  <div id="nav-bar">
+    <button id="btn-prev" onclick="prevScene()">Previous</button>
+    <span class="counter" id="counter">Scene 1 of 6</span>
+    <button id="btn-next" onclick="nextScene()">Next</button>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/controls/OrbitControls.js"></script>
+<script>
+"use strict";
+
+/* ===== COLOR PALETTE ===== */
+var TEAL = 0x1a8a8a, CORAL = 0xd94f4f, AMBER = 0xe8a317;
+var INDIGO = 0x4a5da8, GREEN = 0x2e8b57;
+var DARK = 0x333333, LGRAY = 0xdddddd;
+
+var TEAL_S = "#1a8a8a", CORAL_S = "#d94f4f", AMBER_S = "#e8a317";
+var INDIGO_S = "#4a5da8", GREEN_S = "#2e8b57";
+
+/* ===== GLOBALS ===== */
+var renderer, camera, controls, clock;
+var currentScene = 0, totalScenes = 6;
+var container = document.getElementById("canvas-container");
+var labelPool = [];
+var sceneGroup, activeScene;
+var animState = { time: 0, phase: 0, data: {}, update: null };
+
+/* ===== RENDERER SETUP ===== */
+function initRenderer() {
+  renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setSize(container.clientWidth, container.clientHeight);
+  renderer.setClearColor(0xf8f8f8);
+  container.appendChild(renderer.domElement);
+
+  camera = new THREE.PerspectiveCamera(
+    50, container.clientWidth / container.clientHeight, 0.1, 200
+  );
+  camera.position.set(0, 8, 18);
+
+  controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.08;
+  controls.minDistance = 4;
+  controls.maxDistance = 60;
+  clock = new THREE.Clock();
+}
+
+function onResize() {
+  var w = container.clientWidth, h = container.clientHeight;
+  camera.aspect = w / h;
+  camera.updateProjectionMatrix();
+  renderer.setSize(w, h);
+}
+window.addEventListener("resize", onResize);
+
+/* ===== LABEL SYSTEM ===== */
+function clearLabels() {
+  for (var i = 0; i < labelPool.length; i++) labelPool[i].el.remove();
+  labelPool.length = 0;
+}
+
+function addLabel(text, obj, offsetY, cls) {
+  var el = document.createElement("div");
+  el.className = "label-overlay" + (cls ? " " + cls : "");
+  el.textContent = text;
+  container.appendChild(el);
+  labelPool.push({ el: el, obj: obj, offsetY: offsetY || 0 });
+  return el;
+}
+
+function updateLabels() {
+  var w = container.clientWidth, h = container.clientHeight;
+  var v = new THREE.Vector3();
+  for (var i = 0; i < labelPool.length; i++) {
+    var l = labelPool[i];
+    if (!l.obj || !l.obj.parent) { l.el.style.display = "none"; continue; }
+    l.obj.getWorldPosition(v);
+    v.y += l.offsetY;
+    v.project(camera);
+    if (v.z > 1) { l.el.style.display = "none"; continue; }
+    l.el.style.display = "";
+    l.el.style.left = ((v.x * 0.5 + 0.5) * w) + "px";
+    l.el.style.top = ((-v.y * 0.5 + 0.5) * h) + "px";
+  }
+}
+
+/* ===== GEOMETRY HELPERS ===== */
+function mat(color, em) {
+  return new THREE.MeshPhongMaterial({ color: color, emissive: em || 0, shininess: 60 });
+}
+function matT(color, op) {
+  return new THREE.MeshPhongMaterial({ color: color, transparent: true, opacity: op, shininess: 40 });
+}
+function lineMat(color) {
+  return new THREE.LineBasicMaterial({ color: color, linewidth: 2 });
+}
+function makeBox(w, h, d, c) {
+  return new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat(c));
+}
+function makeSphere(r, c) {
+  return new THREE.Mesh(new THREE.SphereGeometry(r, 24, 24), mat(c));
+}
+function makeCyl(rt, rb, h, c) {
+  return new THREE.Mesh(new THREE.CylinderGeometry(rt, rb, h, 24), mat(c));
+}
+function makeLine(a, b, c) {
+  var g = new THREE.BufferGeometry().setFromPoints([a, b]);
+  return new THREE.Line(g, lineMat(c));
+}
+function makeArrow(from, to, c, hl) {
+  var dir = new THREE.Vector3().subVectors(to, from);
+  var len = dir.length(); dir.normalize();
+  return new THREE.ArrowHelper(dir, from, len, c, hl || 0.4, 0.2);
+}
+
+function makeChair(x, y, z) {
+  var g = new THREE.Group();
+  var seat = makeBox(1.0, 0.12, 0.9, 0xcccccc);
+  g.add(seat);
+  var back = makeBox(1.0, 0.8, 0.1, 0xbbbbbb);
+  back.position.set(0, 0.4, -0.4);
+  g.add(back);
+  var legGeo = new THREE.CylinderGeometry(0.04, 0.04, 0.5, 8);
+  var legM = mat(0x999999);
+  [[-0.38, -0.31, -0.32], [0.38, -0.31, -0.32],
+   [-0.38, -0.31, 0.32], [0.38, -0.31, 0.32]].forEach(function(o) {
+    var leg = new THREE.Mesh(legGeo, legM);
+    leg.position.set(o[0], o[1], o[2]);
+    g.add(leg);
+  });
+  g.position.set(x, y, z);
+  return g;
+}
+
+/* ===== LIGHTING ===== */
+function addLights(sc) {
+  sc.add(new THREE.AmbientLight(0xffffff, 0.55));
+  var d1 = new THREE.DirectionalLight(0xffffff, 0.65);
+  d1.position.set(8, 12, 10); sc.add(d1);
+  var d2 = new THREE.DirectionalLight(0xffffff, 0.3);
+  d2.position.set(-6, 8, -8); sc.add(d2);
+}
+
+function easeOut(t) { t = Math.min(1, Math.max(0, t)); return 1 - Math.pow(1 - t, 3); }
+
+/* ===== SCENE INFO ===== */
+var sceneInfo = [
+  {
+    title: "Scene 1: GATE Linear Problem",
+    header: "GATE Linear — Full Walkthrough",
+    body: "<h3>Problem (2 marks, ~3 min)</h3>" +
+      "<p>5 people A, B, C, D, E sit in a row facing North.</p>" +
+      "<ol>" +
+      "<li>B sits at the center</li>" +
+      "<li>A is to the immediate left of B</li>" +
+      "<li>E is at one of the ends</li>" +
+      "<li>D is not adjacent to B</li>" +
+      "<li>C sits to the right of B</li>" +
+      "</ol>" +
+      "<div class=\"key-point\"><b>Step-by-step:</b> B→pos 3 (center). A→pos 2 (imm. left, facing North = decreasing). " +
+      "C→pos 4 (right of B). D not at pos 2 or 4 (adjacent to 3). D at pos 1 or 5. E at an end (pos 1 or 5). " +
+      "D and E take positions 1 and 5 → two valid arrangements.</div>" +
+      "<div class=\"warn\"><b>GATE Note:</b> If the question asks \"Who is at position 1?\", both D and E are possible. " +
+      "Check answer choices carefully — GATE may give a clue that resolves this.</div>" +
+      "<p>Watch the constraint satisfaction verification at the end.</p>"
+  },
+  {
+    title: "Scene 2: GATE Circular Problem",
+    header: "GATE Circular — Full Walkthrough",
+    body: "<h3>Problem (2 marks, ~3 min)</h3>" +
+      "<p>6 people P, Q, R, S, T, U sit around a circular table facing the center.</p>" +
+      "<ol>" +
+      "<li>P sits opposite R</li>" +
+      "<li>Q is to the immediate left of P</li>" +
+      "<li>S is second to the left of R</li>" +
+      "<li>T is not adjacent to P</li>" +
+      "</ol>" +
+      "<div class=\"key-point\"><b>Rotation Principle:</b> In circular arrangements, fix one person as anchor. " +
+      "We fix P at position 1. Opposite = pos 1 + 3 = pos 4 → R at pos 4.</div>" +
+      "<p><b>Facing center conventions:</b> Left = Clockwise, Right = Anti-clockwise.</p>" +
+      "<ul>" +
+      "<li>Q imm. left of P → CW from pos 1 → pos 2</li>" +
+      "<li>S second left of R → CW×2 from pos 4 → 5 → 6 → pos 6</li>" +
+      "<li>T not adjacent to P (not pos 2 or 6) → pos 3 or 5</li>" +
+      "<li>U fills remaining → pos 3 or 5</li>" +
+      "</ul>" +
+      "<div class=\"warn\">Two valid arrangements exist. Verify answer works for BOTH.</div>"
+  },
+  {
+    title: "Scene 3: Banking Double-Row Problem",
+    header: "Banking Double-Row — Direction Trap",
+    body: "<h3>Problem (5 marks, ~6 min)</h3>" +
+      "<p>8 people A–H sit in 2 rows of 4. Row 1 faces South, Row 2 faces North (facing each other).</p>" +
+      "<ol>" +
+      "<li>A sits second from the left end of Row 1</li>" +
+      "<li>B faces A</li>" +
+      "<li>C is to the immediate left of A</li>" +
+      "<li>D sits at the right end of Row 2</li>" +
+      "<li>E is to the immediate right of B</li>" +
+      "<li>F sits in Row 2</li>" +
+      "</ol>" +
+      "<div class=\"warn\"><b>DIRECTION TRAP:</b> A faces South → A's left = INCREASING position " +
+      "(viewer's right). Students mistakenly put C at pos 1 (viewer's left). " +
+      "CORRECT: C at pos 3!</div>" +
+      "<div class=\"key-point\">Row 1 (South): left=increasing, right=decreasing.<br>" +
+      "Row 2 (North): left=decreasing, right=increasing.<br>" +
+      "Always draw arrows FIRST before solving.</div>" +
+      "<p>Watch the wrong answer flash red, then the correct answer in green.</p>"
+  },
+  {
+    title: "Scene 4: Exam Pattern Summary",
+    header: "Exam Pattern Summary",
+    body: "<h3>What to Expect in Each Exam</h3>" +
+      "<ul>" +
+      "<li><b>GATE:</b> Linear/Circular, High difficulty, 3 min, trap = vague language</li>" +
+      "<li><b>Banking:</b> Double-Row/Mixed Circular, Very High, 6 min, trap = direction reversal</li>" +
+      "<li><b>ESE:</b> Linear, Medium, 2–3 min, trap = multi-attribute</li>" +
+      "<li><b>PSU:</b> Circular, Medium, 3 min, trap = opposite counting</li>" +
+      "</ul>" +
+      "<div class=\"key-point\">Banking problems are the hardest due to direction reversal in double rows. " +
+      "GATE problems use vague language to trick you into wrong interpretations.</div>" +
+      "<p>Each exam row animates in with color coding for quick visual reference.</p>"
+  },
+  {
+    title: "Scene 5: Formula Quick Reference",
+    header: "Formula Quick Reference (3D Cheat Sheet)",
+    body: "<h3>Screenshot This for Revision!</h3>" +
+      "<p><b>LINEAR:</b> L + R = n+1 | Between = |p1−p2|−1 | Middle = (n+1)/2</p>" +
+      "<p><b>CIRCULAR:</b> (n−1)! arrangements | Opposite = p + n/2 | Left=CW, Right=ACW</p>" +
+      "<p><b>DOUBLE ROW:</b> Row1(South): left=p+k | Row2(North): left=p−k</p>" +
+      "<p><b>COUNTING:</b> Circular shorter arc: min(d, n−d)−1</p>" +
+      "<p><b>BLOCKS:</b> Block of m in n positions: n−m+1 starting positions</p>" +
+      "<div class=\"key-point\">Cards gently rotate in 3D. Orbit around them to study each formula set.</div>"
+  },
+  {
+    title: "Scene 6: Anti-Mistake Protocol",
+    header: "Anti-Mistake Protocol",
+    body: "<h3>Do This BEFORE Every Problem</h3>" +
+      "<ol>" +
+      "<li>Mark direction convention: L=CW or L=paper-right</li>" +
+      "<li>Draw arrows on every person showing facing direction</li>" +
+      "<li>Circle every negative word (not, neither, nor)</li>" +
+      "<li>If 2 valid arrangements exist, verify answer works for BOTH</li>" +
+      "<li>SKIP if time exceeds: 3 min (GATE), 6 min (Banking)</li>" +
+      "</ol>" +
+      "<div class=\"key-point\"><b>Follow this protocol EVERY time.</b> Consistency beats cleverness. " +
+      "The top scorers are not the cleverest — they are the most disciplined.</div>" +
+      "<div class=\"warn\">Each checklist item appears with a checkbox. Green check = habit formed.</div>"
+  }
+];
+
+/* ===== NAVIGATION ===== */
+function updateNav() {
+  document.getElementById("counter").textContent =
+    "Scene " + (currentScene + 1) + " of " + totalScenes;
+  document.getElementById("btn-prev").disabled = (currentScene === 0);
+  document.getElementById("btn-next").disabled = (currentScene === totalScenes - 1);
+  var s = sceneInfo[currentScene];
+  document.getElementById("scene-title").textContent = s.title;
+  document.getElementById("info-header").textContent = s.header;
+  document.getElementById("info-body").innerHTML = s.body;
+}
+function nextScene() { if (currentScene < totalScenes - 1) { currentScene++; loadScene(currentScene); } }
+function prevScene() { if (currentScene > 0) { currentScene--; loadScene(currentScene); } }
+document.addEventListener("keydown", function(e) {
+  if (e.key === "ArrowRight" || e.key === "ArrowDown") nextScene();
+  if (e.key === "ArrowLeft" || e.key === "ArrowUp") prevScene();
+});
+
+/* ===== SCENE LOADER ===== */
+function loadScene(idx) {
+  clearLabels();
+  activeScene = new THREE.Scene();
+  activeScene.background = new THREE.Color(0xf8f8f8);
+  addLights(activeScene);
+  sceneGroup = new THREE.Group();
+  activeScene.add(sceneGroup);
+  animState = { time: 0, phase: 0, data: {}, update: null };
+  [buildScene1, buildScene2, buildScene3,
+   buildScene4, buildScene5, buildScene6][idx]();
+  updateNav();
+}
+
+/* ===========================================================
+   SCENE 1 — GATE Linear Problem: Full Walkthrough
+   5 people A,B,C,D,E in a row facing North
+   =========================================================== */
+function buildScene1() {
+  camera.position.set(0, 7, 16);
+  controls.target.set(0, 1, 0);
+  controls.update();
+
+  var spacing = 2.4;
+  var chairs = [], posLabels = [];
+  for (var i = 0; i < 5; i++) {
+    var x = (i - 2) * spacing;
+    var ch = makeChair(x, 0, 0);
+    sceneGroup.add(ch);
+    chairs.push(ch);
+    var pAnc = new THREE.Object3D();
+    pAnc.position.set(x, -0.9, 0);
+    sceneGroup.add(pAnc);
+    addLabel("Pos " + (i + 1), pAnc, 0, "box-label");
+  }
+
+  // direction arrow
+  sceneGroup.add(makeArrow(
+    new THREE.Vector3(0, 0.3, -0.8),
+    new THREE.Vector3(0, 0.3, -3.5), GREEN, 0.4
+  ));
+  var nAnc = new THREE.Object3D();
+  nAnc.position.set(0, 0.3, -4.2);
+  sceneGroup.add(nAnc);
+  addLabel("NORTH (facing)", nAnc, 0, "box-label");
+
+  var floor = makeBox(16, 0.04, 4, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  // person spheres (initially hidden)
+  var names = ["A", "B", "C", "D", "E"];
+  var personColors = [TEAL, GREEN, INDIGO, AMBER, CORAL];
+  var spheres = [];
+  for (var j = 0; j < 5; j++) {
+    var ps = makeSphere(0.35, personColors[j]);
+    ps.position.set(99, 99, 0);
+    ps.visible = false;
+    sceneGroup.add(ps);
+    spheres.push(ps);
+  }
+
+  // highlight rings for constraint visualization
+  var rings = [];
+  for (var r = 0; r < 5; r++) {
+    var ring = new THREE.Mesh(
+      new THREE.TorusGeometry(0.55, 0.05, 12, 32),
+      matT(GREEN, 0.6)
+    );
+    ring.rotation.x = Math.PI / 2;
+    ring.position.set((r - 2) * spacing, 0.15, 0);
+    ring.visible = false;
+    sceneGroup.add(ring);
+    rings.push(ring);
+  }
+
+  // step status label
+  var stAnc = new THREE.Object3D();
+  stAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(stAnc);
+  var stepLabel = addLabel("", stAnc, 0, "highlight-label");
+
+  // GATE marking note
+  var gAnc = new THREE.Object3D();
+  gAnc.position.set(5, 3.5, 0);
+  sceneGroup.add(gAnc);
+  addLabel("GATE: 2 marks, ~3 min", gAnc, 0, "box-label");
+
+  // verification label
+  var vAnc = new THREE.Object3D();
+  vAnc.position.set(0, -1.8, 0);
+  sceneGroup.add(vAnc);
+  var verifyLabel = addLabel("", vAnc, 0, "box-label");
+  verifyLabel.style.color = GREEN_S;
+
+  /*
+   * Final arrangements:
+   * Option A: D(1), A(2), B(3), C(4), E(5)
+   * Option B: E(1), A(2), B(3), C(4), D(5)
+   */
+  var steps = [
+    { t: 2,  msg: "Clue 1: B at center → pos 3",          person: 1, pos: 2 },
+    { t: 5,  msg: "Clue 2: A imm. left of B (North→left=dec) → pos 2", person: 0, pos: 1 },
+    { t: 8,  msg: "Clue 5: C right of B → pos 4",          person: 2, pos: 3 },
+    { t: 11, msg: "Clue 3: E at end → pos 1 or 5 (amber)", person: -1, pos: -1 },
+    { t: 14, msg: "Clue 4: D not adj to B → not pos 2,4 → pos 1 or 5", person: -1, pos: -1 },
+    { t: 17, msg: "Result A: D(1) A(2) B(3) C(4) E(5)",    person: -2, pos: -1 },
+    { t: 21, msg: "Result B: E(1) A(2) B(3) C(4) D(5)",    person: -3, pos: -1 },
+    { t: 25, msg: "✓ All constraints verified for both arrangements", person: -4, pos: -1 }
+  ];
+
+  animState.data = {
+    spheres: spheres, rings: rings, chairs: chairs,
+    spacing: spacing, names: names, personColors: personColors,
+    stepLabel: stepLabel, verifyLabel: verifyLabel,
+    steps: steps, stepIdx: 0,
+    placedNames: []
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // find current step
+    var si = -1;
+    for (var i = d.steps.length - 1; i >= 0; i--) {
+      if (t >= d.steps[i].t) { si = i; break; }
+    }
+
+    if (si >= 0) {
+      d.stepLabel.textContent = d.steps[si].msg;
+      var st = d.steps[si];
+
+      // place a person on a chair
+      if (st.person >= 0 && !d.spheres[st.person].visible) {
+        d.spheres[st.person].visible = true;
+        d.spheres[st.person].position.set((st.pos - 2) * d.spacing, 0.85, 0);
+        addLabel(d.names[st.person], d.spheres[st.person], 0.55, "box-label");
+        d.rings[st.pos].visible = true;
+        d.rings[st.pos].material.color.setHex(GREEN);
+      }
+
+      // show amber options for E at ends
+      if (si === 3) {
+        d.rings[0].visible = true;
+        d.rings[0].material.color.setHex(AMBER);
+        d.rings[4].visible = true;
+        d.rings[4].material.color.setHex(AMBER);
+      }
+
+      // show result A: D(1) A(2) B(3) C(4) E(5)
+      if (si >= 5) {
+        if (!d.spheres[3].visible) {
+          d.spheres[3].visible = true;
+          d.spheres[3].position.set(-2 * d.spacing, 0.85, 0);
+          addLabel("D", d.spheres[3], 0.55, "box-label");
+        }
+        if (!d.spheres[4].visible) {
+          d.spheres[4].visible = true;
+          d.spheres[4].position.set(2 * d.spacing, 0.85, 0);
+          addLabel("E", d.spheres[4], 0.55, "box-label");
+        }
+        d.rings[0].visible = true;
+        d.rings[0].material.color.setHex(GREEN);
+        d.rings[4].visible = true;
+        d.rings[4].material.color.setHex(GREEN);
+      }
+
+      // show result B: swap D and E
+      if (si >= 6) {
+        d.spheres[3].position.set(2 * d.spacing, 0.85, 0);
+        d.spheres[4].position.set(-2 * d.spacing, 0.85, 0);
+      }
+
+      // swap back on cycle
+      if (si >= 5 && si < 7) {
+        var cycle = Math.floor((t - 17) / 4) % 2;
+        if (cycle === 0) {
+          d.spheres[3].position.set(-2 * d.spacing, 0.85, 0);
+          d.spheres[4].position.set(2 * d.spacing, 0.85, 0);
+        } else {
+          d.spheres[3].position.set(2 * d.spacing, 0.85, 0);
+          d.spheres[4].position.set(-2 * d.spacing, 0.85, 0);
+        }
+      }
+
+      // verification glow
+      if (si >= 7) {
+        var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+        for (var r = 0; r < d.rings.length; r++) {
+          d.rings[r].visible = true;
+          d.rings[r].material.color.setHex(GREEN);
+          d.rings[r].material.opacity = 0.3 + 0.4 * pulse;
+        }
+        d.verifyLabel.textContent = "✓ B center ✓ A left of B ✓ E at end ✓ D not adj B ✓ C right of B";
+      }
+    }
+
+    // pulse active rings
+    for (var ri = 0; ri < d.rings.length; ri++) {
+      if (d.rings[ri].visible) {
+        d.rings[ri].rotation.z += dt * 1.5;
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 2 — GATE Circular Problem: Full Walkthrough
+   6 people P,Q,R,S,T,U around circular table facing center
+   =========================================================== */
+function buildScene2() {
+  camera.position.set(0, 12, 14);
+  controls.target.set(0, 0.5, 0);
+  controls.update();
+
+  // circular table
+  var table = makeCyl(3.2, 3.2, 0.2, 0xd2b48c);
+  table.position.set(0, 0, 0);
+  sceneGroup.add(table);
+
+  var radius = 4.5;
+  var pNames = ["P", "Q", "R", "S", "T", "U"];
+  var pColors = [TEAL, INDIGO, CORAL, AMBER, GREEN, DARK];
+  var chairs = [], spheres = [];
+
+  // 6 positions around circle (pos 1-6, clockwise from top)
+  for (var i = 0; i < 6; i++) {
+    var angle = -Math.PI / 2 + (i * Math.PI * 2 / 6);
+    var cx = Math.cos(angle) * radius;
+    var cz = Math.sin(angle) * radius;
+
+    var ch = makeChair(cx, 0, cz);
+    ch.lookAt(0, 0, 0);
+    ch.rotation.y += Math.PI;
+    sceneGroup.add(ch);
+    chairs.push(ch);
+
+    // position number label
+    var pAnc = new THREE.Object3D();
+    pAnc.position.set(cx * 1.25, -0.5, cz * 1.25);
+    sceneGroup.add(pAnc);
+    addLabel("Pos " + (i + 1), pAnc, 0, "box-label");
+
+    // person spheres (initially hidden)
+    var ps = makeSphere(0.35, pColors[i]);
+    ps.position.set(cx, 0.85, cz);
+    ps.visible = false;
+    sceneGroup.add(ps);
+    spheres.push(ps);
+  }
+
+  // center label
+  var centerAnc = new THREE.Object3D();
+  centerAnc.position.set(0, 0.5, 0);
+  sceneGroup.add(centerAnc);
+  addLabel("CENTER", centerAnc, 0, "box-label");
+
+  // step label
+  var stAnc = new THREE.Object3D();
+  stAnc.position.set(0, 4.5, 0);
+  sceneGroup.add(stAnc);
+  var stepLabel = addLabel("", stAnc, 0, "highlight-label");
+
+  // direction label
+  var dirAnc = new THREE.Object3D();
+  dirAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(dirAnc);
+  addLabel("Facing center: Left=CW, Right=ACW", dirAnc, 0, "box-label");
+
+  /*
+   * Solution: P(1), Q(2), T/U(3), R(4), ?(5), S(6)
+   * T not adjacent to P → T at pos 3 or 5, U at the other
+   */
+  var placeSteps = [
+    { t: 2,  msg: "Fix P as anchor → Pos 1 (rotation principle)", idx: 0, pos: 0 },
+    { t: 5,  msg: "P opposite R → R at Pos 4 (1+3=4)", idx: 2, pos: 3 },
+    { t: 8,  msg: "Q imm. left of P → CW from 1 → Pos 2", idx: 1, pos: 1 },
+    { t: 11, msg: "S 2nd left of R → CW×2 from 4 → 5→6 → Pos 6", idx: 3, pos: 5 },
+    { t: 14, msg: "T not adj to P(1) → not pos 2,6 → Pos 3 or 5", idx: 4, pos: 2 },
+    { t: 17, msg: "U fills remaining → Pos 5", idx: 5, pos: 4 },
+    { t: 20, msg: "✓ All constraints verified", idx: -1, pos: -1 }
+  ];
+
+  // diameter line for opposite visualization (hidden initially)
+  var diamLine = makeLine(
+    new THREE.Vector3(0, 0.5, -radius),
+    new THREE.Vector3(0, 0.5, radius),
+    CORAL
+  );
+  diamLine.visible = false;
+  sceneGroup.add(diamLine);
+
+  animState.data = {
+    spheres: spheres, stepLabel: stepLabel,
+    placeSteps: placeSteps, pNames: pNames,
+    radius: radius, diamLine: diamLine, placed: []
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    var si = -1;
+    for (var i = d.placeSteps.length - 1; i >= 0; i--) {
+      if (t >= d.placeSteps[i].t) { si = i; break; }
+    }
+
+    if (si >= 0) {
+      d.stepLabel.textContent = d.placeSteps[si].msg;
+
+      for (var j = 0; j <= si; j++) {
+        var step = d.placeSteps[j];
+        if (step.idx >= 0 && !d.spheres[step.idx].visible) {
+          d.spheres[step.idx].visible = true;
+          var a2 = -Math.PI / 2 + (step.pos * Math.PI * 2 / 6);
+          d.spheres[step.idx].position.set(
+            Math.cos(a2) * d.radius, 0.85, Math.sin(a2) * d.radius
+          );
+          var nameAnc = new THREE.Object3D();
+          nameAnc.position.copy(d.spheres[step.idx].position);
+          sceneGroup.add(nameAnc);
+          addLabel(d.pNames[step.idx], nameAnc, 0.6, "box-label");
+        }
+      }
+
+      // show diameter line for opposite step
+      if (si >= 1) {
+        d.diamLine.visible = true;
+        var a1 = -Math.PI / 2;
+        var a4 = -Math.PI / 2 + (3 * Math.PI * 2 / 6);
+        d.diamLine.geometry.setFromPoints([
+          new THREE.Vector3(Math.cos(a1) * d.radius, 0.5, Math.sin(a1) * d.radius),
+          new THREE.Vector3(Math.cos(a4) * d.radius, 0.5, Math.sin(a4) * d.radius)
+        ]);
+      }
+
+      // verification pulse
+      if (si >= 6) {
+        var pulse = 0.5 + 0.5 * Math.sin(t * 4);
+        for (var k = 0; k < d.spheres.length; k++) {
+          if (d.spheres[k].visible) {
+            d.spheres[k].material.emissive.setRGB(0.1 * pulse, 0.2 * pulse, 0.1 * pulse);
+          }
+        }
+      }
+    }
+
+    // gentle bob for placed spheres
+    for (var m = 0; m < d.spheres.length; m++) {
+      if (d.spheres[m].visible) {
+        d.spheres[m].position.y = 0.85 + Math.sin(t * 2 + m) * 0.05;
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 3 — Banking Double-Row: Direction Trap Demo
+   8 people, 2 rows of 4, Row 1 faces South, Row 2 faces North
+   =========================================================== */
+function buildScene3() {
+  camera.position.set(0, 10, 16);
+  controls.target.set(0, 0.5, 0);
+  controls.update();
+
+  var spacing = 2.6;
+  var rowGap = 4;
+
+  // Row 1 (facing South, z = -rowGap/2)
+  var row1Chairs = [], row2Chairs = [];
+  for (var i = 0; i < 4; i++) {
+    var x = (i - 1.5) * spacing;
+    var ch1 = makeChair(x, 0, -rowGap / 2);
+    ch1.rotation.y = Math.PI; // face South
+    sceneGroup.add(ch1);
+    row1Chairs.push(ch1);
+
+    var ch2 = makeChair(x, 0, rowGap / 2);
+    sceneGroup.add(ch2); // face North (default)
+    row2Chairs.push(ch2);
+
+    // position labels
+    var p1Anc = new THREE.Object3D();
+    p1Anc.position.set(x, -0.9, -rowGap / 2);
+    sceneGroup.add(p1Anc);
+    addLabel("R1-P" + (i + 1), p1Anc, 0, "box-label");
+
+    var p2Anc = new THREE.Object3D();
+    p2Anc.position.set(x, -0.9, rowGap / 2);
+    sceneGroup.add(p2Anc);
+    addLabel("R2-P" + (i + 1), p2Anc, 0, "box-label");
+  }
+
+  // Row labels with direction arrows
+  sceneGroup.add(makeArrow(
+    new THREE.Vector3(-4.5, 1, -rowGap / 2),
+    new THREE.Vector3(-4.5, 1, -rowGap / 2 + 2), CORAL, 0.3
+  ));
+  var r1DirAnc = new THREE.Object3D();
+  r1DirAnc.position.set(-5.5, 1.8, -rowGap / 2);
+  sceneGroup.add(r1DirAnc);
+  addLabel("Row 1 → SOUTH", r1DirAnc, 0, "box-label");
+
+  sceneGroup.add(makeArrow(
+    new THREE.Vector3(-4.5, 1, rowGap / 2),
+    new THREE.Vector3(-4.5, 1, rowGap / 2 - 2), GREEN, 0.3
+  ));
+  var r2DirAnc = new THREE.Object3D();
+  r2DirAnc.position.set(-5.5, 1.8, rowGap / 2);
+  sceneGroup.add(r2DirAnc);
+  addLabel("Row 2 → NORTH", r2DirAnc, 0, "box-label");
+
+  var floor = makeBox(16, 0.04, 8, 0xf2f2f2);
+  floor.position.set(0, -0.58, 0);
+  sceneGroup.add(floor);
+
+  // person spheres (8 total, initially hidden)
+  var allNames = ["A", "B", "C", "D", "E", "F", "G", "H"];
+  var allColors = [TEAL, INDIGO, CORAL, AMBER, GREEN, DARK, 0x8866aa, 0xaa6644];
+  var allSpheres = [];
+  for (var s = 0; s < 8; s++) {
+    var ps = makeSphere(0.35, allColors[s]);
+    ps.position.set(99, 99, 99);
+    ps.visible = false;
+    sceneGroup.add(ps);
+    allSpheres.push(ps);
+  }
+
+  // WRONG answer sphere for C (red, temporary)
+  var wrongC = makeSphere(0.35, 0xff0000);
+  wrongC.position.set(99, 99, 99);
+  wrongC.visible = false;
+  sceneGroup.add(wrongC);
+
+  // step and trap labels
+  var stAnc = new THREE.Object3D();
+  stAnc.position.set(0, 4.5, 0);
+  sceneGroup.add(stAnc);
+  var stepLabel = addLabel("", stAnc, 0, "highlight-label");
+
+  var trapAnc = new THREE.Object3D();
+  trapAnc.position.set(0, 3.5, 0);
+  sceneGroup.add(trapAnc);
+  var trapLabel = addLabel("", trapAnc, 0, "trap-label");
+  trapLabel.style.display = "none";
+
+  /*
+   * Solution:
+   * Row 1: G(1), A(2), C(3), H(4)  — facing South
+   * Row 2: F(1), B(2), E(3), D(4)  — facing North
+   */
+  var demoSteps = [
+    { t: 2,  msg: "A second from left end, Row 1 → R1-P2", who: 0, row: 1, pos: 1, trap: false },
+    { t: 5,  msg: "B faces A → R2-P2 (directly opposite)", who: 1, row: 2, pos: 1, trap: false },
+    { t: 8,  msg: "C imm. left of A... A faces SOUTH", who: -1, row: 0, pos: 0, trap: true },
+    { t: 13, msg: "C CORRECT → R1-P3 (South: left=increasing)", who: 2, row: 1, pos: 2, trap: false },
+    { t: 17, msg: "D at right end of Row 2 → R2-P4", who: 3, row: 2, pos: 3, trap: false },
+    { t: 20, msg: "E imm. right of B (North: right=increasing) → R2-P3", who: 4, row: 2, pos: 2, trap: false },
+    { t: 23, msg: "F sits in Row 2 → R2-P1 (only spot left)", who: 5, row: 2, pos: 0, trap: false },
+    { t: 26, msg: "G→R1-P1, H→R1-P4 (remaining)", who: -2, row: 0, pos: 0, trap: false },
+    { t: 29, msg: "✓ Complete — Direction trap was at Step 3!", who: -3, row: 0, pos: 0, trap: false }
+  ];
+
+  animState.data = {
+    spheres: allSpheres, wrongC: wrongC,
+    stepLabel: stepLabel, trapLabel: trapLabel,
+    steps: demoSteps, spacing: spacing, rowGap: rowGap
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    var si = -1;
+    for (var i = d.steps.length - 1; i >= 0; i--) {
+      if (t >= d.steps[i].t) { si = i; break; }
+    }
+
+    if (si >= 0) {
+      d.stepLabel.textContent = d.steps[si].msg;
+
+      // place people for completed steps
+      for (var j = 0; j <= si; j++) {
+        var st = d.steps[j];
+        if (st.who >= 0 && !d.spheres[st.who].visible) {
+          var px = (st.pos - 1.5) * d.spacing;
+          var pz = (st.row === 1) ? -d.rowGap / 2 : d.rowGap / 2;
+          d.spheres[st.who].visible = true;
+          d.spheres[st.who].position.set(px, 0.85, pz);
+          addLabel(allNames[st.who], d.spheres[st.who], 0.55, "box-label");
+        }
+      }
+
+      // G and H placement
+      if (si >= 7) {
+        if (!d.spheres[6].visible) {
+          d.spheres[6].visible = true;
+          d.spheres[6].position.set(-1.5 * d.spacing, 0.85, -d.rowGap / 2);
+          addLabel("G", d.spheres[6], 0.55, "box-label");
+        }
+        if (!d.spheres[7].visible) {
+          d.spheres[7].visible = true;
+          d.spheres[7].position.set(1.5 * d.spacing, 0.85, -d.rowGap / 2);
+          addLabel("H", d.spheres[7], 0.55, "box-label");
+        }
+      }
+
+      // DIRECTION TRAP animation (step index 2)
+      if (si === 2) {
+        d.trapLabel.style.display = "";
+        var trapPhase = (t - 8) % 5;
+        if (trapPhase < 2.5) {
+          // show WRONG: C at pos 1 (viewer's left = decreasing)
+          d.trapLabel.textContent = "✗ WRONG: C at R1-P1 (viewer's left)";
+          d.wrongC.visible = true;
+          d.wrongC.position.set(-1.5 * d.spacing, 0.85, -d.rowGap / 2);
+          var pulse = 0.5 + 0.5 * Math.sin(t * 8);
+          d.wrongC.material.emissive.setRGB(pulse * 0.4, 0, 0);
+        } else {
+          // show CORRECT hint
+          d.trapLabel.textContent = "✓ CORRECT: C at R1-P3 (person's left = increasing)";
+          d.wrongC.visible = false;
+        }
+      } else {
+        d.trapLabel.style.display = "none";
+        d.wrongC.visible = false;
+      }
+
+      // final verification pulse
+      if (si >= 8) {
+        var vp = 0.5 + 0.5 * Math.sin(t * 3);
+        for (var k = 0; k < d.spheres.length; k++) {
+          if (d.spheres[k].visible) {
+            d.spheres[k].material.emissive.setRGB(0.05 * vp, 0.15 * vp, 0.05 * vp);
+          }
+        }
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 4 — Exam Pattern Summary (3D Grid/Table)
+   =========================================================== */
+function buildScene4() {
+  camera.position.set(0, 8, 18);
+  controls.target.set(0, 3, 0);
+  controls.update();
+
+  var exams = [
+    { name: "GATE",    type: "Linear/Circular", diff: "High",      time: "3 min",   trap: "Vague language",    color: TEAL },
+    { name: "Banking", type: "Double-Row/Mixed", diff: "Very High", time: "6 min",   trap: "Direction reversal", color: CORAL },
+    { name: "ESE",     type: "Linear",          diff: "Medium",    time: "2-3 min", trap: "Multi-attribute",   color: INDIGO },
+    { name: "PSU",     type: "Circular",         diff: "Medium",    time: "3 min",   trap: "Opposite counting", color: AMBER }
+  ];
+
+  var cols = ["Exam", "Common Type", "Difficulty", "Time", "Key Trap"];
+  var colX = [-7, -3.5, 0.5, 3.5, 6.5];
+
+  // header row
+  for (var c = 0; c < cols.length; c++) {
+    var hBox = makeBox(3.0, 0.8, 0.8, DARK);
+    hBox.position.set(colX[c], 8, 0);
+    hBox.scale.set(0, 0, 0);
+    sceneGroup.add(hBox);
+    addLabel(cols[c], hBox, 0.65, "box-label");
+  }
+
+  // data rows
+  var rowMeshes = [];
+  for (var r = 0; r < exams.length; r++) {
+    var ex = exams[r];
+    var y = 6 - r * 2;
+    var vals = [ex.name, ex.type, ex.diff, ex.time, ex.trap];
+    var rowGroup = [];
+
+    for (var ci = 0; ci < vals.length; ci++) {
+      var cellColor = (ci === 0) ? ex.color : 0xeeeeee;
+      var cell = makeBox(3.0, 0.7, 0.7, cellColor);
+      cell.position.set(colX[ci], y, 0);
+      cell.scale.set(0, 0, 0);
+      sceneGroup.add(cell);
+      addLabel(vals[ci], cell, 0.6, "box-label");
+      rowGroup.push(cell);
+    }
+    rowMeshes.push(rowGroup);
+  }
+
+  // floor
+  var floor = makeBox(20, 0.04, 3, 0xf2f2f2);
+  floor.position.set(0, -1, 0);
+  sceneGroup.add(floor);
+
+  animState.data = { rowMeshes: rowMeshes };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var t = animState.time, d = animState.data;
+
+    // animate header
+    var headerDelay = 0.3;
+    // header boxes are the first 5 children meshes
+    for (var c = 0; c < 5; c++) {
+      var he = t - c * 0.15;
+      if (he > 0) {
+        var hs = easeOut(he / 0.5);
+        sceneGroup.children[c].scale.set(hs, hs, hs);
+      }
+    }
+
+    // animate data rows
+    for (var r = 0; r < d.rowMeshes.length; r++) {
+      for (var ci = 0; ci < d.rowMeshes[r].length; ci++) {
+        var delay = 0.8 + r * 1.2 + ci * 0.12;
+        var el = t - delay;
+        if (el > 0) {
+          var s = easeOut(el / 0.5);
+          d.rowMeshes[r][ci].scale.set(s, s, s);
+        }
+      }
+    }
+
+    // pulse the active exam row based on time
+    var activeRow = Math.floor((t % 12) / 3) % 4;
+    for (var ri = 0; ri < d.rowMeshes.length; ri++) {
+      var isActive = (ri === activeRow && t > 5);
+      for (var cj = 0; cj < d.rowMeshes[ri].length; cj++) {
+        if (isActive) {
+          var p = 0.12 * Math.sin(t * 4);
+          d.rowMeshes[ri][cj].material.emissive.setHex(0x111111);
+          if (d.rowMeshes[ri][cj].scale.x >= 1)
+            d.rowMeshes[ri][cj].scale.set(1 + p * 0.05, 1 + p * 0.05, 1 + p * 0.05);
+        } else {
+          d.rowMeshes[ri][cj].material.emissive.setHex(0x000000);
+          if (d.rowMeshes[ri][cj].scale.x > 1)
+            d.rowMeshes[ri][cj].scale.set(1, 1, 1);
+        }
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 5 — Formula Quick Reference (3D Cheat Sheet Cards)
+   =========================================================== */
+function buildScene5() {
+  camera.position.set(0, 6, 20);
+  controls.target.set(0, 3, 0);
+  controls.update();
+
+  var cards = [
+    { title: "LINEAR",
+      lines: ["L + R = n + 1", "Between = |p1-p2| - 1", "Middle = (n+1)/2"],
+      color: TEAL, x: -5, y: 7 },
+    { title: "CIRCULAR",
+      lines: ["(n-1)! arrangements", "Opposite = p + n/2", "Left=CW  Right=ACW"],
+      color: CORAL, x: 5, y: 7 },
+    { title: "DOUBLE ROW",
+      lines: ["R1(South): left=p+k", "R2(North): left=p-k", "Facing = same position"],
+      color: INDIGO, x: -5, y: 2 },
+    { title: "COUNTING",
+      lines: ["Linear: |p1-p2| - 1", "Circular: min(d,n-d) - 1", "Shorter arc formula"],
+      color: AMBER, x: 5, y: 2 },
+    { title: "BLOCKS",
+      lines: ["m in n: n-m+1 starts", "Block as single unit", "Internal: m! orders"],
+      color: GREEN, x: 0, y: -2.5 }
+  ];
+
+  var cardMeshes = [];
+  for (var i = 0; i < cards.length; i++) {
+    var cd = cards[i];
+    var cardGroup = new THREE.Group();
+
+    // card background
+    var bg = makeBox(4.5, 3.0, 0.15, cd.color);
+    cardGroup.add(bg);
+
+    // card face (lighter)
+    var face = makeBox(4.2, 2.7, 0.05, 0xffffff);
+    face.position.set(0, 0, 0.1);
+    cardGroup.add(face);
+
+    cardGroup.position.set(cd.x, cd.y, 0);
+    cardGroup.scale.set(0, 0, 0);
+    sceneGroup.add(cardGroup);
+    cardMeshes.push(cardGroup);
+
+    // title label
+    var tAnc = new THREE.Object3D();
+    tAnc.position.set(cd.x, cd.y + 1.1, 0.2);
+    sceneGroup.add(tAnc);
+    var tl = addLabel(cd.title, tAnc, 0, "box-label");
+    tl.style.fontWeight = "700";
+    tl.style.fontSize = "14px";
+
+    // formula lines
+    for (var li = 0; li < cd.lines.length; li++) {
+      var lAnc = new THREE.Object3D();
+      lAnc.position.set(cd.x, cd.y + 0.3 - li * 0.65, 0.2);
+      sceneGroup.add(lAnc);
+      addLabel(cd.lines[li], lAnc, 0, "box-label");
+    }
+  }
+
+  // screenshot reminder
+  var sAnc = new THREE.Object3D();
+  sAnc.position.set(0, -5, 0);
+  sceneGroup.add(sAnc);
+  var sLabel = addLabel("Screenshot this for quick revision before the exam", sAnc, 0, "highlight-label");
+  sLabel.style.fontSize = "14px";
+
+  animState.data = { cardMeshes: cardMeshes, cards: cards };
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // cards appear with staggered animation
+    for (var i = 0; i < d.cardMeshes.length; i++) {
+      var delay = i * 0.8;
+      var el = t - delay;
+      if (el > 0) {
+        var s = easeOut(el / 0.6);
+        d.cardMeshes[i].scale.set(s, s, s);
+      }
+
+      // gentle rotation for each card
+      if (el > 1) {
+        d.cardMeshes[i].rotation.y = Math.sin(t * 0.5 + i * 1.2) * 0.15;
+        d.cardMeshes[i].position.y = d.cards[i].y + Math.sin(t * 0.8 + i * 0.9) * 0.15;
+      }
+    }
+  };
+}
+
+/* ===========================================================
+   SCENE 6 — Anti-Mistake Protocol (3D Checklist)
+   =========================================================== */
+function buildScene6() {
+  camera.position.set(0, 7, 18);
+  controls.target.set(0, 3, 0);
+  controls.update();
+
+  var items = [
+    { text: "1. Mark direction: L=CW or L=paper-right",           icon: "DIRECTION" },
+    { text: "2. Draw arrows on every person (facing dir)",         icon: "ARROWS" },
+    { text: "3. Circle negative words (not, neither, nor)",        icon: "NEGATIVES" },
+    { text: "4. If 2 arrangements → verify BOTH",                 icon: "VERIFY" },
+    { text: "5. SKIP if over time: 3min GATE / 6min Banking",     icon: "TIMER" }
+  ];
+
+  var checkBoxes = [], checkLabels = [], itemBoxes = [];
+  var startY = 8;
+
+  for (var i = 0; i < items.length; i++) {
+    var y = startY - i * 2;
+
+    // checkbox background
+    var cbBg = makeBox(0.7, 0.7, 0.3, LGRAY);
+    cbBg.position.set(-7, y, 0);
+    cbBg.scale.set(0, 0, 0);
+    sceneGroup.add(cbBg);
+    checkBoxes.push(cbBg);
+
+    // item text bar
+    var bar = makeBox(12, 0.9, 0.3, 0xf0f0f0);
+    bar.position.set(0, y, 0);
+    bar.scale.set(0, 0, 0);
+    sceneGroup.add(bar);
+    itemBoxes.push(bar);
+
+    // text label
+    var tAnc = new THREE.Object3D();
+    tAnc.position.set(0, y, 0.3);
+    sceneGroup.add(tAnc);
+    addLabel(items[i].text, tAnc, 0, "box-label");
+
+    // icon label
+    var iAnc = new THREE.Object3D();
+    iAnc.position.set(7.5, y, 0);
+    sceneGroup.add(iAnc);
+    addLabel(items[i].icon, iAnc, 0, "box-label");
+
+    // checkmark label (hidden initially)
+    var ckAnc = new THREE.Object3D();
+    ckAnc.position.set(-7, y, 0.3);
+    sceneGroup.add(ckAnc);
+    var ckL = addLabel("", ckAnc, 0, "box-label");
+    ckL.style.color = GREEN_S;
+    ckL.style.fontSize = "18px";
+    checkLabels.push(ckL);
+  }
+
+  // final message
+  var fAnc = new THREE.Object3D();
+  fAnc.position.set(0, -3.5, 0);
+  sceneGroup.add(fAnc);
+  var finalLabel = addLabel("", fAnc, 0, "highlight-label");
+  finalLabel.style.fontSize = "14px";
+
+  // floor
+  var floor = makeBox(20, 0.04, 4, 0xf2f2f2);
+  floor.position.set(0, -1.5, 0);
+  sceneGroup.add(floor);
+
+  // protocol title
+  var titleAnc = new THREE.Object3D();
+  titleAnc.position.set(0, 10.5, 0);
+  sceneGroup.add(titleAnc);
+  var tLabel = addLabel("ANTI-MISTAKE PROTOCOL", titleAnc, 0, "trap-label");
+  tLabel.style.borderColor = GREEN_S;
+  tLabel.style.color = GREEN_S;
+  tLabel.style.background = "rgba(46,139,87,0.08)";
+
+  animState.data = {
+    checkBoxes: checkBoxes, checkLabels: checkLabels,
+    itemBoxes: itemBoxes, finalLabel: finalLabel
+  };
+
+  animState.update = function(dt) {
+    animState.time += dt;
+    var d = animState.data, t = animState.time;
+
+    // staggered item appearance
+    for (var i = 0; i < d.checkBoxes.length; i++) {
+      var delay = 1.0 + i * 1.8;
+      var el = t - delay;
+      if (el > 0) {
+        var s = easeOut(el / 0.5);
+        d.checkBoxes[i].scale.set(s, s, s);
+        d.itemBoxes[i].scale.set(s, s, s);
+      }
+
+      // checkmark appears after a further delay
+      var checkDelay = delay + 1.2;
+      if (t > checkDelay) {
+        d.checkLabels[i].textContent = "✓";
+        d.checkBoxes[i].material.color.setHex(GREEN);
+        d.checkBoxes[i].material.emissive.setHex(0x0a2a0a);
+      }
+    }
+
+    // item 3 special: pulse the "NEGATIVES" checkbox red briefly
+    if (t > 6.4 && t < 8.0) {
+      var np = 0.5 + 0.5 * Math.sin(t * 10);
+      d.checkBoxes[2].material.emissive.setRGB(np * 0.3, 0, 0);
+    }
+
+    // item 5 special: timer warning red pulse
+    if (t > 10.6 && t < 12.5) {
+      var tp = 0.5 + 0.5 * Math.sin(t * 8);
+      d.checkBoxes[4].material.emissive.setRGB(tp * 0.4, 0, 0);
+      d.itemBoxes[4].material.emissive.setRGB(tp * 0.1, 0, 0);
+    }
+
+    // final message appears after all items
+    if (t > 12) {
+      d.finalLabel.textContent = "Follow this protocol EVERY time. Consistency beats cleverness.";
+    }
+
+    // gentle bob for all checked items
+    for (var j = 0; j < d.checkBoxes.length; j++) {
+      if (d.checkLabels[j].textContent === "✓") {
+        d.checkBoxes[j].position.y = (8 - j * 2) + Math.sin(t * 1.5 + j) * 0.04;
+        d.itemBoxes[j].position.y = (8 - j * 2) + Math.sin(t * 1.5 + j) * 0.04;
+      }
+    }
+  };
+}
+
+/* ===== ANIMATION LOOP ===== */
+function animate() {
+  requestAnimationFrame(animate);
+  var dt = Math.min(clock.getDelta(), 0.1);
+  if (animState.update) animState.update(dt);
+  controls.update();
+  updateLabels();
+  renderer.render(activeScene, camera);
+}
+
+/* ===== INIT ===== */
+initRenderer();
+loadScene(0);
+animate();
+</script>
+</body>
+</html>
