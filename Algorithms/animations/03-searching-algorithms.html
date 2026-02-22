@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Searching Algorithms — Visual Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Chapter 3: Searching Algorithms
+// Visualizes Linear Search, Binary Search, and Interpolation Search
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.008);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.5));
+const dirL = new THREE.DirectionalLight(0xffffff, 0.8);
+dirL.position.set(20, 50, 30);
+scene.add(dirL);
+
+// Particles
+const pGeo = new THREE.BufferGeometry();
+const pPos = new Float32Array(1000*3);
+for(let i=0;i<3000;i++) pPos[i]=(Math.random()-0.5)*200;
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({color:0x1a2a4a,size:0.5,transparent:true,opacity:0.3})));
+
+// Array data (sorted)
+const data = [2, 5, 8, 12, 16, 23, 38, 45, 56, 72, 81, 95];
+const target = 56; // element to search for
+const targetIdx = data.indexOf(target);
+const barWidth = 5;
+const barGap = 1.5;
+const totalWidth = data.length * (barWidth + barGap);
+const startX = -totalWidth / 2;
+
+// Create bars for array
+const bars = [];
+const barGroup = new THREE.Group();
+scene.add(barGroup);
+
+data.forEach((val, i) => {
+  const height = val * 0.5 + 2;
+  const geo = new THREE.BoxGeometry(barWidth, height, barWidth);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0x336699,
+    emissive: 0x112233,
+    emissiveIntensity: 0.2,
+    transparent: true
+  });
+  const bar = new THREE.Mesh(geo, mat);
+  bar.position.set(startX + i * (barWidth + barGap), height/2, 0);
+  barGroup.add(bar);
+  bars.push({mesh: bar, value: val, index: i, originalColor: 0x336699, height});
+});
+
+// Search pointer (glowing sphere)
+const pointerGeo = new THREE.SphereGeometry(1.5, 24, 24);
+const pointerMat = new THREE.MeshPhongMaterial({color:0xff4444, emissive:0xff4444, emissiveIntensity:0.5});
+const pointer = new THREE.Mesh(pointerGeo, pointerMat);
+pointer.position.set(startX, -5, 0);
+pointer.visible = false;
+scene.add(pointer);
+
+// Bracket indicators for binary search
+const bracketGroup = new THREE.Group();
+scene.add(bracketGroup);
+
+function createBracket(x, color) {
+  const geo = new THREE.CylinderGeometry(0.3, 0.3, 60, 8);
+  const mat = new THREE.MeshPhongMaterial({color, emissive: color, emissiveIntensity:0.3, transparent:true, opacity:0.6});
+  const cyl = new THREE.Mesh(geo, mat);
+  cyl.position.set(x, 25, 0);
+  bracketGroup.add(cyl);
+  return cyl;
+}
+
+// Platform
+const platformGeo = new THREE.BoxGeometry(totalWidth + 20, 1, barWidth + 10);
+const platformMat = new THREE.MeshPhongMaterial({color:0x1a2a3a});
+const platform = new THREE.Mesh(platformGeo, platformMat);
+platform.position.set(0, -1, 0);
+scene.add(platform);
+
+camera.position.set(0, 30, 60);
+camera.lookAt(0, 15, 0);
+
+// Animation state
+const clock = new THREE.Clock();
+let phase = 0, phaseTime = 0;
+const phaseDurs = [10, 4, 14, 4, 10, 5]; // linear search, pause, binary search, pause, interp search, final
+
+// Linear search state
+let linearIdx = 0;
+let linearFound = false;
+
+// Binary search state
+let bLow = 0, bHigh = data.length - 1, bMid = 0;
+let binaryStep = 0;
+let binaryFound = false;
+let leftBracket = null, rightBracket = null, midBracket = null;
+
+// Colors
+const COL_DEFAULT = 0x336699;
+const COL_CHECKING = 0xffaa00;
+const COL_ELIMINATED = 0x222233;
+const COL_FOUND = 0x00ff88;
+const COL_RANGE = 0x4488cc;
+const COL_MID = 0xff8844;
+
+function resetBars() {
+  bars.forEach(b => {
+    b.mesh.material.color.setHex(COL_DEFAULT);
+    b.mesh.material.emissive.setHex(0x112233);
+    b.mesh.material.opacity = 1;
+  });
+  pointer.visible = false;
+  bracketGroup.clear();
+  linearIdx = 0; linearFound = false;
+  bLow = 0; bHigh = data.length-1; binaryStep = 0; binaryFound = false;
+}
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) { phase = 0; }
+    resetBars();
+  }
+  
+  // Phase 0: Linear Search
+  if(phase === 0) {
+    pointer.visible = true;
+    const step = Math.floor(phaseTime / 0.8);
+    if(step < data.length && !linearFound) {
+      linearIdx = step;
+      pointer.position.x = startX + linearIdx * (barWidth + barGap);
+      pointer.position.y = -4 + Math.sin(t * 5) * 0.5;
+      
+      // Color all checked bars
+      bars.forEach((b, i) => {
+        if(i < linearIdx) {
+          b.mesh.material.color.setHex(COL_ELIMINATED);
+          b.mesh.material.emissive.setHex(0x111111);
+          b.mesh.material.opacity = 0.4;
+        } else if(i === linearIdx) {
+          b.mesh.material.color.setHex(COL_CHECKING);
+          b.mesh.material.emissive.setHex(COL_CHECKING);
+          b.mesh.material.emissiveIntensity = 0.3 + Math.sin(t*6)*0.2;
+          if(data[i] === target) {
+            b.mesh.material.color.setHex(COL_FOUND);
+            b.mesh.material.emissive.setHex(COL_FOUND);
+            linearFound = true;
+          }
+        }
+      });
+    }
+    if(linearFound) {
+      bars[linearIdx].mesh.scale.y = 1 + Math.sin(t*4)*0.1;
+      pointer.material.color.setHex(0x00ff88);
+      pointer.material.emissive.setHex(0x00ff88);
+    }
+    
+    camera.position.set(phaseTime * 3 - 15, 25, 50);
+    camera.lookAt(pointer.position.x, 10, 0);
+  }
+  
+  // Phase 1: Pause between searches
+  if(phase === 1) {
+    camera.position.lerp(new THREE.Vector3(0, 35, 65), dt * 2);
+    camera.lookAt(0, 10, 0);
+  }
+  
+  // Phase 2: Binary Search
+  if(phase === 2) {
+    pointer.visible = true;
+    const stepInterval = 2.5;
+    const currentStep = Math.floor(phaseTime / stepInterval);
+    
+    if(currentStep > binaryStep && !binaryFound) {
+      binaryStep = currentStep;
+      bMid = Math.floor((bLow + bHigh) / 2);
+      
+      // Update brackets
+      bracketGroup.clear();
+      leftBracket = createBracket(startX + bLow * (barWidth+barGap), 0x44ff88);
+      rightBracket = createBracket(startX + bHigh * (barWidth+barGap), 0xff4444);
+      midBracket = createBracket(startX + bMid * (barWidth+barGap), COL_MID);
+      
+      // Color bars
+      bars.forEach((b, i) => {
+        if(i < bLow || i > bHigh) {
+          b.mesh.material.color.setHex(COL_ELIMINATED);
+          b.mesh.material.opacity = 0.3;
+        } else if(i === bMid) {
+          b.mesh.material.color.setHex(COL_MID);
+          b.mesh.material.emissive.setHex(COL_MID);
+          b.mesh.material.emissiveIntensity = 0.4;
+        } else {
+          b.mesh.material.color.setHex(COL_RANGE);
+        }
+      });
+      
+      if(data[bMid] === target) {
+        bars[bMid].mesh.material.color.setHex(COL_FOUND);
+        bars[bMid].mesh.material.emissive.setHex(COL_FOUND);
+        binaryFound = true;
+      } else if(data[bMid] < target) {
+        bLow = bMid + 1;
+      } else {
+        bHigh = bMid - 1;
+      }
+    }
+    
+    pointer.position.x = startX + bMid * (barWidth + barGap);
+    pointer.position.y = -4 + Math.sin(t*5)*0.5;
+    
+    if(binaryFound) {
+      bars[bMid].mesh.scale.y = 1 + Math.sin(t*4)*0.1;
+      pointer.material.color.setHex(0x00ff88);
+      pointer.material.emissive.setHex(0x00ff88);
+    }
+    
+    camera.position.set(Math.sin(t*0.2)*10, 30, 55);
+    camera.lookAt(pointer.position.x, 10, 0);
+  }
+  
+  // Phase 3: Pause
+  if(phase === 3) {
+    const a = t * 0.3;
+    camera.position.set(Math.cos(a)*60, 40, Math.sin(a)*60);
+    camera.lookAt(0, 10, 0);
+  }
+  
+  // Phase 4: Interpolation Search — smart jump
+  if(phase === 4) {
+    pointer.visible = true;
+    let iLow = 0, iHigh = data.length - 1;
+    const stepTime = phaseTime;
+    
+    // Compute interpolation position
+    if(stepTime < 3) {
+      // Show the probe position calculation
+      const pos = iLow + Math.floor(((target - data[iLow]) / (data[iHigh] - data[iLow])) * (iHigh - iLow));
+      const probeIdx = Math.min(Math.max(pos, 0), data.length-1);
+      
+      pointer.position.x = startX + probeIdx * (barWidth + barGap);
+      pointer.position.y = -4 + Math.sin(t*5)*0.5;
+      
+      bars.forEach((b, i) => {
+        if(i === probeIdx) {
+          b.mesh.material.color.setHex(0xaa44ff);
+          b.mesh.material.emissive.setHex(0xaa44ff);
+          b.mesh.material.emissiveIntensity = 0.4;
+          if(data[i] === target) {
+            b.mesh.material.color.setHex(COL_FOUND);
+            b.mesh.material.emissive.setHex(COL_FOUND);
+          }
+        }
+      });
+    }
+    
+    // Show jump arc
+    if(stepTime > 1 && stepTime < 4) {
+      const arcPoints = [];
+      for(let i=0; i<=20; i++) {
+        const frac = i/20;
+        const fromX = startX;
+        const toX = pointer.position.x;
+        const x = fromX + (toX - fromX) * frac;
+        const y = 10 + Math.sin(frac * Math.PI) * 20;
+        arcPoints.push(new THREE.Vector3(x, y, 0));
+      }
+    }
+    
+    camera.position.set(0, 30, 55);
+    camera.lookAt(0, 10, 0);
+  }
+  
+  // Phase 5: Final comparison overview
+  if(phase === 5) {
+    const a = t * 0.4;
+    camera.position.set(Math.cos(a)*70, 45, Math.sin(a)*70);
+    camera.lookAt(0, 10, 0);
+    
+    bars.forEach((b, i) => {
+      b.mesh.material.color.setHex(COL_DEFAULT);
+      b.mesh.material.opacity = 1;
+      b.mesh.scale.y = 1 + Math.sin(t*2 + i*0.5)*0.05;
+    });
+  }
+  
+  // Pointer glow
+  pointer.scale.setScalar(1 + Math.sin(t*4)*0.2);
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

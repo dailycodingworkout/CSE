@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dynamic Programming — Visual Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Chapter 7: Dynamic Programming
+// Visualizes DP table filling (LCS) + 0/1 Knapsack + Fibonacci comparison
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.005);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 500);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.5));
+const dl = new THREE.DirectionalLight(0xffffff, 0.8);
+dl.position.set(20, 60, 30);
+scene.add(dl);
+const pl = new THREE.PointLight(0x4488ff, 0.6, 100);
+scene.add(pl);
+
+const pg = new THREE.BufferGeometry();
+const pp = new Float32Array(1200*3);
+for(let i=0;i<3600;i++) pp[i]=(Math.random()-0.5)*250;
+pg.setAttribute('position',new THREE.BufferAttribute(pp,3));
+scene.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x1a2a4a,size:0.5,transparent:true,opacity:0.3})));
+
+// ===== SCENE 1: Fibonacci — Recursion vs DP =====
+const fibGroup = new THREE.Group();
+scene.add(fibGroup);
+
+// Recursive Fibonacci tree (exponential explosion)
+const fibTreeNodes = [];
+function buildFibTree(n, x, y, spread, depth) {
+  if(n <= 0 || depth > 5) return;
+  const size = Math.max(0.5, 2 - depth * 0.25);
+  const color = n <= 1 ? 0x44ff88 : 0xff6644;
+  const geo = new THREE.SphereGeometry(size, 16, 16);
+  const mat = new THREE.MeshPhongMaterial({color, emissive:color, emissiveIntensity:0.15, transparent:true, opacity:0});
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, 0);
+  fibGroup.add(mesh);
+  fibTreeNodes.push({mesh, depth, revealTime: depth * 1.5});
+  
+  if(n > 1) {
+    buildFibTree(n-1, x - spread, y - 8, spread*0.55, depth+1);
+    buildFibTree(n-2, x + spread*0.6, y - 8, spread*0.55, depth+1);
+    
+    // Edge
+    const edgeGeo = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, y, 0),
+      new THREE.Vector3(x - spread, y - 8, 0)
+    ]);
+    fibGroup.add(new THREE.Line(edgeGeo, new THREE.LineBasicMaterial({color:0x334455, transparent:true, opacity:0.3})));
+    
+    const edgeGeo2 = new THREE.BufferGeometry().setFromPoints([
+      new THREE.Vector3(x, y, 0),
+      new THREE.Vector3(x + spread*0.6, y - 8, 0)
+    ]);
+    fibGroup.add(new THREE.Line(edgeGeo2, new THREE.LineBasicMaterial({color:0x334455, transparent:true, opacity:0.3})));
+  }
+}
+buildFibTree(6, -30, 35, 15, 0);
+
+// DP array visualization (linear)
+const dpArray = [];
+const fibValues = [0, 1, 1, 2, 3, 5, 8, 13];
+for(let i = 0; i < 8; i++) {
+  const h = fibValues[i] * 2 + 1;
+  const geo = new THREE.BoxGeometry(3, h, 3);
+  const mat = new THREE.MeshPhongMaterial({color:0x44aaff, emissive:0x44aaff, emissiveIntensity:0.2, transparent:true, opacity:0});
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(20 + i * 5, h/2, 0);
+  fibGroup.add(mesh);
+  dpArray.push({mesh, revealTime: 8 + i * 0.8});
+}
+
+// Arrow between (showing DP dependency)
+for(let i = 2; i < 8; i++) {
+  const from = new THREE.Vector3(20 + (i-1)*5, fibValues[i-1]*2+2, 2);
+  const to = new THREE.Vector3(20 + i*5, fibValues[i]*2+2, 2);
+  const geo = new THREE.BufferGeometry().setFromPoints([from, to]);
+  const mat = new THREE.LineBasicMaterial({color:0x88aaff, transparent:true, opacity:0.3});
+  fibGroup.add(new THREE.Line(geo, mat));
+}
+
+// ===== SCENE 2: LCS DP Table =====
+const lcsGroup = new THREE.Group();
+lcsGroup.visible = false;
+scene.add(lcsGroup);
+
+// LCS of "ABCB" and "BDCAB"
+const X = ['', 'A','B','C','B'];
+const Y = ['', 'B','D','C','A','B'];
+const lcsTable = [
+  [0,0,0,0,0,0],
+  [0,0,0,0,1,1],
+  [0,1,1,1,1,2],
+  [0,1,1,2,2,2],
+  [0,1,1,2,2,3],
+];
+
+const cellSize = 5;
+const cells = [];
+for(let i = 0; i < lcsTable.length; i++) {
+  for(let j = 0; j < lcsTable[0].length; j++) {
+    const val = lcsTable[i][j];
+    const h = val * 3 + 0.5;
+    const intensity = val / 3;
+    const color = new THREE.Color().setHSL(0.55 - intensity * 0.3, 0.7, 0.3 + intensity * 0.3);
+    const geo = new THREE.BoxGeometry(cellSize*0.9, h, cellSize*0.9);
+    const mat = new THREE.MeshPhongMaterial({
+      color, emissive: color, emissiveIntensity: 0.15,
+      transparent: true, opacity: 0
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(j * cellSize - 12, h/2, i * cellSize - 10);
+    lcsGroup.add(mesh);
+    
+    const order = i * lcsTable[0].length + j;
+    cells.push({mesh, row:i, col:j, value:val, revealTime: order * 0.12});
+  }
+}
+
+// ===== SCENE 3: 0/1 Knapsack =====
+const knapGroup = new THREE.Group();
+knapGroup.visible = false;
+scene.add(knapGroup);
+
+// Knapsack items
+const knapItems = [
+  {v:1, w:1, color:0xff4466},
+  {v:4, w:3, color:0x44aaff},
+  {v:5, w:4, color:0x44ff88},
+  {v:7, w:5, color:0xffcc00},
+];
+
+// DP table for knapsack (4 items, W=7)
+const knapTable = [
+  [0,0,0,0,0,0,0,0],
+  [0,1,1,1,1,1,1,1],
+  [0,1,1,4,5,5,5,5],
+  [0,1,1,4,5,6,6,9],
+  [0,1,1,4,5,7,8,9],
+];
+
+const kCells = [];
+for(let i = 0; i < knapTable.length; i++) {
+  for(let j = 0; j < knapTable[0].length; j++) {
+    const val = knapTable[i][j];
+    const h = val * 1.5 + 0.3;
+    const intensity = val / 9;
+    const color = new THREE.Color().setHSL(0.1 + intensity * 0.25, 0.8, 0.3 + intensity * 0.3);
+    const geo = new THREE.BoxGeometry(3.5, h, 3.5);
+    const mat = new THREE.MeshPhongMaterial({
+      color, emissive: color, emissiveIntensity: 0.15,
+      transparent: true, opacity: 0
+    });
+    const mesh = new THREE.Mesh(geo, mat);
+    mesh.position.set(j * 4 - 14, h/2, i * 4 - 8);
+    knapGroup.add(mesh);
+    kCells.push({mesh, revealTime: (i * 8 + j) * 0.1});
+  }
+}
+
+// Knapsack item meshes
+knapItems.forEach((item, i) => {
+  const size = item.w * 0.8;
+  const geo = new THREE.BoxGeometry(size, size, size);
+  const mat = new THREE.MeshPhongMaterial({color: item.color, emissive: item.color, emissiveIntensity:0.2, transparent:true, opacity:0.7});
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(35, 5 + i * 6, 0);
+  knapGroup.add(mesh);
+});
+
+// Animation
+camera.position.set(0, 30, 60);
+camera.lookAt(0, 15, 0);
+
+const clock = new THREE.Clock();
+let phase = 0, phaseTime = 0;
+const phaseDurs = [14, 3, 12, 3, 10, 5]; // fibonacci, pause, LCS, pause, knapsack, final
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) phase = 0;
+  }
+  
+  fibGroup.visible = (phase <= 1);
+  lcsGroup.visible = (phase === 2 || phase === 3);
+  knapGroup.visible = (phase === 4 || phase === 5);
+  
+  // Phase 0: Fibonacci recursive vs DP
+  if(phase === 0) {
+    fibTreeNodes.forEach(n => {
+      if(phaseTime > n.revealTime) {
+        n.mesh.material.opacity = Math.min(0.8, n.mesh.material.opacity + dt * 2);
+        n.mesh.scale.setScalar(1 + Math.sin(t*2 + n.depth)*0.08);
+      }
+    });
+    dpArray.forEach(d => {
+      if(phaseTime > d.revealTime) {
+        d.mesh.material.opacity = Math.min(0.9, d.mesh.material.opacity + dt * 2);
+      }
+    });
+    
+    camera.position.set(Math.sin(t*0.15)*15, 25 + Math.sin(t*0.3)*3, 65);
+    camera.lookAt(0, 15, 0);
+  }
+  
+  // Phase 2: LCS table filling
+  if(phase === 2) {
+    cells.forEach(c => {
+      if(phaseTime > c.revealTime) {
+        c.mesh.material.opacity = Math.min(0.85, c.mesh.material.opacity + dt * 3);
+        if(phaseTime - c.revealTime < 0.5) {
+          c.mesh.material.emissiveIntensity = 0.6;
+        } else {
+          c.mesh.material.emissiveIntensity = 0.15;
+        }
+      }
+    });
+    
+    camera.position.set(15 + Math.sin(t*0.2)*5, 30 + Math.sin(t*0.3)*3, 25);
+    camera.lookAt(5, 3, 0);
+  }
+  
+  // Phase 4: Knapsack table
+  if(phase === 4) {
+    kCells.forEach(c => {
+      if(phaseTime > c.revealTime) {
+        c.mesh.material.opacity = Math.min(0.85, c.mesh.material.opacity + dt * 3);
+        if(phaseTime - c.revealTime < 0.3) {
+          c.mesh.material.emissiveIntensity = 0.5;
+        } else {
+          c.mesh.material.emissiveIntensity = 0.15;
+        }
+      }
+    });
+    
+    camera.position.set(10 + Math.sin(t*0.2)*8, 25, 25);
+    camera.lookAt(5, 3, 0);
+  }
+  
+  // Transition phases
+  if(phase === 1 || phase === 3 || phase === 5) {
+    const a = t * 0.5;
+    camera.position.set(Math.cos(a)*60, 35, Math.sin(a)*60);
+    camera.lookAt(0, 8, 0);
+  }
+  
+  pl.position.set(Math.sin(t)*20, 25, Math.cos(t)*20);
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

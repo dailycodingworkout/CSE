@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Algorithm Analysis — Growth Rates Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden;font-family:monospace}
+canvas{display:block}
+#info{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);color:#aaa;font-size:14px;text-align:center;pointer-events:none;opacity:0.7}
+</style>
+</head>
+<body>
+<div id="info"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Chapter 1: Algorithm Analysis — Animated Growth Rate Curves
+// Shows O(1), O(log n), O(n), O(n log n), O(n²), O(2^n) growing in 3D
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.008);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+// Lighting
+const amb = new THREE.AmbientLight(0x404060, 0.5);
+scene.add(amb);
+const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+dir.position.set(50, 100, 50);
+scene.add(dir);
+const pt = new THREE.PointLight(0x4a9eff, 1, 200);
+pt.position.set(0, 50, 0);
+scene.add(pt);
+
+// Grid floor
+const gridHelper = new THREE.GridHelper(200, 40, 0x1a3a5a, 0x0d1f33);
+scene.add(gridHelper);
+
+// Axis lines
+function makeAxis(from, to, color) {
+  const g = new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(...from), new THREE.Vector3(...to)]);
+  const m = new THREE.LineBasicMaterial({color});
+  scene.add(new THREE.Line(g, m));
+}
+makeAxis([-100,0,0],[100,0,0],0x334455); // x-axis (n)
+makeAxis([0,0,0],[0,100,0],0x334455);    // y-axis (T(n))
+
+// Growth rate functions
+const functions = [
+  { name:'O(1)',       fn: ()=>1,                    color:0x00ff88, yScale:1 },
+  { name:'O(log n)',   fn: (n)=>Math.log2(Math.max(n,1)), color:0x44aaff, yScale:3 },
+  { name:'O(√n)',      fn: (n)=>Math.sqrt(n),        color:0x8866ff, yScale:2 },
+  { name:'O(n)',       fn: (n)=>n,                    color:0xffcc00, yScale:0.5 },
+  { name:'O(n log n)', fn: (n)=>n*Math.log2(Math.max(n,1)), color:0xff8844, yScale:0.08 },
+  { name:'O(n²)',      fn: (n)=>n*n,                  color:0xff4466, yScale:0.005 },
+  { name:'O(2ⁿ)',      fn: (n)=>Math.pow(2,n),       color:0xff0044, yScale:0.0001 },
+];
+
+const curves = [];
+const maxPoints = 200;
+const spacing = 0.5;
+
+functions.forEach((f, idx) => {
+  const points = [];
+  for(let i=0; i<maxPoints; i++) {
+    const n = i * spacing;
+    const y = Math.min(f.fn(n) * f.yScale, 80);
+    points.push(new THREE.Vector3(n * 1 - 50, y, idx * 8 - 24));
+  }
+  
+  const geometry = new THREE.BufferGeometry().setFromPoints(points);
+  const material = new THREE.LineBasicMaterial({color: f.color, linewidth: 2});
+  const line = new THREE.Line(geometry, material);
+  line.visible = false;
+  scene.add(line);
+  
+  // Glow tube
+  const tubePoints = points.filter((_, i) => i % 3 === 0);
+  if(tubePoints.length >= 2) {
+    const curve = new THREE.CatmullRomCurve3(tubePoints);
+    const tubeGeo = new THREE.TubeGeometry(curve, 64, 0.3, 8, false);
+    const tubeMat = new THREE.MeshPhongMaterial({
+      color: f.color,
+      emissive: f.color,
+      emissiveIntensity: 0.3,
+      transparent: true,
+      opacity: 0
+    });
+    const tube = new THREE.Mesh(tubeGeo, tubeMat);
+    tube.visible = false;
+    scene.add(tube);
+    curves.push({line, tube, data: f, points, revealedCount: 0});
+  } else {
+    curves.push({line, tube: null, data: f, points, revealedCount: 0});
+  }
+  
+  // Label sphere at the end
+  const sphereGeo = new THREE.SphereGeometry(0.8, 16, 16);
+  const sphereMat = new THREE.MeshPhongMaterial({color: f.color, emissive: f.color, emissiveIntensity: 0.5});
+  const sphere = new THREE.Mesh(sphereGeo, sphereMat);
+  sphere.position.copy(points[points.length-1]);
+  sphere.visible = false;
+  scene.add(sphere);
+  curves[curves.length-1].sphere = sphere;
+});
+
+// Comparison scene elements
+const comparisonBars = [];
+const barData = [
+  {name:'O(1)', h:2, color:0x00ff88},
+  {name:'O(log n)', h:8, color:0x44aaff},
+  {name:'O(√n)', h:14, color:0x8866ff},
+  {name:'O(n)', h:22, color:0xffcc00},
+  {name:'O(n log n)', h:35, color:0xff8844},
+  {name:'O(n²)', h:55, color:0xff4466},
+  {name:'O(2ⁿ)', h:80, color:0xff0044},
+];
+barData.forEach((d, i) => {
+  const geo = new THREE.BoxGeometry(4, 0.1, 4);
+  const mat = new THREE.MeshPhongMaterial({color: d.color, emissive: d.color, emissiveIntensity: 0.2, transparent: true, opacity: 0});
+  const bar = new THREE.Mesh(geo, mat);
+  bar.position.set(i * 7 - 21, 0, 50);
+  bar.targetHeight = d.h;
+  scene.add(bar);
+  comparisonBars.push(bar);
+});
+
+// Big-O notation visual: f(n) ≤ c·g(n) envelope
+const envelopeGroup = new THREE.Group();
+envelopeGroup.visible = false;
+scene.add(envelopeGroup);
+
+// Create f(n) = 3n+2 curve
+const fPoints = [], gPoints = [], cgPoints = [];
+for(let i = 0; i < 100; i++) {
+  const n = i * 0.5;
+  fPoints.push(new THREE.Vector3(n - 25, (3*n+2)*0.5, -30));
+  gPoints.push(new THREE.Vector3(n - 25, n*0.5, -30));
+  cgPoints.push(new THREE.Vector3(n - 25, 4*n*0.5, -30));
+}
+const fCurve = new THREE.Line(
+  new THREE.BufferGeometry().setFromPoints(fPoints),
+  new THREE.LineBasicMaterial({color: 0xffcc00})
+);
+const cgCurve = new THREE.Line(
+  new THREE.BufferGeometry().setFromPoints(cgPoints),
+  new THREE.LineBasicMaterial({color: 0x44aaff, transparent: true, opacity: 0.6})
+);
+envelopeGroup.add(fCurve, cgCurve);
+
+// Particles background
+const partGeo = new THREE.BufferGeometry();
+const partCount = 2000;
+const partPos = new Float32Array(partCount * 3);
+for(let i = 0; i < partCount * 3; i++) partPos[i] = (Math.random()-0.5)*300;
+partGeo.setAttribute('position', new THREE.BufferAttribute(partPos, 3));
+const partMat = new THREE.PointsMaterial({color:0x2244aa, size:0.5, transparent:true, opacity:0.4});
+scene.add(new THREE.Points(partGeo, partMat));
+
+// Camera
+camera.position.set(0, 40, 80);
+camera.lookAt(0, 15, 0);
+
+// Animation phases
+let phase = 0;
+let phaseTime = 0;
+const phases = [
+  {dur: 8, name: 'Growth Curves Reveal'},      // curves appear one by one
+  {dur: 6, name: 'Orbit Around Curves'},         // camera orbits
+  {dur: 6, name: 'Big-O Envelope'},              // show f(n) ≤ c·g(n)
+  {dur: 8, name: 'Comparison Bars'},              // bar chart comparison
+  {dur: 6, name: 'Zoom to Exponential'},          // show how fast 2^n grows
+  {dur: 5, name: 'Final Orbit'},                  // final overview
+];
+
+const clock = new THREE.Clock();
+const info = document.getElementById('info');
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  // Phase transitions
+  if(phase < phases.length && phaseTime > phases[phase].dur) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phases.length) phase = 0; // loop
+  }
+  
+  const p = phase < phases.length ? phase : 0;
+  
+  // Phase 0: Reveal growth curves one by one
+  if(p === 0) {
+    const curveIdx = Math.floor((phaseTime / phases[0].dur) * curves.length);
+    curves.forEach((c, i) => {
+      if(i <= curveIdx) {
+        c.line.visible = true;
+        if(c.tube) {
+          c.tube.visible = true;
+          c.tube.material.opacity = Math.min(0.7, c.tube.material.opacity + dt * 2);
+        }
+        if(c.sphere) c.sphere.visible = true;
+      }
+    });
+    camera.position.set(
+      -30 + phaseTime * 8,
+      30 + Math.sin(t * 0.3) * 5,
+      60 + Math.sin(t * 0.2) * 10
+    );
+    camera.lookAt(0, 15, 0);
+  }
+  
+  // Phase 1: Orbit around curves
+  if(p === 1) {
+    const angle = (phaseTime / phases[1].dur) * Math.PI * 0.8 - Math.PI * 0.2;
+    camera.position.set(Math.cos(angle)*80, 35 + Math.sin(t*0.5)*5, Math.sin(angle)*80);
+    camera.lookAt(0, 15, 0);
+  }
+  
+  // Phase 2: Big-O Envelope
+  if(p === 2) {
+    envelopeGroup.visible = true;
+    curves.forEach(c => {
+      if(c.tube) c.tube.material.opacity = 0.2;
+    });
+    camera.position.lerp(new THREE.Vector3(0, 25, -10), dt * 2);
+    camera.lookAt(0, 15, -30);
+    
+    // Pulse the envelope
+    cgCurve.material.opacity = 0.3 + Math.sin(t * 3) * 0.2;
+  }
+  
+  // Phase 3: Comparison Bars
+  if(p === 3) {
+    envelopeGroup.visible = false;
+    curves.forEach(c => {
+      if(c.tube) c.tube.material.opacity = 0.1;
+      c.line.visible = false;
+    });
+    
+    comparisonBars.forEach((bar, i) => {
+      const reveal = (phaseTime / phases[3].dur) * barData.length;
+      if(i <= reveal) {
+        const targetH = bar.targetHeight;
+        const currentH = bar.geometry.parameters.height || 0.1;
+        const newH = Math.min(targetH, currentH + dt * targetH * 0.5);
+        bar.geometry.dispose();
+        bar.geometry = new THREE.BoxGeometry(4, newH, 4);
+        bar.position.y = newH / 2;
+        bar.material.opacity = Math.min(0.9, bar.material.opacity + dt * 2);
+      }
+    });
+    
+    camera.position.lerp(new THREE.Vector3(0, 30, 80), dt * 2);
+    camera.lookAt(0, 20, 50);
+  }
+  
+  // Phase 4: Zoom to exponential
+  if(p === 4) {
+    comparisonBars.forEach(bar => bar.material.opacity *= 0.99);
+    curves.forEach(c => {
+      c.line.visible = true;
+      if(c.tube) c.tube.material.opacity = 0.6;
+    });
+    
+    // Camera focuses on the exponential curve (last one)
+    const lastCurve = curves[curves.length-1];
+    const target = lastCurve.points[Math.min(80, lastCurve.points.length-1)];
+    camera.position.lerp(new THREE.Vector3(target.x + 20, target.y + 15, target.z + 30), dt * 1.5);
+    camera.lookAt(target);
+  }
+  
+  // Phase 5: Final orbit
+  if(p === 5) {
+    curves.forEach(c => {
+      c.line.visible = true;
+      if(c.tube) {
+        c.tube.visible = true;
+        c.tube.material.opacity = 0.5;
+      }
+    });
+    const angle = (phaseTime / phases[5].dur) * Math.PI * 1.5;
+    camera.position.set(Math.cos(angle)*90, 50, Math.sin(angle)*90);
+    camera.lookAt(0, 15, 0);
+  }
+  
+  // Animate spheres pulsing
+  curves.forEach((c, i) => {
+    if(c.sphere && c.sphere.visible) {
+      c.sphere.scale.setScalar(1 + Math.sin(t * 2 + i) * 0.3);
+    }
+  });
+  
+  // Animate particles
+  const positions = partGeo.attributes.position.array;
+  for(let i = 1; i < positions.length; i+=3) {
+    positions[i] += Math.sin(t + i) * 0.01;
+  }
+  partGeo.attributes.position.needsUpdate = true;
+  
+  pt.intensity = 1 + Math.sin(t * 2) * 0.3;
+  
+  renderer.render(scene, camera);
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>

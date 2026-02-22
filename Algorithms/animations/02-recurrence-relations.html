@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Recurrence Relations — Recursion Tree Animation</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0a0a1a;overflow:hidden}
+canvas{display:block}
+</style>
+</head>
+<body>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// Chapter 2: Recurrence Relations — Recursion Tree Animation
+// Visualizes T(n) = 2T(n/2) + n building a tree, then Master Theorem cases
+
+const scene = new THREE.Scene();
+scene.fog = new THREE.FogExp2(0x0a0a1a, 0.006);
+const camera = new THREE.PerspectiveCamera(60, innerWidth/innerHeight, 0.1, 1000);
+const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+document.body.appendChild(renderer.domElement);
+
+scene.add(new THREE.AmbientLight(0x404060, 0.6));
+const dir = new THREE.DirectionalLight(0xffffff, 0.8);
+dir.position.set(30, 80, 40);
+scene.add(dir);
+
+// Particle background
+const pGeo = new THREE.BufferGeometry();
+const pCount = 1500;
+const pPos = new Float32Array(pCount*3);
+for(let i=0;i<pCount*3;i++) pPos[i]=(Math.random()-0.5)*400;
+pGeo.setAttribute('position',new THREE.BufferAttribute(pPos,3));
+scene.add(new THREE.Points(pGeo, new THREE.PointsMaterial({color:0x1a2a4a,size:0.6,transparent:true,opacity:0.4})));
+
+// Recursion tree nodes
+const nodes = [];
+const edges = [];
+const nodeGroup = new THREE.Group();
+scene.add(nodeGroup);
+
+const colors = [0x44aaff, 0x66ccff, 0x88ddff, 0xaaeeff, 0xccffff];
+
+function createNode(x, y, z, size, depth, label) {
+  const geo = new THREE.SphereGeometry(size, 24, 24);
+  const mat = new THREE.MeshPhongMaterial({
+    color: colors[Math.min(depth, colors.length-1)],
+    emissive: colors[Math.min(depth, colors.length-1)],
+    emissiveIntensity: 0.2,
+    transparent: true,
+    opacity: 0
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.position.set(x, y, z);
+  mesh.userData = {targetOpacity: 0.9, depth, size, label};
+  nodeGroup.add(mesh);
+  
+  // Ring
+  const ringGeo = new THREE.RingGeometry(size*1.2, size*1.4, 32);
+  const ringMat = new THREE.MeshBasicMaterial({color: colors[Math.min(depth, colors.length-1)], transparent:true, opacity:0, side: THREE.DoubleSide});
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.position.copy(mesh.position);
+  ring.lookAt(camera.position);
+  nodeGroup.add(ring);
+  mesh.userData.ring = ring;
+  
+  return mesh;
+}
+
+function createEdge(from, to) {
+  const points = [from.clone(), to.clone()];
+  const geo = new THREE.BufferGeometry().setFromPoints(points);
+  const mat = new THREE.LineBasicMaterial({color: 0x336699, transparent: true, opacity: 0});
+  const line = new THREE.Line(geo, mat);
+  nodeGroup.add(line);
+  return line;
+}
+
+// Build recursion tree for T(n) = 2T(n/2) + n
+// Tree structure: depth 0-4
+function buildTree(x, y, z, depth, maxDepth, spreadX, parentPos) {
+  if(depth > maxDepth) return;
+  const size = Math.max(1, 3 - depth * 0.4);
+  const node = createNode(x, y, z, size, depth, `n/${Math.pow(2,depth)}`);
+  nodes.push({mesh: node, depth, revealTime: depth * 2 + Math.random()});
+  
+  if(parentPos) {
+    const edge = createEdge(parentPos, new THREE.Vector3(x, y, z));
+    edges.push({line: edge, revealTime: depth * 2 - 0.5});
+  }
+  
+  if(depth < maxDepth) {
+    buildTree(x - spreadX, y - 12, z, depth+1, maxDepth, spreadX/2, new THREE.Vector3(x,y,z));
+    buildTree(x + spreadX, y - 12, z, depth+1, maxDepth, spreadX/2, new THREE.Vector3(x,y,z));
+  }
+}
+
+buildTree(0, 40, 0, 0, 4, 40, null);
+
+// Level cost indicators (horizontal bars showing O(n) work per level)
+const levelBars = [];
+for(let d = 0; d <= 4; d++) {
+  const width = 80;
+  const geo = new THREE.BoxGeometry(width, 1, 2);
+  const mat = new THREE.MeshPhongMaterial({
+    color: 0xff8844,
+    emissive: 0xff8844,
+    emissiveIntensity: 0.2,
+    transparent: true,
+    opacity: 0
+  });
+  const bar = new THREE.Mesh(geo, mat);
+  bar.position.set(60, 40 - d*12, 0);
+  nodeGroup.add(bar);
+  levelBars.push({mesh: bar, depth: d, revealTime: 12 + d * 1.5});
+}
+
+// Master Theorem case visualization (3 scenarios)
+const caseGroups = [];
+
+// Case 1: More leaves (a > b^k) — bottom heavy tree
+const case1 = new THREE.Group();
+case1.visible = false;
+case1.position.set(-60, 0, -50);
+for(let d = 0; d <= 3; d++) {
+  const nodesInLevel = Math.pow(3, d);
+  for(let i = 0; i < Math.min(nodesInLevel, 27); i++) {
+    const size = Math.max(0.5, 2 - d*0.3);
+    const spread = 30;
+    const xPos = (i - nodesInLevel/2 + 0.5) * (spread/nodesInLevel);
+    const geo = new THREE.SphereGeometry(size, 16, 16);
+    const mat = new THREE.MeshPhongMaterial({color:0xff4466, emissive:0xff4466, emissiveIntensity:0.3, transparent:true, opacity:0});
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(xPos, 30 - d*10, 0);
+    case1.add(m);
+  }
+}
+scene.add(case1);
+caseGroups.push(case1);
+
+// Case 2: Balanced — all levels equal
+const case2 = new THREE.Group();
+case2.visible = false;
+case2.position.set(0, 0, -50);
+for(let d = 0; d <= 3; d++) {
+  const nodesInLevel = Math.pow(2, d);
+  for(let i = 0; i < nodesInLevel; i++) {
+    const size = 1.5;
+    const spread = 30;
+    const xPos = (i - nodesInLevel/2 + 0.5) * (spread/nodesInLevel);
+    const geo = new THREE.SphereGeometry(size, 16, 16);
+    const mat = new THREE.MeshPhongMaterial({color:0xffcc00, emissive:0xffcc00, emissiveIntensity:0.3, transparent:true, opacity:0});
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(xPos, 30 - d*10, 0);
+    case2.add(m);
+  }
+}
+scene.add(case2);
+caseGroups.push(case2);
+
+// Case 3: Root heavy — top dominates
+const case3 = new THREE.Group();
+case3.visible = false;
+case3.position.set(60, 0, -50);
+for(let d = 0; d <= 3; d++) {
+  const size = Math.max(0.5, 3 - d*0.8);
+  const nodesInLevel = Math.pow(2, d);
+  for(let i = 0; i < nodesInLevel; i++) {
+    const spread = 20;
+    const xPos = (i - nodesInLevel/2 + 0.5) * (spread/nodesInLevel);
+    const geo = new THREE.SphereGeometry(size, 16, 16);
+    const mat = new THREE.MeshPhongMaterial({color:0x44ff88, emissive:0x44ff88, emissiveIntensity:0.3, transparent:true, opacity:0});
+    const m = new THREE.Mesh(geo, mat);
+    m.position.set(xPos, 30 - d*10, 0);
+    case3.add(m);
+  }
+}
+scene.add(case3);
+caseGroups.push(case3);
+
+camera.position.set(0, 30, 90);
+camera.lookAt(0, 15, 0);
+
+const clock = new THREE.Clock();
+let phase = 0, phaseTime = 0;
+const phaseDurs = [12, 6, 10, 8, 6]; // tree build, orbit, level costs, master cases, final
+
+function animate() {
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+  const t = clock.getElapsedTime();
+  phaseTime += dt;
+  
+  if(phase < phaseDurs.length && phaseTime > phaseDurs[phase]) {
+    phaseTime = 0;
+    phase++;
+    if(phase >= phaseDurs.length) { phase = 0; resetScene(); }
+  }
+  
+  // Phase 0: Build recursion tree node by node
+  if(phase === 0) {
+    nodes.forEach(n => {
+      if(phaseTime > n.revealTime) {
+        n.mesh.material.opacity = Math.min(n.mesh.userData.targetOpacity, n.mesh.material.opacity + dt * 2);
+        if(n.mesh.userData.ring) {
+          n.mesh.userData.ring.material.opacity = n.mesh.material.opacity * 0.3;
+          n.mesh.userData.ring.lookAt(camera.position);
+          n.mesh.userData.ring.rotation.z += dt;
+        }
+      }
+    });
+    edges.forEach(e => {
+      if(phaseTime > e.revealTime) {
+        e.line.material.opacity = Math.min(0.6, e.line.material.opacity + dt * 2);
+      }
+    });
+    
+    camera.position.set(
+      Math.sin(t * 0.15) * 10,
+      40 - phaseTime * 1.5,
+      90 - phaseTime * 2
+    );
+    camera.lookAt(0, 20, 0);
+  }
+  
+  // Phase 1: Orbit around tree
+  if(phase === 1) {
+    const a = (phaseTime / phaseDurs[1]) * Math.PI;
+    camera.position.set(Math.sin(a) * 80, 30, Math.cos(a) * 80);
+    camera.lookAt(0, 15, 0);
+  }
+  
+  // Phase 2: Show level costs
+  if(phase === 2) {
+    levelBars.forEach(lb => {
+      if(phaseTime > lb.revealTime - 12) {
+        lb.mesh.material.opacity = Math.min(0.7, lb.mesh.material.opacity + dt);
+        lb.mesh.material.emissiveIntensity = 0.3 + Math.sin(t * 3 + lb.depth) * 0.1;
+      }
+    });
+    camera.position.lerp(new THREE.Vector3(40, 25, 60), dt);
+    camera.lookAt(30, 15, 0);
+  }
+  
+  // Phase 3: Master Theorem cases
+  if(phase === 3) {
+    nodeGroup.children.forEach(c => { if(c.material) c.material.opacity *= 0.98; });
+    
+    const caseTime = phaseTime;
+    caseGroups.forEach((cg, ci) => {
+      if(caseTime > ci * 2.5) {
+        cg.visible = true;
+        cg.children.forEach(child => {
+          if(child.material) child.material.opacity = Math.min(0.8, child.material.opacity + dt * 1.5);
+        });
+      }
+    });
+    
+    camera.position.lerp(new THREE.Vector3(0, 25, 30), dt * 0.8);
+    camera.lookAt(0, 15, -50);
+  }
+  
+  // Phase 4: Final overview
+  if(phase === 4) {
+    const a = t * 0.3;
+    camera.position.set(Math.cos(a) * 100, 50, Math.sin(a) * 100);
+    camera.lookAt(0, 15, 0);
+  }
+  
+  // Pulsing nodes
+  nodes.forEach((n, i) => {
+    if(n.mesh.material.opacity > 0.1) {
+      n.mesh.scale.setScalar(1 + Math.sin(t * 2 + i * 0.5) * 0.1);
+    }
+  });
+  
+  renderer.render(scene, camera);
+}
+
+function resetScene() {
+  nodes.forEach(n => { n.mesh.material.opacity = 0; });
+  edges.forEach(e => { e.line.material.opacity = 0; });
+  levelBars.forEach(lb => { lb.mesh.material.opacity = 0; });
+  caseGroups.forEach(cg => {
+    cg.visible = false;
+    cg.children.forEach(c => { if(c.material) c.material.opacity = 0; });
+  });
+}
+
+animate();
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+</script>
+</body>
+</html>
